@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Mie ayam bakso">
+  <defs>
+    <radialGradient id="maBowl" cx="34%" cy="26%" r="80%">
+      <stop offset="0%" stop-color="#FB923C"/><stop offset="100%" stop-color="#C2410C"/>
+    </radialGradient>
+    <radialGradient id="maBroth" cx="38%" cy="30%" r="76%">
+      <stop offset="0%" stop-color="#E8B45C"/><stop offset="100%" stop-color="#C98A34"/>
+    </radialGradient>
+    <filter id="maShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#7C2D12" flood-opacity=".22"/>
+    </filter>
+  </defs>
+  <g filter="url(#maShadow)">
+    <circle cx="200" cy="200" r="152" fill="url(#maBowl)"/>
+    <circle cx="200" cy="200" r="152" fill="none" stroke="#9A3412" stroke-width="2"/>
+    <circle cx="200" cy="200" r="128" fill="url(#maBroth)"/>
+  </g>
+  <path d="M104 168c30-6 44 22 74 18s34-30 66-26" stroke="#F6D98C" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M96 196c32-8 48 22 78 18s36-30 70-26" stroke="#FAE4A8" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M100 224c30-6 46 22 76 18s34-30 66-26" stroke="#F6D98C" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M108 252c30-6 44 20 72 16s34-28 64-24" stroke="#FAE4A8" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <path d="M112 146c28-6 44 18 72 14" stroke="#F6D98C" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <g>
+    <circle cx="252" cy="146" r="30" fill="#C08552"/>
+    <circle cx="244" cy="138" r="12" fill="#D19A66" opacity=".85"/>
+    <circle cx="252" cy="146" r="30" fill="none" stroke="#9C6B3F" stroke-width="2"/>
+  </g>
+  <g>
+    <circle cx="146" cy="266" r="26" fill="#C08552"/>
+    <circle cx="139" cy="259" r="10" fill="#D19A66" opacity=".85"/>
+    <circle cx="146" cy="266" r="26" fill="none" stroke="#9C6B3F" stroke-width="2"/>
+  </g>
+  <g fill="#8B4A22">
+    <path d="M256 236c18-10 38-6 46 8-16 10-36 8-46-8z"/>
+    <path d="M212 108c18-8 36-2 42 12-18 8-34 2-42-12z"/>
+  </g>
+  <g fill="#3F8F45">
+    <ellipse cx="176" cy="122" rx="9" ry="6" transform="rotate(18 176 122)"/>
+    <ellipse cx="290" cy="196" rx="9" ry="6" transform="rotate(-28 290 196)"/>
+    <ellipse cx="120" cy="212" rx="9" ry="6" transform="rotate(52 120 212)"/>
+    <ellipse cx="214" cy="290" rx="9" ry="6" transform="rotate(-10 214 290)"/>
+    <ellipse cx="248" cy="196" rx="8" ry="5" transform="rotate(34 248 196)"/>
+  </g>
+  <g fill="#D9480F">
+    <circle cx="196" cy="168" r="5"/><circle cx="164" cy="228" r="4.5"/><circle cx="276" cy="256" r="4.5"/>
+  </g>
+</svg>

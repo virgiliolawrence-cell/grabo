@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Batagor saus kacang">
+  <defs>
+    <radialGradient id="btPlate" cx="36%" cy="28%" r="80%">
+      <stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#F1EAE1"/>
+    </radialGradient>
+    <linearGradient id="btPiece" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EFB964"/><stop offset="100%" stop-color="#C4802F"/>
+    </linearGradient>
+    <filter id="btShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#7C2D12" flood-opacity=".18"/>
+    </filter>
+  </defs>
+  <g filter="url(#btShadow)">
+    <circle cx="200" cy="200" r="152" fill="url(#btPlate)"/>
+    <circle cx="200" cy="200" r="152" fill="none" stroke="#E7DACB" stroke-width="2"/>
+    <circle cx="200" cy="200" r="128" fill="none" stroke="#EFE4D7" stroke-width="3"/>
+  </g>
+  <path d="M108 214c14-40 56-64 100-56 42 8 70 42 66 82-38 20-84 26-126 14-24-6-42-22-40-40z" fill="#8A5326" opacity=".9"/>
+  <path d="M120 216c14-30 48-48 84-42 34 6 56 32 54 62-32 16-70 20-104 10-20-6-36-16-34-30z" fill="#A5682F"/>
+  <g fill="#C98B45" opacity=".7">
+    <circle cx="150" cy="222" r="5"/><circle cx="190" cy="240" r="4"/><circle cx="228" cy="222" r="5"/><circle cx="168" cy="250" r="4"/><circle cx="212" cy="258" r="4"/>
+  </g>
+  <g>
+    <rect x="112" y="122" width="76" height="76" rx="14" transform="rotate(-12 150 160)" fill="url(#btPiece)"/>
+    <rect x="122" y="132" width="56" height="56" rx="10" transform="rotate(-12 150 160)" fill="#F3CC8B" opacity=".55"/>
+  </g>
+  <g>
+    <rect x="196" y="108" width="72" height="72" rx="14" transform="rotate(9 232 144)" fill="url(#btPiece)"/>
+    <rect x="206" y="118" width="52" height="52" rx="10" transform="rotate(9 232 144)" fill="#F3CC8B" opacity=".55"/>
+  </g>
+  <g>
+    <rect x="230" y="188" width="70" height="70" rx="14" transform="rotate(-16 265 223)" fill="url(#btPiece)"/>
+    <rect x="240" y="198" width="50" height="50" rx="10" transform="rotate(-16 265 223)" fill="#F3CC8B" opacity=".55"/>
+  </g>
+  <g>
+    <rect x="132" y="216" width="68" height="68" rx="14" transform="rotate(16 166 250)" fill="url(#btPiece)"/>
+    <rect x="142" y="226" width="48" height="48" rx="10" transform="rotate(16 166 250)" fill="#F3CC8B" opacity=".55"/>
+  </g>
+  <path d="M118 154c26-14 54-12 76 6M204 122c26-10 52-4 70 14M244 206c24-6 46 4 58 24M148 232c24-4 44 8 54 28" stroke="#8C5A20" stroke-width="3" fill="none" stroke-linecap="round" opacity=".45"/>
+  <g>
+    <circle cx="296" cy="290" r="26" fill="#7FAE3C"/>
+    <circle cx="296" cy="290" r="19" fill="#D6EAA6"/>
+    <g stroke="#7FAE3C" stroke-width="2.5"><path d="M296 271v38M277 290h38M283 277l26 26M309 277l-26 26"/></g>
+  </g>
+  <g fill="#D9480F"><circle cx="112" cy="292" r="6"/><circle cx="136" cy="308" r="5"/></g>
+</svg>

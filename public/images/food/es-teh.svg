@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Es teh manis">
+  <defs>
+    <linearGradient id="etGlass" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity=".55"/>
+      <stop offset="45%" stop-color="#FFFFFF" stop-opacity=".08"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity=".4"/>
+    </linearGradient>
+    <linearGradient id="etTea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C4712A"/><stop offset="100%" stop-color="#8A4315"/>
+    </linearGradient>
+    <filter id="etShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#7C2D12" flood-opacity=".2"/>
+    </filter>
+  </defs>
+  <ellipse cx="200" cy="336" rx="92" ry="16" fill="#7C2D12" opacity=".12"/>
+  <g filter="url(#etShadow)">
+    <path d="M126 96h148l-16 210a26 26 0 0 1-26 24h-64a26 26 0 0 1-26-24z" fill="#FDF6EC"/>
+    <path d="M136 130h128l-14 176a18 18 0 0 1-18 16h-64a18 18 0 0 1-18-16z" fill="url(#etTea)"/>
+    <g fill="#FFFFFF" opacity=".55">
+      <rect x="152" y="150" width="42" height="42" rx="8" transform="rotate(-12 152 150)"/>
+      <rect x="206" y="164" width="46" height="46" rx="8" transform="rotate(10 206 164)"/>
+      <rect x="160" y="212" width="44" height="44" rx="8" transform="rotate(16 160 212)"/>
+      <rect x="212" y="228" width="38" height="38" rx="8" transform="rotate(-8 212 228)"/>
+    </g>
+    <path d="M126 96h148l-16 210a26 26 0 0 1-26 24h-64a26 26 0 0 1-26-24z" fill="url(#etGlass)"/>
+    <path d="M126 96h148l-16 210a26 26 0 0 1-26 24h-64a26 26 0 0 1-26-24z" fill="none" stroke="#E3D5C4" stroke-width="4"/>
+    <ellipse cx="200" cy="96" rx="74" ry="16" fill="#FFFDF8" stroke="#E3D5C4" stroke-width="4"/>
+    <path d="M150 132l-6 150" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" opacity=".35"/>
+  </g>
+  <g>
+    <path d="M236 42l-24 62" stroke="#EA580C" stroke-width="14" stroke-linecap="round"/>
+    <path d="M236 42l30-10" stroke="#EA580C" stroke-width="14" stroke-linecap="round"/>
+    <path d="M232 52l-20 52" stroke="#FDBA74" stroke-width="4" stroke-linecap="round" opacity=".8"/>
+  </g>
+  <g transform="translate(292 108)">
+    <circle cx="0" cy="0" r="34" fill="#F6C445"/>
+    <circle cx="0" cy="0" r="26" fill="#FDE68A"/>
+    <g stroke="#F6C445" stroke-width="3"><path d="M0-26V26M-26 0H26M-18-18 18 18M18-18-18 18"/></g>
+    <circle cx="0" cy="0" r="34" fill="none" stroke="#E0A81E" stroke-width="3"/>
+  </g>
+  <g fill="#3F8F45" transform="translate(104 128) rotate(-24)">
+    <path d="M0 0c22-16 44-14 58 4-20 12-44 10-58-4z"/>
+    <path d="M0 0c20-10 40-10 54 2" stroke="#2F6E36" stroke-width="2" fill="none"/>
+  </g>
+</svg>
