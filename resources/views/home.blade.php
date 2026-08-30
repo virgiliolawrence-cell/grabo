@@ -142,7 +142,12 @@
 
                                 <div class="mt-5 flex items-center justify-between border-t border-stone-100 pt-4">
                                     <span class="headline text-2xl text-neon-600">{{ $item['price'] }}</span>
-                                    <button type="button" class="inline-flex items-center gap-2 rounded-full border-2 border-neon-500 px-5 py-2 text-sm font-semibold text-neon-800 transition hover:bg-neon-500 hover:text-white hover:shadow-[0_0_22px_rgba(255,106,0,0.45)]">
+                                    <button type="button"
+                                        data-add-to-cart
+                                        data-name="{{ $item['name'] }}"
+                                        data-stall="{{ $item['stall'] }}"
+                                        data-price="{{ (int) preg_replace('/\D/', '', $item['price']) }}"
+                                        class="inline-flex items-center gap-2 rounded-full border-2 border-neon-500 px-5 py-2 text-sm font-semibold text-neon-800 transition hover:bg-neon-500 hover:text-white hover:shadow-[0_0_22px_rgba(255,106,0,0.45)]">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                                             <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
                                         </svg>

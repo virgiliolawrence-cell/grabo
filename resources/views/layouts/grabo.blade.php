@@ -25,6 +25,8 @@
 
 @include('partials.footer')
 
+@include('partials.cart')
+
 @include('partials.scripts')
 </body>
 

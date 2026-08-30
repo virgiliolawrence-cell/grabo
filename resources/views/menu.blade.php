@@ -99,19 +99,19 @@
 
             {{-- Kontrol carousel --}}
             <button type="button" id="promoPrev" aria-label="Promo sebelumnya"
-                class="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur transition hover:bg-white/30">
+                class="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur transition hover:bg-white/30">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
                     <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </button>
             <button type="button" id="promoNext" aria-label="Promo berikutnya"
-                class="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur transition hover:bg-white/30">
+                class="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-white/15 text-white backdrop-blur transition hover:bg-white/30">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
                     <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
             </button>
 
-            <div class="absolute bottom-5 left-1/2 flex -translate-x-1/2 items-center gap-2">
+            <div class="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
                 @foreach ($promos as $i => $promo)
                     <button type="button" data-promo-dot class="promo-dot {{ $i === 0 ? 'is-current' : '' }}"
                         aria-label="Ke promo {{ $i + 1 }}"></button>
@@ -159,6 +159,10 @@
                                 <div class="mt-4 flex items-center justify-between gap-2 border-t border-stone-100 pt-3">
                                     <span class="headline text-lg text-neon-600 sm:text-xl">{{ $item['price'] }}</span>
                                     <button type="button" aria-label="Tambah {{ $item['name'] }} ke keranjang"
+                                        data-add-to-cart
+                                        data-name="{{ $item['name'] }}"
+                                        data-stall="{{ $item['stall'] }}"
+                                        data-price="{{ (int) preg_replace('/\D/', '', $item['price']) }}"
                                         class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-neon-500 text-neon-700 transition hover:bg-neon-500 hover:text-white hover:shadow-[0_0_18px_rgba(255,106,0,0.45)]">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                                             <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />

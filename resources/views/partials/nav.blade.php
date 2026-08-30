@@ -86,15 +86,16 @@
             </nav>
 
             <div class="flex shrink-0 items-center gap-2 sm:gap-3">
-                <a href="{{ route('menu') }}" aria-label="Keranjang belanja"
+                <button type="button" id="cartToggle" aria-label="Buka keranjang belanja" aria-expanded="false" aria-controls="cartPanel"
                     class="relative flex h-11 w-11 items-center justify-center rounded-full border border-white/30 bg-white/10 text-white backdrop-blur transition hover:bg-white/20">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
                         <path d="M3 4h2l2.4 12.4a2 2 0 0 0 2 1.6h7.2a2 2 0 0 0 2-1.6L21 8H6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
                         <circle cx="9.5" cy="20" r="1.4" fill="currentColor" />
                         <circle cx="17" cy="20" r="1.4" fill="currentColor" />
                     </svg>
-                    <span class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-bold text-neon-700 shadow">0</span>
-                </a>
+                    <span id="cartCount" data-cart-count aria-live="polite"
+                        class="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-white text-[10px] font-bold text-neon-700 shadow">0</span>
+                </button>
 
                 <a href="{{ route('menu') }}" class="hidden items-center gap-2.5 rounded-full bg-white px-6 py-3 font-semibold text-neon-700 shadow-lg shadow-neon-900/25 transition hover:-translate-y-0.5 hover:bg-neon-50 hover:shadow-xl sm:inline-flex">
                     Pesan Sekarang

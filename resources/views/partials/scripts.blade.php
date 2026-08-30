@@ -177,6 +177,197 @@
 
         moveNavIndicator({ animate: false });
 
+        /*
+         * ------------------------------------------------------------------
+         * Keranjang
+         * Disimpan di localStorage supaya isinya bertahan antar halaman.
+         * ------------------------------------------------------------------
+         */
+        const CART_KEY = 'grabo.cart';
+        const rupiah = (value) => 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
+
+        function readCart() {
+            // localStorage bisa dilarang (mode penyamaran), jadi selalu dibungkus try.
+            try {
+                const raw = JSON.parse(localStorage.getItem(CART_KEY));
+                return Array.isArray(raw) ? raw : [];
+            } catch (error) {
+                return [];
+            }
+        }
+
+        function writeCart(items) {
+            try {
+                localStorage.setItem(CART_KEY, JSON.stringify(items));
+            } catch (error) {
+                // Tetap lanjut: keranjang hanya tidak bertahan setelah halaman ditutup.
+            }
+
+            renderCart(items);
+        }
+
+        const cartPanel = document.getElementById('cartPanel');
+        const cartBackdrop = document.getElementById('cartBackdrop');
+        const cartItemsBox = document.getElementById('cartItems');
+        const cartEmptyBox = document.getElementById('cartEmpty');
+        const cartFooter = document.getElementById('cartFooter');
+        const cartTotalEl = document.getElementById('cartTotal');
+        const cartNote = document.getElementById('cartNote');
+        const cartToggle = document.getElementById('cartToggle');
+
+        function renderCart(items = readCart()) {
+            const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
+            const totalPrice = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            document.querySelectorAll('[data-cart-count]').forEach((el) => {
+                el.textContent = totalQty;
+            });
+
+            if (!cartItemsBox) {
+                return;
+            }
+
+            const isEmpty = items.length === 0;
+            cartItemsBox.classList.toggle('hidden', isEmpty);
+            cartEmptyBox?.classList.toggle('hidden', !isEmpty);
+            cartFooter?.classList.toggle('hidden', isEmpty);
+
+            if (cartTotalEl) {
+                cartTotalEl.textContent = rupiah(totalPrice);
+            }
+
+            cartItemsBox.innerHTML = '';
+
+            items.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-start gap-3 rounded-2xl border border-stone-100 p-3';
+                row.innerHTML = `
+                    <div class="flex-1">
+                        <p class="font-semibold text-stone-900">${item.name}</p>
+                        <p class="text-xs uppercase tracking-[0.14em] text-stone-400">${item.stall}</p>
+                        <p class="mt-1 text-neon-600">${rupiah(item.price * item.qty)}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" data-cart-dec="${index}" aria-label="Kurangi ${item.name}"
+                            class="flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-600 transition hover:bg-stone-100">&minus;</button>
+                        <span class="w-6 text-center font-semibold">${item.qty}</span>
+                        <button type="button" data-cart-inc="${index}" aria-label="Tambah ${item.name}"
+                            class="flex h-8 w-8 items-center justify-center rounded-full border border-stone-200 text-stone-600 transition hover:bg-stone-100">+</button>
+                    </div>`;
+                cartItemsBox.appendChild(row);
+            });
+        }
+
+        function addToCart({ name, stall, price }) {
+            const items = readCart();
+            const existing = items.find((item) => item.name === name);
+
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                items.push({ name, stall, price, qty: 1 });
+            }
+
+            writeCart(items);
+        }
+
+        function openCart() {
+            if (!cartPanel) {
+                return;
+            }
+
+            cartBackdrop.hidden = false;
+            cartBackdrop.classList.remove('hidden');
+            cartPanel.classList.remove('translate-x-full');
+            cartPanel.setAttribute('aria-hidden', 'false');
+            cartToggle?.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('cartClose')?.focus();
+        }
+
+        function closeCart() {
+            if (!cartPanel) {
+                return;
+            }
+
+            cartBackdrop.classList.add('hidden');
+            cartBackdrop.hidden = true;
+            cartPanel.classList.add('translate-x-full');
+            cartPanel.setAttribute('aria-hidden', 'true');
+            cartToggle?.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+            cartToggle?.focus();
+        }
+
+        document.querySelectorAll('[data-add-to-cart]').forEach((button) => {
+            button.addEventListener('click', () => {
+                addToCart({
+                    name: button.dataset.name,
+                    stall: button.dataset.stall,
+                    price: Number(button.dataset.price) || 0,
+                });
+
+                // Umpan balik singkat pada tombolnya sendiri.
+                button.classList.add('bg-neon-500', 'text-white');
+                setTimeout(() => button.classList.remove('bg-neon-500', 'text-white'), 450);
+
+                if (cartToggle) {
+                    cartToggle.classList.add('scale-110');
+                    setTimeout(() => cartToggle.classList.remove('scale-110'), 250);
+                }
+            });
+        });
+
+        cartItemsBox?.addEventListener('click', (event) => {
+            const inc = event.target.closest('[data-cart-inc]');
+            const dec = event.target.closest('[data-cart-dec]');
+
+            if (!inc && !dec) {
+                return;
+            }
+
+            const items = readCart();
+            const index = Number((inc || dec).dataset.cartInc ?? (inc || dec).dataset.cartDec);
+            const item = items[index];
+
+            if (!item) {
+                return;
+            }
+
+            item.qty += inc ? 1 : -1;
+
+            if (item.qty < 1) {
+                items.splice(index, 1);
+            }
+
+            writeCart(items);
+        });
+
+        cartToggle?.addEventListener('click', openCart);
+        document.getElementById('cartClose')?.addEventListener('click', closeCart);
+        cartBackdrop?.addEventListener('click', closeCart);
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && cartPanel?.getAttribute('aria-hidden') === 'false') {
+                closeCart();
+            }
+        });
+
+        document.getElementById('cartClear')?.addEventListener('click', () => writeCart([]));
+
+        document.getElementById('cartCheckout')?.addEventListener('click', () => {
+            if (readCart().length === 0 || !cartNote) {
+                return;
+            }
+
+            // Belum ada halaman pembayaran, jadi beri konfirmasi dulu.
+            cartNote.textContent = 'Pesanan dicatat. Halaman pembayaran menyusul.';
+            cartNote.classList.remove('hidden');
+            setTimeout(() => cartNote.classList.add('hidden'), 3000);
+        });
+
+        renderCart();
+
         /* Carousel promo (halaman menu). */
         const promoTrack = document.getElementById('promoTrack');
 
@@ -202,7 +393,9 @@
                 cancelAnimationFrame(promoTween);
 
                 if (reduceMotion.matches) {
+                    promoTrack.style.scrollSnapType = 'none';
                     promoTrack.scrollLeft = targetLeft;
+                    promoTrack.style.scrollSnapType = '';
                     return;
                 }
 
@@ -215,13 +408,23 @@
 
                 const startedAt = performance.now();
 
+                /*
+                 * scroll-snap mandatory akan menarik balik posisi di tengah animasi
+                 * karena tiap frame berhenti di antara dua titik snap.
+                 * Matikan sementara, lalu pasang lagi untuk geseran jari.
+                 */
+                promoTrack.style.scrollSnapType = 'none';
+
                 const step = (now) => {
                     const progress = Math.min(1, (now - startedAt) / PROMO_SLIDE_MS);
                     promoTrack.scrollLeft = startLeft + (distance * easeOutCubic(progress));
 
                     if (progress < 1) {
                         promoTween = requestAnimationFrame(step);
+                        return;
                     }
+
+                    promoTrack.style.scrollSnapType = '';
                 };
 
                 promoTween = requestAnimationFrame(step);
@@ -272,7 +475,10 @@
             });
 
             // Geseran jari mengambil alih dari animasi yang sedang berjalan.
-            promoTrack.addEventListener('pointerdown', () => cancelAnimationFrame(promoTween));
+            promoTrack.addEventListener('pointerdown', () => {
+                cancelAnimationFrame(promoTween);
+                promoTrack.style.scrollSnapType = '';
+            });
 
             promoTrack.addEventListener('scroll', () => {
                 const index = currentSlide();
