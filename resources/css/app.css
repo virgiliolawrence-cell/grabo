@@ -226,6 +226,32 @@
     }
 }
 
+/* Track yang bisa digeser tanpa scrollbar terlihat. */
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Titik penanda slide promo. */
+.promo-dot {
+    height: 0.5rem;
+    width: 0.5rem;
+    border-radius: 9999px;
+    background-color: rgb(255 255 255 / 0.5);
+    transition:
+        width 0.3s ease,
+        background-color 0.3s ease;
+}
+
+.promo-dot.is-current {
+    width: 1.75rem;
+    background-color: #fff;
+}
+
 @keyframes float-slow {
     0%,
     100% {

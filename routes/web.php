@@ -16,6 +16,10 @@ Route::get('/', function () {
     return view('home');
 })->name('home');
 
+Route::get('/menu', function () {
+    return view('menu');
+})->name('menu');
+
 //Student Action Controller
 Route::name('students.')->prefix('students')->group(function () {
     Route::get('/', [StudentController::class, 'index'])->name('index');
