@@ -226,6 +226,32 @@
     }
 }
 
+/*
+ * Kartu pilihan (waktu pengambilan & metode bayar) di halaman pembayaran.
+ * Radio-nya disembunyikan, kartunya yang menandakan status terpilih.
+ */
+/*
+ * Status terpilih ditandai kelas .is-selected dari JavaScript, bukan hanya
+ * :has(). Selain :has() belum ada di browser lama, evaluasinya juga tidak
+ * selalu diperbarui saat radio berubah lewat skrip.
+ */
+.option-card.is-selected,
+.option-card:has(input:checked) {
+    border-color: var(--color-neon-500);
+    background-color: var(--color-neon-50);
+}
+
+.option-card:has(input:focus-visible) {
+    outline: 2px solid var(--color-neon-500);
+    outline-offset: 2px;
+}
+
+.option-card.is-selected .option-dot,
+.option-card:has(input:checked) .option-dot {
+    border-color: var(--color-neon-500);
+    border-width: 6px;
+}
+
 /* Track yang bisa digeser tanpa scrollbar terlihat. */
 .no-scrollbar {
     scrollbar-width: none;

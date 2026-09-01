@@ -145,7 +145,6 @@
         const cartEmptyBox = document.getElementById('cartEmpty');
         const cartFooter = document.getElementById('cartFooter');
         const cartTotalEl = document.getElementById('cartTotal');
-        const cartNote = document.getElementById('cartNote');
         const cartToggle = document.getElementById('cartToggle');
 
         function renderCart(items = readCart()) {
@@ -170,16 +169,20 @@
 
             items.forEach((item, index) => {
                 const row = document.createElement('div');
-                row.className = 'flex items-start gap-3 rounded-2xl border border-stone-100 p-3';
+                // group + focus-within: seluruh baris ikut menyala saat di-hover
+                // atau saat tombol ubahnya mendapat fokus keyboard.
+                row.className = 'group flex items-start gap-3 rounded-2xl border border-stone-100 p-3 transition '
+                    + 'hover:border-neon-300 hover:bg-neon-50 hover:shadow-sm '
+                    + 'focus-within:border-neon-300 focus-within:bg-neon-50';
                 row.innerHTML = `
                     <button type="button" data-cart-edit="${index}" aria-label="Ubah pesanan ${item.name}"
-                        class="flex-1 rounded-xl px-1 py-0.5 text-left transition hover:bg-stone-50">
+                        class="flex-1 cursor-pointer rounded-xl px-1 py-0.5 text-left outline-none">
                         <span class="block font-semibold text-stone-900">${item.name}</span>
                         <span class="block text-xs uppercase tracking-[0.14em] text-stone-400">${item.stall}</span>
                         ${item.options ? `<span class="mt-1 block text-sm text-stone-500">${item.options}</span>` : ''}
                         ${item.note ? `<span class="mt-0.5 block text-sm italic text-stone-400">&ldquo;${item.note}&rdquo;</span>` : ''}
                         <span class="mt-1 block text-neon-600">${rupiah(item.price * item.qty)}</span>
-                        <span class="mt-1 block text-xs text-stone-400">Ketuk untuk mengubah</span>
+                        <span class="mt-1 block text-xs text-stone-400 transition group-hover:text-neon-700">Ketuk untuk mengubah</span>
                     </button>
                     <div class="flex items-center gap-2">
                         <button type="button" data-cart-dec="${index}" aria-label="Kurangi ${item.name}"
@@ -405,15 +408,30 @@
             renderCart();
         });
 
-        document.getElementById('cartCheckout')?.addEventListener('click', () => {
-            if (readCart().length === 0 || !cartNote) {
+        /* Pesan singkat yang muncul lalu hilang sendiri. */
+        let toastTimer = null;
+
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+
+            if (!toast) {
                 return;
             }
 
-            // Belum ada halaman pembayaran, jadi beri konfirmasi dulu.
-            cartNote.textContent = 'Pesanan dicatat. Halaman pembayaran menyusul.';
-            cartNote.classList.remove('hidden');
-            setTimeout(() => cartNote.classList.add('hidden'), 3000);
+            toast.textContent = text;
+            toast.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.add('hidden'), 3200);
+        }
+
+        document.getElementById('cartCheckout')?.addEventListener('click', () => {
+            if (readCart().length === 0) {
+                return;
+            }
+
+            // Panel ditutup lalu lanjut ke halaman pembayaran.
+            closeCart();
+            window.location.href = @json(route('checkout'));
         });
 
         renderCart();
@@ -633,6 +651,101 @@
                 closeProduct();
             }
         });
+
+        /*
+         * ------------------------------------------------------------------
+         * Halaman pembayaran
+         * Ringkasan diambil dari keranjang di localStorage.
+         * ------------------------------------------------------------------
+         */
+        const checkoutForm = document.getElementById('checkoutForm');
+
+        if (checkoutForm) {
+            const checkoutItems = document.getElementById('checkoutItems');
+            const checkoutSubmit = document.getElementById('checkoutSubmit');
+
+            function renderCheckout() {
+                const items = readCart();
+                const subtotal = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                const code = readPromo();
+                const promo = code ? PROMO_CODES[code] : null;
+                const discount = promo && subtotal >= promo.min ? Math.min(promo.discount, subtotal) : 0;
+                const total = subtotal - discount;
+
+                document.getElementById('checkoutEmpty').classList.toggle('hidden', items.length > 0);
+                checkoutForm.classList.toggle('hidden', items.length === 0);
+                checkoutSubmit.disabled = items.length === 0;
+
+                checkoutItems.innerHTML = '';
+
+                items.forEach((item) => {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-start justify-between gap-3 border-b border-stone-100 pb-3 last:border-0 last:pb-0';
+                    row.innerHTML = `
+                        <div class="flex-1">
+                            <p class="font-semibold text-stone-900">${item.qty}&times; ${item.name}</p>
+                            <p class="text-xs uppercase tracking-[0.14em] text-stone-400">${item.stall}</p>
+                            ${item.options ? `<p class="mt-1 text-sm text-stone-500">${item.options}</p>` : ''}
+                            ${item.note ? `<p class="mt-0.5 text-sm italic text-stone-400">&ldquo;${item.note}&rdquo;</p>` : ''}
+                        </div>
+                        <span class="shrink-0 text-stone-900">${rupiah(item.price * item.qty)}</span>`;
+                    checkoutItems.appendChild(row);
+                });
+
+                document.getElementById('checkoutSubtotal').textContent = rupiah(subtotal);
+                document.getElementById('checkoutTotal').textContent = rupiah(total);
+                document.getElementById('checkoutTotalInput').value = total;
+
+                const discountRow = document.getElementById('checkoutDiscountRow');
+                discountRow.classList.toggle('hidden', discount === 0);
+                discountRow.classList.toggle('flex', discount > 0);
+
+                if (discount > 0) {
+                    document.getElementById('checkoutDiscount').textContent = '−' + rupiah(discount);
+                    document.getElementById('checkoutPromoCode').textContent = `(${code})`;
+                }
+            }
+
+            /* Rincian tambahan hanya tampil untuk metode yang membutuhkannya. */
+            function syncPaymentDetails() {
+                const chosen = checkoutForm.querySelector('input[name="metode"]:checked')?.value;
+
+                document.getElementById('detailTransfer').classList.toggle('hidden', chosen !== 'transfer');
+                document.getElementById('detailEwallet').classList.toggle('hidden', chosen !== 'ewallet');
+                document.getElementById('detailQris').classList.toggle('hidden', chosen !== 'qris');
+                document.getElementById('detailSaldo').classList.toggle('hidden', chosen !== 'saldo');
+            }
+
+            /* Tandai kartu yang sedang terpilih. */
+            function syncSelectedCards() {
+                checkoutForm.querySelectorAll('.option-card').forEach((card) => {
+                    const input = card.querySelector('input[type="radio"]');
+                    card.classList.toggle('is-selected', !!input?.checked);
+                });
+            }
+
+            checkoutForm.querySelectorAll('input[type="radio"]').forEach((radio) => {
+                radio.addEventListener('change', () => {
+                    syncSelectedCards();
+                    syncPaymentDetails();
+                });
+            });
+
+            checkoutForm.addEventListener('submit', (event) => {
+                if (readCart().length === 0) {
+                    event.preventDefault();
+                    return;
+                }
+
+                // Kunci tombol supaya pesanan tidak terkirim dua kali.
+                checkoutSubmit.disabled = true;
+                checkoutSubmit.textContent = 'Memproses…';
+            });
+
+            renderCheckout();
+            syncPaymentDetails();
+            syncSelectedCards();
+        }
 
         /* Carousel promo (halaman menu). */
         const promoTrack = document.getElementById('promoTrack');

@@ -12,32 +12,96 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+/*
+ * Halaman aplikasi baru bisa dibuka setelah masuk. Selama belum ada tabel
+ * pengguna, status masuk hanya ditandai di session (lihat EnsureStudentLoggedIn).
+ */
+Route::middleware('student')->group(function () {
+    Route::get('/', function () {
+        return view('home');
+    })->name('home');
 
-Route::get('/menu', function () {
-    return view('menu');
-})->name('menu');
+    Route::get('/menu', function () {
+        return view('menu');
+    })->name('menu');
 
-Route::get('/promo', function () {
-    return view('promo');
-})->name('promo');
+    Route::get('/promo', function () {
+        return view('promo');
+    })->name('promo');
 
-Route::get('/login', function () {
+    Route::get('/checkout', function () {
+        return view('checkout');
+    })->name('checkout');
+
+    /*
+     * Belum ada gerbang pembayaran sungguhan: pesanan hanya divalidasi lalu
+     * diberi kode, dan totalnya masih dikirim dari sisi klien. Saat backend
+     * pesanan dibuat, total wajib dihitung ulang di server.
+     */
+    Route::post('/checkout', function (Request $request) {
+        $data = $request->validate([
+            'nama' => ['required', 'string', 'max:60'],
+            'kelas' => ['required', 'string', 'max:20'],
+            'waktu' => ['required', 'in:sekarang,istirahat-1,istirahat-2'],
+            'metode' => ['required', 'in:tunai,saldo,qris,transfer,ewallet'],
+            'bank' => ['nullable', 'string', 'max:30'],
+            'ewallet' => ['nullable', 'string', 'max:30'],
+            'catatan' => ['nullable', 'string', 'max:200'],
+            'total' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $data['kode'] = 'GRB-' . strtoupper(Str::random(6));
+
+        return redirect()->route('checkout.done')->with('pesanan', $data);
+    })->name('checkout.submit');
+
+    Route::get('/checkout/selesai', function (Request $request) {
+        $pesanan = $request->session()->get('pesanan');
+
+        // Halaman ini hanya berarti tepat setelah pesanan dikirim.
+        if (! $pesanan) {
+            return redirect()->route('menu');
+        }
+
+        return view('checkout-done', ['pesanan' => $pesanan]);
+    })->name('checkout.done');
+});
+
+Route::get('/login', function (Request $request) {
+    // Sudah masuk: tidak perlu melihat formulir lagi.
+    if ($request->session()->get('grabo_logged_in')) {
+        return redirect()->route('home');
+    }
+
     return view('auth.login');
 })->name('login');
 
-// Autentikasi sungguhan belum ada; untuk sekarang form hanya divalidasi lalu dikembalikan.
+/*
+ * Belum ada pemeriksaan kredensial ke database: setiap email dan kata sandi
+ * yang formatnya benar akan diterima. Ganti bagian ini dengan Auth::attempt()
+ * begitu tabel pengguna tersedia.
+ */
 Route::post('/login', function (Request $request) {
-    $request->validate([
+    $credentials = $request->validate([
         'email' => ['required', 'email'],
         'password' => ['required', 'string', 'min:8'],
     ]);
 
-    return back()->with('status', 'Formulir sudah benar. Autentikasi akun sekolah belum diaktifkan.');
+    $request->session()->regenerate();
+    $request->session()->put('grabo_logged_in', true);
+    $request->session()->put('grabo_user', $credentials['email']);
+
+    return redirect()->intended(route('home'));
 })->name('login.attempt');
+
+Route::post('/logout', function (Request $request) {
+    $request->session()->forget(['grabo_logged_in', 'grabo_user']);
+    $request->session()->regenerate();
+
+    return redirect()->route('login')->with('status', 'Kamu sudah keluar dari akun.');
+})->name('logout');
 
 //Student Action Controller
 Route::name('students.')->prefix('students')->group(function () {

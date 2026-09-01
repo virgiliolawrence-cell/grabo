@@ -64,7 +64,20 @@
                         <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H16.7V3.6c-.29-.04-1.3-.13-2.48-.13-2.45 0-4.13 1.5-4.13 4.25V9.9H7.4V13h2.69v8h3.41Z" />
                     </svg>
                 </a>
-                <span class="hidden lg:inline">Gratis ongkir antar kelas</span>
+                {{-- Identitas pemakai + tombol keluar --}}
+                @if (session('grabo_user'))
+                    <span class="hidden max-w-[220px] truncate lg:inline" title="{{ session('grabo_user') }}">
+                        {{ session('grabo_user') }}
+                    </span>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="underline-offset-2 transition hover:text-white hover:underline">
+                            Keluar
+                        </button>
+                    </form>
+                @else
+                    <span class="hidden lg:inline">Gratis ongkir antar kelas</span>
+                @endif
             </div>
         </div>
     </div>

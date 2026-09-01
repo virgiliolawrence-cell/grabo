@@ -88,7 +88,9 @@
         <button type="button" id="cartClear" class="mt-2 w-full rounded-full px-6 py-2.5 text-sm text-stone-500 transition hover:bg-stone-100 hover:text-stone-800">
             Kosongkan keranjang
         </button>
-
-        <p id="cartNote" class="mt-3 hidden text-center text-sm text-neon-700"></p>
     </footer>
 </aside>
+
+{{-- Pesan singkat setelah pesanan dikirim --}}
+<div id="toast" role="status" aria-live="polite"
+    class="pointer-events-none fixed bottom-6 left-1/2 z-[80] hidden max-w-[90vw] -translate-x-1/2 rounded-full bg-stone-900 px-6 py-3 text-center text-white shadow-2xl"></div>
