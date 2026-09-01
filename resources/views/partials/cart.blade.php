@@ -36,9 +36,48 @@
     </div>
 
     <footer id="cartFooter" class="border-t border-stone-100 px-6 py-5">
-        <div class="flex items-baseline justify-between">
-            <span class="text-stone-500">Total</span>
-            <span id="cartTotal" class="headline text-2xl text-neon-600">Rp 0</span>
+        {{-- Kode promo dari halaman Promo --}}
+        <div class="mb-4">
+            <label for="promoCode" class="block text-[11px] uppercase tracking-[0.18em] text-stone-500">Kode promo</label>
+
+            <div id="promoForm" class="mt-2 flex gap-2">
+                <input type="text" id="promoCode" placeholder="Contoh: HEMAT14" autocomplete="off"
+                    class="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-2.5 uppercase tracking-[0.1em] text-stone-900 outline-none transition placeholder:normal-case placeholder:tracking-normal placeholder:text-stone-400 focus:border-neon-500 focus:bg-white focus:ring-4 focus:ring-neon-500/20">
+                <button type="button" id="promoApply"
+                    class="shrink-0 rounded-xl border-2 border-neon-500 px-5 font-semibold text-neon-700 transition hover:bg-neon-500 hover:text-white">
+                    Pakai
+                </button>
+            </div>
+
+            {{-- Tampil setelah kode berhasil dipakai --}}
+            <div id="promoApplied" class="mt-2 hidden items-center justify-between gap-3 rounded-xl border border-dashed border-neon-300 bg-neon-50 px-4 py-2.5">
+                <span class="text-sm text-neon-800">
+                    <span id="promoAppliedCode" class="font-semibold tracking-[0.1em]"></span>
+                    <span id="promoAppliedLabel" class="text-neon-700/80"></span>
+                </span>
+                <button type="button" id="promoRemove" class="text-sm text-stone-500 underline-offset-2 transition hover:text-stone-800 hover:underline">
+                    Hapus
+                </button>
+            </div>
+
+            <p id="promoMessage" class="mt-2 hidden text-sm"></p>
+        </div>
+
+        <div class="space-y-1.5 border-t border-stone-100 pt-4">
+            <div class="flex items-baseline justify-between text-stone-500">
+                <span>Subtotal</span>
+                <span id="cartSubtotal">Rp 0</span>
+            </div>
+
+            <div id="cartDiscountRow" class="flex hidden items-baseline justify-between text-neon-700">
+                <span>Diskon</span>
+                <span id="cartDiscount">&minus;Rp 0</span>
+            </div>
+
+            <div class="flex items-baseline justify-between pt-1">
+                <span class="text-stone-500">Total</span>
+                <span id="cartTotal" class="headline text-2xl text-neon-600">Rp 0</span>
+            </div>
         </div>
 
         <button type="button" id="cartCheckout"

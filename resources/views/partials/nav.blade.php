@@ -1,13 +1,19 @@
 @php
-    // Di beranda tautan memakai jangkar dalam halaman supaya scrollspy bekerja;
-    // dari halaman lain tautan menunjuk kembali ke beranda.
+    // Sorotan tab mengikuti halaman yang dibuka, bukan posisi scroll.
+    // Di beranda tautan Kontak memakai jangkar dalam halaman.
     $isHome = request()->routeIs('home');
-    $navActive = $isHome ? 'home' : (request()->routeIs('menu') ? 'menu' : null);
+
+    $navActive = match (true) {
+        request()->routeIs('home') => 'home',
+        request()->routeIs('menu') => 'menu',
+        request()->routeIs('promo') => 'promo',
+        default => null,
+    };
 
     $navItems = [
         ['label' => 'Home', 'target' => 'home', 'href' => $isHome ? '#home' : route('home') . '#home'],
         ['label' => 'Menu', 'target' => 'menu', 'href' => route('menu')],
-        ['label' => 'Orders', 'target' => 'how', 'href' => $isHome ? '#how' : route('home') . '#how'],
+        ['label' => 'Promo', 'target' => 'promo', 'href' => route('promo')],
         ['label' => 'Kontak', 'target' => 'kontak', 'href' => $isHome ? '#kontak' : route('home') . '#kontak'],
     ];
 @endphp
@@ -64,7 +70,7 @@
     </div>
 
     {{-- Navbar --}}
-    <header class="site-header sticky top-0 z-50 rounded-b-[1.75rem] text-white" data-spy="{{ $isHome ? 'on' : 'off' }}">
+    <header class="site-header sticky top-0 z-50 rounded-b-[1.75rem] text-white">
         <div class="header-inner relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:gap-8">
             {{-- Merek --}}
             <a href="{{ route('home') }}" class="group flex shrink-0 items-center gap-3 rounded-2xl bg-white px-3 py-2 shadow-lg shadow-neon-900/25 ring-1 ring-white/60 transition hover:shadow-xl">

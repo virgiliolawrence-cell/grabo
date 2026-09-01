@@ -126,7 +126,24 @@
 
                 <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($menu as $item)
-                        <article class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-neon-900/10">
+                        @php
+                            $itemPrice = (int) preg_replace('/\D/', '', $item['price']);
+                            $itemType = Str::contains($item['stall'], 'Minuman')
+                                ? 'minuman'
+                                : (Str::contains($item['stall'], 'Snack') ? 'snack' : 'makanan');
+                        @endphp
+                        <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-neon-900/10">
+                            {{-- Seluruh kartu bisa ditekan untuk membuka detail produk. --}}
+                            <button type="button" class="absolute inset-0 z-10" aria-label="Lihat detail {{ $item['name'] }}"
+                                data-product="{{ json_encode([
+                                    'name' => $item['name'],
+                                    'stall' => $item['stall'],
+                                    'price' => $itemPrice,
+                                    'image' => asset('images/food/' . $item['image']),
+                                    'photo' => true,
+                                    'type' => $itemType,
+                                ]) }}"></button>
+
                             <div class="relative h-56 overflow-hidden">
                                 <img src="{{ asset('images/food/' . $item['image']) }}" alt="{{ $item['name'] }}"
                                     class="h-full w-full object-cover transition duration-500 group-hover:scale-110" width="600" height="450" loading="lazy">
@@ -142,12 +159,13 @@
 
                                 <div class="mt-5 flex items-center justify-between border-t border-stone-100 pt-4">
                                     <span class="headline text-2xl text-neon-600">{{ $item['price'] }}</span>
+                                    {{-- z-20 supaya tombol cepat ini tetap di atas tombol detail sekartu. --}}
                                     <button type="button"
                                         data-add-to-cart
                                         data-name="{{ $item['name'] }}"
                                         data-stall="{{ $item['stall'] }}"
-                                        data-price="{{ (int) preg_replace('/\D/', '', $item['price']) }}"
-                                        class="inline-flex items-center gap-2 rounded-full border-2 border-neon-500 px-5 py-2 text-sm font-semibold text-neon-800 transition hover:bg-neon-500 hover:text-white hover:shadow-[0_0_22px_rgba(255,106,0,0.45)]">
+                                        data-price="{{ $itemPrice }}"
+                                        class="relative z-20 inline-flex items-center gap-2 rounded-full border-2 border-neon-500 px-5 py-2 text-sm font-semibold text-neon-800 transition hover:bg-neon-500 hover:text-white hover:shadow-[0_0_22px_rgba(255,106,0,0.45)]">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                                             <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
                                         </svg>
@@ -227,8 +245,8 @@
                     <a href="#menu" class="inline-flex items-center gap-2.5 rounded-full bg-white px-8 py-4 text-lg font-semibold text-neon-700 shadow-lg shadow-neon-900/20 transition hover:-translate-y-0.5">
                         Order Now
                     </a>
-                    <a href="#kontak" class="inline-flex items-center gap-2 rounded-full border-2 border-white/70 px-7 py-4 text-lg text-white transition hover:bg-white/10">
-                        Login
+                    <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-full border-2 border-white/70 px-7 py-4 text-lg text-white transition hover:bg-white/10">
+                        Masuk
                     </a>
                 </div>
             </div>

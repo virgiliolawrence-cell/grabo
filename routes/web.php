@@ -10,6 +10,7 @@ use App\Http\Controllers\SchoolClass\StoreController;
 use App\Http\Controllers\MajorsController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,6 +20,24 @@ Route::get('/', function () {
 Route::get('/menu', function () {
     return view('menu');
 })->name('menu');
+
+Route::get('/promo', function () {
+    return view('promo');
+})->name('promo');
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+// Autentikasi sungguhan belum ada; untuk sekarang form hanya divalidasi lalu dikembalikan.
+Route::post('/login', function (Request $request) {
+    $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required', 'string', 'min:8'],
+    ]);
+
+    return back()->with('status', 'Formulir sudah benar. Autentikasi akun sekolah belum diaktifkan.');
+})->name('login.attempt');
 
 //Student Action Controller
 Route::name('students.')->prefix('students')->group(function () {

@@ -16,8 +16,8 @@
                 <ul class="mt-4 space-y-2.5">
                     <li><a href="#home" class="transition hover:text-neon-400">Home</a></li>
                     <li><a href="#menu" class="transition hover:text-neon-400">Menu</a></li>
-                    <li><a href="#how" class="transition hover:text-neon-400">Orders</a></li>
-                    <li><a href="#kontak" class="transition hover:text-neon-400">Login</a></li>
+                    <li><a href="{{ route('promo') }}" class="transition hover:text-neon-400">Promo</a></li>
+                    <li><a href="{{ route('login') }}" class="transition hover:text-neon-400">Masuk</a></li>
                 </ul>
             </div>
 

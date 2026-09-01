@@ -1,7 +1,3 @@
-@php
-    // Logo lockup: ilustrasi dua anak + wordmark GRABO.
-    $graboLogo = asset('images/grabo-logo.png');
-@endphp
 <!DOCTYPE html>
 <html lang="id">
 
@@ -26,6 +22,8 @@
 @include('partials.footer')
 
 @include('partials.cart')
+
+@include('partials.product-modal')
 
 @include('partials.scripts')
 </body>

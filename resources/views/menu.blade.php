@@ -134,7 +134,24 @@
 
                 <div class="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-7">
                     @foreach ($category['items'] as $item)
-                        <article class="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-xl hover:shadow-neon-900/10">
+                        @php
+                            $itemPrice = (int) preg_replace('/\D/', '', $item['price']);
+                            $itemType = Str::contains($category['label'], 'Minuman')
+                                ? 'minuman'
+                                : (Str::contains($category['label'], 'Snack') ? 'snack' : 'makanan');
+                        @endphp
+                        <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-xl hover:shadow-neon-900/10">
+                            {{-- Seluruh kartu bisa ditekan untuk membuka detail produk. --}}
+                            <button type="button" class="absolute inset-0 z-10" aria-label="Lihat detail {{ $item['name'] }}"
+                                data-product="{{ json_encode([
+                                    'name' => $item['name'],
+                                    'stall' => $item['stall'],
+                                    'price' => $itemPrice,
+                                    'image' => $item['image'] ? asset($item['image']) : null,
+                                    'photo' => $item['photo'],
+                                    'type' => $itemType,
+                                ]) }}"></button>
+
                             <div class="relative h-40 overflow-hidden bg-neon-50 sm:h-48">
                                 @if ($item['image'])
                                     <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}"
@@ -156,18 +173,15 @@
                                 <span class="text-[10px] uppercase tracking-[0.18em] text-stone-400">{{ $item['stall'] }}</span>
                                 <h3 class="mt-1.5 headline text-lg text-stone-900 sm:text-xl">{{ $item['name'] }}</h3>
 
+                                {{-- Menambah ke keranjang lewat panel detail, jadi kartunya tanpa tombol cepat. --}}
                                 <div class="mt-4 flex items-center justify-between gap-2 border-t border-stone-100 pt-3">
                                     <span class="headline text-lg text-neon-600 sm:text-xl">{{ $item['price'] }}</span>
-                                    <button type="button" aria-label="Tambah {{ $item['name'] }} ke keranjang"
-                                        data-add-to-cart
-                                        data-name="{{ $item['name'] }}"
-                                        data-stall="{{ $item['stall'] }}"
-                                        data-price="{{ (int) preg_replace('/\D/', '', $item['price']) }}"
-                                        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-neon-500 text-neon-700 transition hover:bg-neon-500 hover:text-white hover:shadow-[0_0_18px_rgba(255,106,0,0.45)]">
+                                    <span class="inline-flex items-center gap-1 text-sm text-stone-400 transition group-hover:text-neon-700">
+                                        Pilih
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
-                                            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+                                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
-                                    </button>
+                                    </span>
                                 </div>
                             </div>
                         </article>
