@@ -31,39 +31,6 @@
                 'alt' => 'Semangkuk es cendol dengan serutan es',
             ],
         ];
-
-        $categories = [
-            [
-                'label' => 'Makanan Berat',
-                'note' => 'Porsi mengenyangkan untuk jam istirahat pertama.',
-                'items' => [
-                    ['name' => 'Nasi Goreng Kampung', 'stall' => 'Stan Bu Rina', 'price' => 'Rp 12.000', 'image' => 'images/food/photos/nasi-goreng.jpg', 'photo' => true, 'badge' => 'Best Seller'],
-                    ['name' => 'Mie Ayam Jamur', 'stall' => 'Stan Pak Joko', 'price' => 'Rp 10.000', 'image' => 'images/food/photos/mie-ayam.jpg', 'photo' => true, 'badge' => null],
-                    ['name' => 'Ayam Geprek', 'stall' => 'Stan Dapur Mama', 'price' => 'Rp 13.000', 'image' => 'images/food/photos/ayam-geprek.jpg', 'photo' => true, 'badge' => 'Pedas'],
-                    ['name' => 'Mie Goreng Jawa', 'stall' => 'Stan Pak Joko', 'price' => 'Rp 11.000', 'image' => 'images/food/photos/promo-mie-goreng.jpg', 'photo' => true, 'badge' => null],
-                ],
-            ],
-            [
-                'label' => 'Gorengan & Snack',
-                'note' => 'Teman ngobrol saat istirahat kedua.',
-                'items' => [
-                    ['name' => 'Batagor Saus Kacang', 'stall' => 'Stan Kang Asep', 'price' => 'Rp 9.000', 'image' => 'images/food/photos/batagor.jpg', 'photo' => true, 'badge' => null],
-                    ['name' => 'Roti Bakar Mentega', 'stall' => 'Stan Snack Corner', 'price' => 'Rp 8.000', 'image' => 'images/food/photos/roti-bakar.jpg', 'photo' => true, 'badge' => 'Menu Baru'],
-                    ['name' => 'Batagor Kuah Pedas', 'stall' => 'Stan Kang Asep', 'price' => 'Rp 10.000', 'image' => 'images/food/batagor.svg', 'photo' => false, 'badge' => null],
-                    ['name' => 'Roti Bakar Coklat', 'stall' => 'Stan Snack Corner', 'price' => 'Rp 9.000', 'image' => 'images/food/photos/promo-roti-coklat.jpg', 'photo' => true, 'badge' => null],
-                ],
-            ],
-            [
-                'label' => 'Minuman',
-                'note' => 'Penyegar setelah jam pelajaran.',
-                'items' => [
-                    ['name' => 'Es Teh Manis', 'stall' => 'Stan Minuman', 'price' => 'Rp 4.000', 'image' => 'images/food/photos/es-teh.jpg', 'photo' => true, 'badge' => 'Best Seller'],
-                    ['name' => 'Es Teh Tawar', 'stall' => 'Stan Minuman', 'price' => 'Rp 3.000', 'image' => 'images/food/es-teh.svg', 'photo' => false, 'badge' => null],
-                    ['name' => 'Es Cendol', 'stall' => 'Stan Minuman', 'price' => 'Rp 6.000', 'image' => 'images/food/photos/promo-es-cendol.jpg', 'photo' => true, 'badge' => null],
-                    ['name' => 'Susu Coklat Dingin', 'stall' => 'Stan Minuman', 'price' => 'Rp 6.000', 'image' => null, 'photo' => false, 'badge' => null],
-                ],
-            ],
-        ];
     @endphp
 
     {{-- Carousel promo --}}
@@ -134,23 +101,10 @@
 
                 <div class="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-7">
                     @foreach ($category['items'] as $item)
-                        @php
-                            $itemPrice = (int) preg_replace('/\D/', '', $item['price']);
-                            $itemType = Str::contains($category['label'], 'Minuman')
-                                ? 'minuman'
-                                : (Str::contains($category['label'], 'Snack') ? 'snack' : 'makanan');
-                        @endphp
                         <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-xl hover:shadow-neon-900/10">
-                            {{-- Seluruh kartu bisa ditekan untuk membuka detail produk. --}}
-                            <button type="button" class="absolute inset-0 z-10" aria-label="Lihat detail {{ $item['name'] }}"
-                                data-product="{{ json_encode([
-                                    'name' => $item['name'],
-                                    'stall' => $item['stall'],
-                                    'price' => $itemPrice,
-                                    'image' => $item['image'] ? asset($item['image']) : null,
-                                    'photo' => $item['photo'],
-                                    'type' => $itemType,
-                                ]) }}"></button>
+                            {{-- Seluruh kartu menuju halaman deskripsi produk. --}}
+                            <a href="{{ route('menu.show', $item['slug']) }}" class="absolute inset-0 z-10"
+                                aria-label="Lihat detail {{ $item['name'] }}"></a>
 
                             <div class="relative h-40 overflow-hidden bg-neon-50 sm:h-48">
                                 @if ($item['image'])
@@ -173,11 +127,11 @@
                                 <span class="text-[10px] uppercase tracking-[0.18em] text-stone-400">{{ $item['stall'] }}</span>
                                 <h3 class="mt-1.5 headline text-lg text-stone-900 sm:text-xl">{{ $item['name'] }}</h3>
 
-                                {{-- Menambah ke keranjang lewat panel detail, jadi kartunya tanpa tombol cepat. --}}
+                                {{-- Varian dipilih di halaman detail, jadi kartunya tanpa tombol cepat. --}}
                                 <div class="mt-4 flex items-center justify-between gap-2 border-t border-stone-100 pt-3">
-                                    <span class="headline text-lg text-neon-600 sm:text-xl">{{ $item['price'] }}</span>
+                                    <span class="headline text-lg text-neon-600 sm:text-xl">Rp {{ number_format($item['price'], 0, ',', '.') }}</span>
                                     <span class="inline-flex items-center gap-1 text-sm text-stone-400 transition group-hover:text-neon-700">
-                                        Pilih
+                                        Lihat
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                                             <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>

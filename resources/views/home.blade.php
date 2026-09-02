@@ -114,38 +114,35 @@
                 </div>
 
                 @php
-                    $menu = [
-                        ['image' => 'photos/nasi-goreng.jpg', 'name' => 'Nasi Goreng Kampung', 'desc' => 'Nasi goreng kampung dengan kerupuk, sambal, dan lalapan segar.', 'price' => 'Rp 12.000', 'stall' => 'Stan Bu Rina', 'badge' => 'Best Seller'],
-                        ['image' => 'photos/mie-ayam.jpg', 'name' => 'Mie Ayam Jamur', 'desc' => 'Mie ayam dengan tumisan jamur, ayam cincang, dan sawi hijau.', 'price' => 'Rp 10.000', 'stall' => 'Stan Pak Joko', 'badge' => null],
-                        ['image' => 'photos/ayam-geprek.jpg', 'name' => 'Ayam Geprek', 'desc' => 'Ayam crispy diulek bersama sambal bawang, disajikan dengan nasi hangat.', 'price' => 'Rp 13.000', 'stall' => 'Stan Dapur Mama', 'badge' => 'Best Seller'],
-                        ['image' => 'photos/batagor.jpg', 'name' => 'Batagor Saus Kacang', 'desc' => 'Batagor goreng renyah dengan saus kacang dan perasan jeruk limau.', 'price' => 'Rp 9.000', 'stall' => 'Stan Kang Asep', 'badge' => null],
-                        ['image' => 'photos/roti-bakar.jpg', 'name' => 'Roti Bakar Mentega', 'desc' => 'Roti panggang mentega, renyah di luar dan lembut di dalamnya.', 'price' => 'Rp 8.000', 'stall' => 'Stan Snack Corner', 'badge' => 'Menu Baru'],
-                        ['image' => 'photos/es-teh.jpg', 'name' => 'Es Teh Manis', 'desc' => 'Teh seduh dingin dengan es batu, menyegarkan setelah jam pelajaran.', 'price' => 'Rp 4.000', 'stall' => 'Stan Minuman', 'badge' => null],
+                    /*
+                     * Enam menu unggulan diambil dari katalog yang sama dengan
+                     * halaman menu, supaya harga dan keterangannya tidak berbeda.
+                     */
+                    $unggulan = [
+                        'nasi-goreng-kampung',
+                        'mie-ayam-jamur',
+                        'ayam-geprek',
+                        'batagor-saus-kacang',
+                        'roti-bakar-mentega',
+                        'es-teh-manis',
                     ];
+
+                    $menu = collect(config('menu.categories'))
+                        ->flatMap(fn (array $category) => $category['items'])
+                        ->whereIn('slug', $unggulan)
+                        ->sortBy(fn (array $item) => array_search($item['slug'], $unggulan))
+                        ->values();
                 @endphp
 
                 <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($menu as $item)
-                        @php
-                            $itemPrice = (int) preg_replace('/\D/', '', $item['price']);
-                            $itemType = Str::contains($item['stall'], 'Minuman')
-                                ? 'minuman'
-                                : (Str::contains($item['stall'], 'Snack') ? 'snack' : 'makanan');
-                        @endphp
                         <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-neon-900/10">
-                            {{-- Seluruh kartu bisa ditekan untuk membuka detail produk. --}}
-                            <button type="button" class="absolute inset-0 z-10" aria-label="Lihat detail {{ $item['name'] }}"
-                                data-product="{{ json_encode([
-                                    'name' => $item['name'],
-                                    'stall' => $item['stall'],
-                                    'price' => $itemPrice,
-                                    'image' => asset('images/food/' . $item['image']),
-                                    'photo' => true,
-                                    'type' => $itemType,
-                                ]) }}"></button>
+                            {{-- Seluruh kartu menuju halaman deskripsi produk. --}}
+                            <a href="{{ route('menu.show', $item['slug']) }}" class="absolute inset-0 z-10"
+                                aria-label="Lihat detail {{ $item['name'] }}"></a>
 
                             <div class="relative h-56 overflow-hidden">
-                                <img src="{{ asset('images/food/' . $item['image']) }}" alt="{{ $item['name'] }}"
+                                <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}"
                                     class="h-full w-full object-cover transition duration-500 group-hover:scale-110" width="600" height="450" loading="lazy">
                                 @if ($item['badge'])
                                     <span class="absolute left-4 top-4 rounded-full bg-neon-500 px-3.5 py-1 text-[10px] uppercase tracking-[0.16em] text-white">{{ $item['badge'] }}</span>
@@ -155,16 +152,19 @@
                             <div class="flex flex-1 flex-col p-6">
                                 <span class="text-[10px] uppercase tracking-[0.18em] text-stone-400">{{ $item['stall'] }}</span>
                                 <h3 class="mt-2 headline text-2xl text-stone-900">{{ $item['name'] }}</h3>
-                                <p class="mt-2 flex-1 leading-relaxed text-stone-500">{{ $item['desc'] }}</p>
+                                <p class="mt-2 flex-1 leading-relaxed text-stone-500">{{ $item['summary'] }}</p>
 
                                 <div class="mt-5 flex items-center justify-between border-t border-stone-100 pt-4">
-                                    <span class="headline text-2xl text-neon-600">{{ $item['price'] }}</span>
-                                    {{-- z-20 supaya tombol cepat ini tetap di atas tombol detail sekartu. --}}
+                                    <span class="headline text-2xl text-neon-600">Rp {{ number_format($item['price'], 0, ',', '.') }}</span>
+                                    {{-- z-20 supaya tombol cepat ini tetap di atas tautan detail sekartu. --}}
                                     <button type="button"
                                         data-add-to-cart
+                                        data-slug="{{ $item['slug'] }}"
                                         data-name="{{ $item['name'] }}"
                                         data-stall="{{ $item['stall'] }}"
-                                        data-price="{{ $itemPrice }}"
+                                        data-price="{{ $item['price'] }}"
+                                        data-type="{{ $item['type'] }}"
+                                        data-image="{{ $item['image'] ? asset($item['image']) : '' }}"
                                         class="relative z-20 inline-flex items-center gap-2 rounded-full border-2 border-neon-500 px-5 py-2 text-sm font-semibold text-neon-800 transition hover:bg-neon-500 hover:text-white hover:shadow-[0_0_22px_rgba(255,106,0,0.45)]">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                                             <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
