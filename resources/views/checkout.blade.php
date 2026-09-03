@@ -4,49 +4,6 @@
 @section('description', 'Selesaikan pesanan kantin: pilih waktu pengambilan dan metode pembayaran, tunai di loket maupun online.')
 
 @section('content')
-    @php
-        $waktuPilihan = [
-            ['value' => 'sekarang', 'label' => 'Secepatnya', 'note' => 'Disiapkan begitu stan menerima pesanan'],
-            ['value' => 'istirahat-1', 'label' => 'Istirahat 1', 'note' => 'Siap diambil pukul 09.30'],
-            ['value' => 'istirahat-2', 'label' => 'Istirahat 2', 'note' => 'Siap diambil pukul 12.00'],
-        ];
-
-        $metodeTempat = [
-            [
-                'value' => 'tunai',
-                'label' => 'Tunai di loket',
-                'note' => 'Bayar langsung ke petugas saat mengambil pesanan.',
-                'badge' => null,
-            ],
-            [
-                'value' => 'saldo',
-                'label' => 'Saldo kartu pelajar',
-                'note' => 'Saldo dipotong otomatis saat pesanan diserahkan.',
-                'badge' => 'Tanpa uang kembalian',
-            ],
-        ];
-
-        $metodeOnline = [
-            [
-                'value' => 'qris',
-                'label' => 'QRIS',
-                'note' => 'Bayar dari aplikasi bank atau e-wallet apa pun.',
-                'badge' => 'Paling cepat',
-            ],
-            [
-                'value' => 'transfer',
-                'label' => 'Transfer bank',
-                'note' => 'Nomor virtual account muncul setelah pesanan dikirim.',
-                'badge' => null,
-            ],
-            [
-                'value' => 'ewallet',
-                'label' => 'E-wallet',
-                'note' => 'GoPay, OVO, atau DANA yang terhubung ke akun sekolah.',
-                'badge' => null,
-            ],
-        ];
-    @endphp
 
     <section class="bg-cream px-4 py-10 sm:px-6 lg:py-14">
         <div class="mx-auto max-w-7xl">

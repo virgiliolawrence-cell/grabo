@@ -62,13 +62,6 @@
         {{-- Statistik --}}
         <section class="bg-stone-900 text-white">
             <div class="mx-auto grid max-w-7xl grid-cols-1 divide-y divide-white/15 px-6 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-                @php
-                    $stats = [
-                        ['value' => '500+', 'label' => 'Siswa terdaftar'],
-                        ['value' => '30', 'label' => 'Stan kantin'],
-                        ['value' => '0 Menit', 'label' => 'Waktu antre'],
-                    ];
-                @endphp
                 @foreach ($stats as $stat)
                     <div class="flex items-baseline gap-4 py-8 sm:justify-center">
                         <span class="headline text-4xl text-neon-500 [text-shadow:0_0_22px_rgba(255,106,0,0.55)] sm:text-5xl">{{ $stat['value'] }}</span>
@@ -81,13 +74,6 @@
         {{-- Keunggulan --}}
         <section class="bg-white">
             <div class="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-6 py-14 sm:grid-cols-3">
-                @php
-                    $values = [
-                        ['title' => 'Pesan dari mana saja', 'text' => 'Dari kelas, perpustakaan, atau lapangan &mdash; cukup lewat ponsel.'],
-                        ['title' => 'Pembayaran non-tunai', 'text' => 'Terhubung dengan saldo kartu pelajar, tanpa repot uang kembalian.'],
-                        ['title' => 'Notifikasi siap ambil', 'text' => 'Datang ke loket hanya ketika pesananmu benar-benar sudah siap.'],
-                    ];
-                @endphp
                 @foreach ($values as $i => $value)
                     <div class="flex gap-4">
                         <span class="headline text-3xl text-neon-500">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}</span>
@@ -113,39 +99,23 @@
                     </p>
                 </div>
 
-                @php
-                    $menu = [
-                        ['image' => 'photos/nasi-goreng.jpg', 'name' => 'Nasi Goreng Kampung', 'desc' => 'Nasi goreng kampung dengan kerupuk, sambal, dan lalapan segar.', 'price' => 'Rp 12.000', 'stall' => 'Stan Bu Rina', 'badge' => 'Best Seller'],
-                        ['image' => 'photos/mie-ayam.jpg', 'name' => 'Mie Ayam Jamur', 'desc' => 'Mie ayam dengan tumisan jamur, ayam cincang, dan sawi hijau.', 'price' => 'Rp 10.000', 'stall' => 'Stan Pak Joko', 'badge' => null],
-                        ['image' => 'photos/ayam-geprek.jpg', 'name' => 'Ayam Geprek', 'desc' => 'Ayam crispy diulek bersama sambal bawang, disajikan dengan nasi hangat.', 'price' => 'Rp 13.000', 'stall' => 'Stan Dapur Mama', 'badge' => 'Best Seller'],
-                        ['image' => 'photos/batagor.jpg', 'name' => 'Batagor Saus Kacang', 'desc' => 'Batagor goreng renyah dengan saus kacang dan perasan jeruk limau.', 'price' => 'Rp 9.000', 'stall' => 'Stan Kang Asep', 'badge' => null],
-                        ['image' => 'photos/roti-bakar.jpg', 'name' => 'Roti Bakar Mentega', 'desc' => 'Roti panggang mentega, renyah di luar dan lembut di dalamnya.', 'price' => 'Rp 8.000', 'stall' => 'Stan Snack Corner', 'badge' => 'Menu Baru'],
-                        ['image' => 'photos/es-teh.jpg', 'name' => 'Es Teh Manis', 'desc' => 'Teh seduh dingin dengan es batu, menyegarkan setelah jam pelajaran.', 'price' => 'Rp 4.000', 'stall' => 'Stan Minuman', 'badge' => null],
-                    ];
-                @endphp
 
                 <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($menu as $item)
-                        @php
-                            $itemPrice = (int) preg_replace('/\D/', '', $item['price']);
-                            $itemType = Str::contains($item['stall'], 'Minuman')
-                                ? 'minuman'
-                                : (Str::contains($item['stall'], 'Snack') ? 'snack' : 'makanan');
-                        @endphp
                         <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-neon-900/10">
                             {{-- Seluruh kartu bisa ditekan untuk membuka detail produk. --}}
                             <button type="button" class="absolute inset-0 z-10" aria-label="Lihat detail {{ $item['name'] }}"
                                 data-product="{{ json_encode([
                                     'name' => $item['name'],
                                     'stall' => $item['stall'],
-                                    'price' => $itemPrice,
-                                    'image' => asset('images/food/' . $item['image']),
-                                    'photo' => true,
-                                    'type' => $itemType,
+                                    'price' => $item['price'],
+                                    'image' => asset($item['image']),
+                                    'photo' => $item['photo'],
+                                    'type' => $item['type'],
                                 ]) }}"></button>
 
                             <div class="relative h-56 overflow-hidden">
-                                <img src="{{ asset('images/food/' . $item['image']) }}" alt="{{ $item['name'] }}"
+                                <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}"
                                     class="h-full w-full object-cover transition duration-500 group-hover:scale-110" width="600" height="450" loading="lazy">
                                 @if ($item['badge'])
                                     <span class="absolute left-4 top-4 rounded-full bg-neon-500 px-3.5 py-1 text-[10px] uppercase tracking-[0.16em] text-white">{{ $item['badge'] }}</span>
@@ -158,13 +128,13 @@
                                 <p class="mt-2 flex-1 leading-relaxed text-stone-500">{{ $item['desc'] }}</p>
 
                                 <div class="mt-5 flex items-center justify-between border-t border-stone-100 pt-4">
-                                    <span class="headline text-2xl text-neon-600">{{ $item['price'] }}</span>
+                                    <span class="headline text-2xl text-neon-600">{{ $item['price_label'] }}</span>
                                     {{-- z-20 supaya tombol cepat ini tetap di atas tombol detail sekartu. --}}
                                     <button type="button"
                                         data-add-to-cart
                                         data-name="{{ $item['name'] }}"
                                         data-stall="{{ $item['stall'] }}"
-                                        data-price="{{ $itemPrice }}"
+                                        data-price="{{ $item['price'] }}"
                                         class="relative z-20 inline-flex items-center gap-2 rounded-full border-2 border-neon-500 px-5 py-2 text-sm font-semibold text-neon-800 transition hover:bg-neon-500 hover:text-white hover:shadow-[0_0_22px_rgba(255,106,0,0.45)]">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                                             <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
@@ -199,13 +169,6 @@
                     </p>
                 </div>
 
-                @php
-                    $steps = [
-                        ['title' => 'Browse Menu', 'text' => 'Telusuri menu dari seluruh stan kantin, lengkap dengan harga dan sisa porsi hari ini.'],
-                        ['title' => 'Place Order', 'text' => 'Masukkan pilihanmu ke keranjang, bayar dengan saldo pelajar, lalu pesanan diteruskan ke stan.'],
-                        ['title' => 'Pick Up Food', 'text' => 'Tunggu notifikasi siap diambil, tunjukkan kode pesanan di loket, dan makanan langsung diserahkan.'],
-                    ];
-                @endphp
 
                 <ol class="relative mt-16 grid grid-cols-1 gap-12 md:grid-cols-3 md:gap-8">
                     <div class="pointer-events-none absolute left-[16.6%] right-[16.6%] top-11 hidden border-t-2 border-dashed border-neon-300 md:block" aria-hidden="true"></div>

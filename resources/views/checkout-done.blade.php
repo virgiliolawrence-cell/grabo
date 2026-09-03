@@ -4,23 +4,6 @@
 @section('description', 'Pesanan kantin berhasil dikirim. Tunjukkan kode pesanan saat mengambil di loket.')
 
 @section('content')
-    @php
-        $labelMetode = [
-            'tunai' => 'Tunai di loket',
-            'saldo' => 'Saldo kartu pelajar',
-            'qris' => 'QRIS',
-            'transfer' => 'Transfer bank ' . ($pesanan['bank'] ?? ''),
-            'ewallet' => 'E-wallet ' . ($pesanan['ewallet'] ?? ''),
-        ];
-
-        $labelWaktu = [
-            'sekarang' => 'Secepatnya',
-            'istirahat-1' => 'Istirahat 1 &middot; pukul 09.30',
-            'istirahat-2' => 'Istirahat 2 &middot; pukul 12.00',
-        ];
-
-        $online = in_array($pesanan['metode'], ['qris', 'transfer', 'ewallet'], true);
-    @endphp
 
     <section class="bg-cream px-4 py-12 sm:px-6 lg:py-16">
         <div class="mx-auto max-w-3xl">

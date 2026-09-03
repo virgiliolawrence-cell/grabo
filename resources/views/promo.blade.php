@@ -4,43 +4,6 @@
 @section('description', 'Promo kantin sekolah bulan ini: paket hemat, diskon stan, dan penawaran minuman. Klaim langsung lewat Grabo.')
 
 @section('content')
-    @php
-        $promoGroups = [
-            [
-                'label' => 'Paket Hemat',
-                'title' => 'Nasi Goreng + Es Teh',
-                'text' => 'Satu paket makan siang lengkap dari Stan Bu Rina. Lebih murah Rp 2.000 dibanding beli terpisah.',
-                'price' => 'Rp 14.000',
-                'was' => 'Rp 16.000',
-                'code' => 'HEMAT14',
-                'image' => 'images/food/photos/nasi-goreng.jpg',
-                'alt' => 'Sepiring nasi goreng kampung lengkap dengan kerupuk',
-                'badge' => 'Paling laris',
-            ],
-            [
-                'label' => 'Beli 2 Gratis 1',
-                'title' => 'Roti Bakar Coklat',
-                'text' => 'Pesan dua roti bakar dari Stan Snack Corner, dapat satu gratis untuk teman sebangku.',
-                'price' => 'Rp 18.000',
-                'was' => 'Rp 27.000',
-                'code' => 'ROTI21',
-                'image' => 'images/food/photos/promo-roti-coklat.jpg',
-                'alt' => 'Roti bakar isi coklat yang sudah dipanggang',
-                'badge' => 'Menu baru',
-            ],
-            [
-                'label' => 'Promo Minuman',
-                'title' => 'Es Cendol Dingin',
-                'text' => 'Diskon khusus jam istirahat kedua, selama persediaan di Stan Minuman masih ada.',
-                'price' => 'Rp 5.000',
-                'was' => 'Rp 6.000',
-                'code' => 'SEGAR5',
-                'image' => 'images/food/photos/promo-es-cendol.jpg',
-                'alt' => 'Semangkuk es cendol dengan serutan es',
-                'badge' => null,
-            ],
-        ];
-    @endphp
 
     {{-- Strip pengumuman --}}
     <div class="bg-neon-50">
@@ -120,13 +83,6 @@
         <div class="mx-auto max-w-7xl">
             <h2 class="headline text-2xl text-stone-900">Ketentuan Promo</h2>
 
-            @php
-                $terms = [
-                    'Satu kode promo hanya berlaku untuk satu transaksi per siswa per hari.',
-                    'Promo tidak bisa digabung dengan potongan harga lain di stan yang sama.',
-                    'Penawaran berhenti lebih awal bila porsi hari itu sudah habis.',
-                ];
-            @endphp
 
             <ul class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
                 @foreach ($terms as $i => $term)
