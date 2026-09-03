@@ -47,11 +47,23 @@ class HomeController extends Controller
             ],
         ];
 
-        // Menu populer diambil dari katalog yang sama dengan halaman menu.
-        $menu = array_values(array_filter(
-            MenuController::decorate(MenuController::catalog()),
-            static fn (array $item): bool => $item['popular'] === true,
-        ));
+        /*
+         * Enam menu unggulan diambil dari katalog yang sama dengan halaman
+         * menu (config/menu.php), supaya harga dan keterangannya tidak berbeda.
+         */
+        $unggulan = [
+            'nasi-goreng-kampung',
+            'mie-ayam-jamur',
+            'ayam-geprek',
+            'batagor-saus-kacang',
+            'roti-bakar-mentega',
+            'es-teh-manis',
+        ];
+
+        $menu = MenuController::items()
+            ->whereIn('slug', $unggulan)
+            ->sortBy(fn (array $item) => array_search($item['slug'], $unggulan))
+            ->values();
 
         return view('home', [
             'stats' => $stats,

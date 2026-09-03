@@ -4,37 +4,6 @@
 @section('description', 'Telusuri seluruh menu kantin sekolah: makanan berat, gorengan dan snack, hingga minuman. Pesan dari kelas, ambil tanpa antre.')
 
 @section('content')
-<<<<<<< HEAD
-=======
-    @php
-        $promos = [
-            [
-                'eyebrow' => 'Dimasak Dadakan',
-                'title' => 'Mie Goreng Jawa',
-                'text' => 'Digoreng begitu pesananmu masuk, jadi masih panas saat kamu ambil di loket.',
-                'price' => 'Rp 11.000',
-                'image' => 'images/food/photos/promo-mie-goreng.jpg',
-                'alt' => 'Mie goreng jawa sedang dimasak di atas wajan besar',
-            ],
-            [
-                'eyebrow' => 'Menu Baru',
-                'title' => 'Roti Bakar Coklat',
-                'text' => 'Roti panggang isi coklat dari Stan Snack Corner, pas untuk istirahat kedua.',
-                'price' => 'Rp 9.000',
-                'image' => 'images/food/photos/promo-roti-coklat.jpg',
-                'alt' => 'Roti bakar isi coklat yang sudah dipanggang',
-            ],
-            [
-                'eyebrow' => 'Paling Segar',
-                'title' => 'Es Cendol',
-                'text' => 'Cendol dengan santan dan gula merah, penyegar setelah jam olahraga.',
-                'price' => 'Rp 6.000',
-                'image' => 'images/food/photos/promo-es-cendol.jpg',
-                'alt' => 'Semangkuk es cendol dengan serutan es',
-            ],
-        ];
-    @endphp
->>>>>>> d68c612716b7fa724a48288dc471d56784c9d33b
 
     {{-- Carousel promo --}}
     <section class="bg-cream px-4 pt-6 sm:px-6 lg:pt-10">
@@ -105,22 +74,9 @@
                 <div class="mt-8 grid grid-cols-2 gap-5 lg:grid-cols-4 lg:gap-7">
                     @foreach ($category['items'] as $item)
                         <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-xl hover:shadow-neon-900/10">
-<<<<<<< HEAD
-                            {{-- Seluruh kartu bisa ditekan untuk membuka detail produk. --}}
-                            <button type="button" class="absolute inset-0 z-10" aria-label="Lihat detail {{ $item['name'] }}"
-                                data-product="{{ json_encode([
-                                    'name' => $item['name'],
-                                    'stall' => $item['stall'],
-                                    'price' => $item['price'],
-                                    'image' => $item['image'] ? asset($item['image']) : null,
-                                    'photo' => $item['photo'],
-                                    'type' => $item['type'],
-                                ]) }}"></button>
-=======
                             {{-- Seluruh kartu menuju halaman deskripsi produk. --}}
                             <a href="{{ route('menu.show', $item['slug']) }}" class="absolute inset-0 z-10"
                                 aria-label="Lihat detail {{ $item['name'] }}"></a>
->>>>>>> d68c612716b7fa724a48288dc471d56784c9d33b
 
                             <div class="relative h-40 overflow-hidden bg-neon-50 sm:h-48">
                                 @if ($item['image'])
@@ -145,11 +101,7 @@
 
                                 {{-- Varian dipilih di halaman detail, jadi kartunya tanpa tombol cepat. --}}
                                 <div class="mt-4 flex items-center justify-between gap-2 border-t border-stone-100 pt-3">
-<<<<<<< HEAD
-                                    <span class="headline text-lg text-neon-600 sm:text-xl">{{ $item['price_label'] }}</span>
-=======
                                     <span class="headline text-lg text-neon-600 sm:text-xl">Rp {{ number_format($item['price'], 0, ',', '.') }}</span>
->>>>>>> d68c612716b7fa724a48288dc471d56784c9d33b
                                     <span class="inline-flex items-center gap-1 text-sm text-stone-400 transition group-hover:text-neon-700">
                                         Lihat
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">

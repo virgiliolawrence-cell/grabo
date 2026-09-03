@@ -108,6 +108,8 @@ class CheckoutController extends Controller
                 'istirahat-1' => 'Istirahat 1 &middot; pukul 09.30',
                 'istirahat-2' => 'Istirahat 2 &middot; pukul 12.00',
             ],
+            // Pembayaran online masih menunggu konfirmasi; tunai/saldo langsung disiapkan.
+            'online' => in_array($pesanan['metode'], ['qris', 'transfer', 'ewallet'], true),
         ]);
     }
 }
