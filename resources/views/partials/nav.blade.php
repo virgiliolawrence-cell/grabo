@@ -5,7 +5,8 @@
 
     $navActive = match (true) {
         request()->routeIs('home') => 'home',
-        request()->routeIs('menu') => 'menu',
+        // Halaman deskripsi produk ikut menyalakan tab Menu.
+        request()->routeIs('menu', 'menu.show') => 'menu',
         request()->routeIs('promo') => 'promo',
         default => null,
     };

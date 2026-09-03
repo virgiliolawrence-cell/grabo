@@ -23,8 +23,6 @@
 
 @include('partials.cart')
 
-@include('partials.product-modal')
-
 @include('partials.scripts')
 </body>
 

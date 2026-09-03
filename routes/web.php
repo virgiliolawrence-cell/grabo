@@ -14,9 +14,47 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('student')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
 
+<<<<<<< HEAD
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 
     Route::get('/promo', [PromoController::class, 'index'])->name('promo');
+=======
+    Route::get('/menu', function () {
+        return view('menu', ['categories' => config('menu.categories')]);
+    })->name('menu');
+
+    /*
+     * Halaman deskripsi produk. Katalognya masih dari config/menu.php,
+     * jadi pencarian slug dilakukan di sini; ganti dengan query model
+     * begitu tabel menu tersedia.
+     */
+    Route::get('/menu/{slug}', function (string $slug) {
+        $categories = collect(config('menu.categories'));
+
+        $category = $categories->first(
+            fn (array $category) => collect($category['items'])->contains('slug', $slug)
+        );
+
+        abort_if($category === null, 404);
+
+        $item = collect($category['items'])->firstWhere('slug', $slug);
+
+        return view('menu-detail', [
+            'item' => $item,
+            'category' => $category,
+            // Menu lain dari stan dan kategori yang sama, sebagai saran.
+            'related' => collect($category['items'])
+                ->reject(fn (array $other) => $other['slug'] === $slug)
+                ->take(3)
+                ->values()
+                ->all(),
+        ]);
+    })->name('menu.show');
+
+    Route::get('/promo', function () {
+        return view('promo');
+    })->name('promo');
+>>>>>>> d68c612716b7fa724a48288dc471d56784c9d33b
 
     Route::get('/checkout', [CheckoutController::class, 'create'])->name('checkout');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.submit');

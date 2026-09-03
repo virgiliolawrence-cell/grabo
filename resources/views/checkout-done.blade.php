@@ -9,21 +9,37 @@
         <div class="mx-auto max-w-3xl">
 
             <div class="rounded-2xl bg-white p-7 text-center shadow-sm sm:p-10">
-                <span class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-neon-50 text-neon-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-8 w-8" aria-hidden="true">
-                        <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </span>
+                {{-- Lingkaran dan centangnya digambar berurutan lewat kelas di app.css. --}}
+                <svg viewBox="0 0 60 60" class="mx-auto h-16 w-16 text-emerald-600" aria-hidden="true">
+                    <circle cx="30" cy="30" r="26.5" fill="none" stroke="currentColor" stroke-width="3.5"
+                        stroke-linecap="round" class="check-ring" transform="rotate(-90 30 30)" />
+                    <path d="M18.5 30.5 L26.5 38.5 L41.5 22.5" fill="none" stroke="currentColor" stroke-width="4"
+                        stroke-linecap="round" stroke-linejoin="round" class="check-mark" />
+                </svg>
 
                 <h1 class="mt-5 headline text-[clamp(1.8rem,4vw,2.75rem)] text-stone-900">Pesanan diterima</h1>
-                <p class="mt-3 leading-relaxed text-stone-500">
-                    Tunjukkan kode di bawah ini ke petugas saat mengambil pesanan.
+                <p class="mx-auto mt-3 max-w-md leading-relaxed text-stone-500">
+                    Terima kasih, {{ Str::before($pesanan['nama'], ' ') }}. Pesananmu sudah diteruskan ke stan kantin.
+                    Tunjukkan kode di bawah ini ke petugas saat mengambil.
                 </p>
 
                 <div class="mx-auto mt-6 w-full max-w-xs rounded-2xl border-2 border-dashed border-neon-300 bg-neon-50 px-6 py-5">
                     <p class="text-[11px] uppercase tracking-[0.2em] text-neon-700">Kode pesanan</p>
-                    <p class="headline mt-1 text-3xl tracking-[0.08em] text-neon-800">{{ $pesanan['kode'] }}</p>
+                    <p id="orderCode" class="headline mt-1 text-3xl tracking-[0.08em] text-neon-800">{{ $pesanan['kode'] }}</p>
+                    <button type="button" id="copyOrderCode"
+                        class="mt-2 text-sm text-neon-700 underline-offset-4 transition hover:underline">
+                        Salin kode
+                    </button>
                 </div>
+            </div>
+
+            {{--
+                Ringkasan item diambil dari keranjang di localStorage, karena
+                pesanannya belum tersimpan di database.
+            --}}
+            <div id="orderItemsCard" class="mt-6 hidden rounded-2xl bg-white p-7 shadow-sm sm:p-8">
+                <h2 class="headline text-xl text-stone-900">Item yang dipesan</h2>
+                <div id="orderItems" class="mt-5 space-y-3"></div>
             </div>
 
             {{-- Rincian --}}
@@ -118,9 +134,67 @@
                 @endif
             </div>
 
+            {{-- Langkah selanjutnya --}}
+            <div class="mt-6 rounded-2xl bg-white p-7 shadow-sm sm:p-8">
+                <h2 class="headline text-xl text-stone-900">Langkah selanjutnya</h2>
+
+                <ol class="mt-5 space-y-5">
+                    <li class="flex gap-4">
+                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
+                                <path d="m20 6-11 11-5-5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="font-semibold text-stone-900">Pesanan tercatat</p>
+                            <p class="mt-0.5 text-sm text-stone-500">Kode {{ $pesanan['kode'] }} sudah dibuat dan diteruskan ke stan.</p>
+                        </div>
+                    </li>
+
+                    <li class="flex gap-4">
+                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neon-50 text-neon-600">
+                            @if ($online)
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
+                                    <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8" />
+                                    <path d="M2 10h20" stroke="currentColor" stroke-width="1.8" />
+                                </svg>
+                            @else
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
+                                    <path d="M4 20h16M6 20v-6a6 6 0 0 1 12 0v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M9 6c0-1 .8-1.5.8-2.5M12 6c0-1 .8-1.5.8-2.5M15 6c0-1 .8-1.5.8-2.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                                </svg>
+                            @endif
+                        </span>
+                        <div>
+                            <p class="font-semibold text-stone-900">
+                                {{ $online ? 'Selesaikan pembayaran' : 'Stan mulai menyiapkan' }}
+                            </p>
+                            <p class="mt-0.5 text-sm text-stone-500">
+                                {{ $online
+                                    ? 'Ikuti cara membayar di atas. Pesanan baru dimasak setelah pembayaran masuk.'
+                                    : 'Pesanan langsung masuk antrean masak. Siapkan pembayaran saat mengambil.' }}
+                            </p>
+                        </div>
+                    </li>
+
+                    <li class="flex gap-4">
+                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-stone-100 text-stone-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
+                                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                                <path d="m3.3 7 8.7 5 8.7-5M12 22V12" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                            </svg>
+                        </span>
+                        <div>
+                            <p class="font-semibold text-stone-900">Ambil di loket</p>
+                            <p class="mt-0.5 text-sm text-stone-500">{!! $labelWaktu[$pesanan['waktu']] !!} &mdash; sebutkan kode pesanan ke petugas.</p>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+
             <div class="mt-6 flex flex-wrap justify-center gap-3">
-                <a href="{{ route('menu') }}" class="rounded-full bg-neon-500 px-7 py-3.5 font-semibold text-white transition hover:bg-neon-600">
-                    Pesan lagi
+                <a href="{{ route('menu') }}" class="rounded-full bg-neon-500 px-7 py-3.5 font-semibold text-white shadow-[0_0_28px_rgba(255,106,0,0.45)] transition hover:-translate-y-0.5 hover:bg-neon-600">
+                    Kembali Belanja
                 </a>
                 <a href="{{ route('home') }}" class="rounded-full border-2 border-stone-300 px-7 py-3.5 font-semibold text-stone-700 transition hover:border-stone-800 hover:text-stone-900">
                     Kembali ke beranda
@@ -130,16 +204,61 @@
     </section>
 
     <script>
-        // Pesanan sudah dikirim, jadi keranjang dan kode promonya dikosongkan.
-        try {
-            localStorage.removeItem('grabo.cart');
-            localStorage.removeItem('grabo.promo');
-        } catch (error) {
-            // Abaikan bila localStorage diblokir.
-        }
+        /*
+         * Skrip ini berjalan sebelum partials/scripts.blade.php, jadi
+         * pemformat rupiahnya dibuat sendiri di sini.
+         */
+        (function () {
+            const format = (value) => 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
 
-        document.querySelectorAll('[data-cart-count]').forEach((el) => {
-            el.textContent = '0';
-        });
+            let items = [];
+
+            try {
+                const raw = JSON.parse(localStorage.getItem('grabo.cart'));
+                items = Array.isArray(raw) ? raw : [];
+            } catch (error) {
+                // localStorage diblokir: ringkasan item dilewati saja.
+            }
+
+            const box = document.getElementById('orderItems');
+            const card = document.getElementById('orderItemsCard');
+
+            if (box && items.length > 0) {
+                card.classList.remove('hidden');
+
+                items.forEach((item) => {
+                    const row = document.createElement('div');
+                    row.className = 'flex items-start justify-between gap-4 border-b border-stone-100 pb-3 last:border-0 last:pb-0';
+                    row.innerHTML = `
+                        <div class="flex-1">
+                            <p class="font-semibold text-stone-900">${item.qty}&times; ${item.name}</p>
+                            <p class="text-xs uppercase tracking-[0.14em] text-stone-400">${item.stall}</p>
+                            ${item.options ? `<p class="mt-1 text-sm text-stone-500">${item.options}</p>` : ''}
+                            ${item.note ? `<p class="mt-0.5 text-sm italic text-stone-400">&ldquo;${item.note}&rdquo;</p>` : ''}
+                        </div>
+                        <span class="shrink-0 text-stone-900">${format(item.price * item.qty)}</span>`;
+                    box.appendChild(row);
+                });
+            }
+
+            // Ringkasannya sudah tergambar, jadi keranjang dan promonya boleh dikosongkan.
+            try {
+                localStorage.removeItem('grabo.cart');
+                localStorage.removeItem('grabo.promo');
+            } catch (error) {
+                // Abaikan bila localStorage diblokir.
+            }
+
+            const copyButton = document.getElementById('copyOrderCode');
+
+            copyButton?.addEventListener('click', () => {
+                const code = document.getElementById('orderCode').textContent.trim();
+
+                navigator.clipboard?.writeText(code).then(
+                    () => { copyButton.textContent = 'Kode tersalin'; },
+                    () => { copyButton.textContent = 'Salin manual: ' + code; },
+                );
+            });
+        })();
     </script>
 @endsection

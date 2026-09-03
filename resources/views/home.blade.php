@@ -99,10 +99,34 @@
                     </p>
                 </div>
 
+<<<<<<< HEAD
+=======
+                @php
+                    /*
+                     * Enam menu unggulan diambil dari katalog yang sama dengan
+                     * halaman menu, supaya harga dan keterangannya tidak berbeda.
+                     */
+                    $unggulan = [
+                        'nasi-goreng-kampung',
+                        'mie-ayam-jamur',
+                        'ayam-geprek',
+                        'batagor-saus-kacang',
+                        'roti-bakar-mentega',
+                        'es-teh-manis',
+                    ];
+
+                    $menu = collect(config('menu.categories'))
+                        ->flatMap(fn (array $category) => $category['items'])
+                        ->whereIn('slug', $unggulan)
+                        ->sortBy(fn (array $item) => array_search($item['slug'], $unggulan))
+                        ->values();
+                @endphp
+>>>>>>> d68c612716b7fa724a48288dc471d56784c9d33b
 
                 <div class="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($menu as $item)
                         <article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-neon-900/10">
+<<<<<<< HEAD
                             {{-- Seluruh kartu bisa ditekan untuk membuka detail produk. --}}
                             <button type="button" class="absolute inset-0 z-10" aria-label="Lihat detail {{ $item['name'] }}"
                                 data-product="{{ json_encode([
@@ -113,6 +137,11 @@
                                     'photo' => $item['photo'],
                                     'type' => $item['type'],
                                 ]) }}"></button>
+=======
+                            {{-- Seluruh kartu menuju halaman deskripsi produk. --}}
+                            <a href="{{ route('menu.show', $item['slug']) }}" class="absolute inset-0 z-10"
+                                aria-label="Lihat detail {{ $item['name'] }}"></a>
+>>>>>>> d68c612716b7fa724a48288dc471d56784c9d33b
 
                             <div class="relative h-56 overflow-hidden">
                                 <img src="{{ asset($item['image']) }}" alt="{{ $item['name'] }}"
@@ -125,16 +154,27 @@
                             <div class="flex flex-1 flex-col p-6">
                                 <span class="text-[10px] uppercase tracking-[0.18em] text-stone-400">{{ $item['stall'] }}</span>
                                 <h3 class="mt-2 headline text-2xl text-stone-900">{{ $item['name'] }}</h3>
-                                <p class="mt-2 flex-1 leading-relaxed text-stone-500">{{ $item['desc'] }}</p>
+                                <p class="mt-2 flex-1 leading-relaxed text-stone-500">{{ $item['summary'] }}</p>
 
                                 <div class="mt-5 flex items-center justify-between border-t border-stone-100 pt-4">
+<<<<<<< HEAD
                                     <span class="headline text-2xl text-neon-600">{{ $item['price_label'] }}</span>
                                     {{-- z-20 supaya tombol cepat ini tetap di atas tombol detail sekartu. --}}
+=======
+                                    <span class="headline text-2xl text-neon-600">Rp {{ number_format($item['price'], 0, ',', '.') }}</span>
+                                    {{-- z-20 supaya tombol cepat ini tetap di atas tautan detail sekartu. --}}
+>>>>>>> d68c612716b7fa724a48288dc471d56784c9d33b
                                     <button type="button"
                                         data-add-to-cart
+                                        data-slug="{{ $item['slug'] }}"
                                         data-name="{{ $item['name'] }}"
                                         data-stall="{{ $item['stall'] }}"
                                         data-price="{{ $item['price'] }}"
+<<<<<<< HEAD
+=======
+                                        data-type="{{ $item['type'] }}"
+                                        data-image="{{ $item['image'] ? asset($item['image']) : '' }}"
+>>>>>>> d68c612716b7fa724a48288dc471d56784c9d33b
                                         class="relative z-20 inline-flex items-center gap-2 rounded-full border-2 border-neon-500 px-5 py-2 text-sm font-semibold text-neon-800 transition hover:bg-neon-500 hover:text-white hover:shadow-[0_0_22px_rgba(255,106,0,0.45)]">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                                             <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
