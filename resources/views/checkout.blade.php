@@ -28,6 +28,17 @@
                 </a>
             </div>
 
+            @if ($errors->any())
+                <div class="mt-8 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-700">
+                    <p class="font-semibold">Pesanan belum bisa dikirim:</p>
+                    <ul class="mt-1 list-inside list-disc text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form id="checkoutForm" method="POST" action="{{ route('checkout.submit') }}" novalidate
                 class="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-start">
                 @csrf
@@ -202,7 +213,13 @@
                             </div>
                         </div>
 
-                        {{-- Total dikirim dari klien; server wajib menghitung ulang saat backend siap. --}}
+                        {{--
+                            Isi keranjang ikut dikirim supaya pesanan bisa disimpan ke database.
+                            Nilainya tetap tidak dipercaya: CheckoutController menghitung ulang
+                            harga dari tabel menu dan potongan dari tabel diskon.
+                        --}}
+                        <input type="hidden" name="keranjang" id="checkoutCartInput" value="[]">
+                        <input type="hidden" name="promo" id="checkoutPromoInput" value="">
                         <input type="hidden" name="total" id="checkoutTotalInput" value="0">
 
                         <button type="submit" id="checkoutSubmit"

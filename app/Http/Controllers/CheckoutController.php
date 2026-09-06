@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Discount;
+use App\Models\MenuItem;
+use App\Models\Order;
+use App\Models\Student;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
@@ -58,11 +64,11 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Terima pesanan lalu berikan kodenya.
+     * Terima pesanan, simpan ke database, lalu berikan kodenya.
      *
-     * Belum ada gerbang pembayaran maupun tabel pesanan. Totalnya pun masih
-     * dikirim dari sisi klien; begitu keranjang disimpan di server, hitung
-     * ulang total dari harga katalog dan jangan percaya nilai dari form.
+     * Angka dari form tidak dipercaya: harga tiap baris dibaca ulang dari
+     * tabel menu dan potongan promo dari tabel diskon. Belum ada gerbang
+     * pembayaran sungguhan, jadi statusnya berhenti di 'menunggu'.
      */
     public function store(Request $request): RedirectResponse
     {
@@ -74,12 +80,96 @@ class CheckoutController extends Controller
             'bank' => ['nullable', 'string', 'max:30'],
             'ewallet' => ['nullable', 'string', 'max:30'],
             'catatan' => ['nullable', 'string', 'max:200'],
+            'promo' => ['nullable', 'string', 'max:30'],
+            'keranjang' => ['required', 'json'],
             'total' => ['required', 'integer', 'min:0'],
         ]);
 
-        $pesanan['kode'] = 'GRB-' . strtoupper(Str::random(6));
+        $baris = $this->hargaUlang($pesanan['keranjang']);
+
+        if ($baris->isEmpty()) {
+            return back()->withErrors(['keranjang' => 'Keranjangmu kosong atau menunya sudah tidak dijual.']);
+        }
+
+        $subtotal = (int) $baris->sum(fn (array $item) => $item['price'] * $item['qty']);
+        $diskon = Discount::where('code', strtoupper((string) ($pesanan['promo'] ?? '')))->first();
+        $potongan = $diskon?->appliesTo($subtotal) ? min($diskon->amount, $subtotal) : 0;
+
+        $order = DB::transaction(function () use ($pesanan, $baris, $subtotal, $diskon, $potongan) {
+            $order = Order::create([
+                'code' => 'GRB-' . strtoupper(Str::random(6)),
+                'student_id' => Student::where('name', $pesanan['nama'])->value('id'),
+                'student_name' => $pesanan['nama'],
+                'student_class' => $pesanan['kelas'],
+                'pickup_slot' => $pesanan['waktu'],
+                'payment_method' => $this->metodeTersimpan($pesanan['metode']),
+                'payment_detail' => $pesanan['bank'] ?? $pesanan['ewallet'] ?? null,
+                'discount_id' => $potongan > 0 ? $diskon->id : null,
+                'subtotal' => $subtotal,
+                'discount_amount' => $potongan,
+                'total' => $subtotal - $potongan,
+                'status' => 'menunggu',
+                'note' => $pesanan['catatan'] ?? null,
+            ]);
+
+            $order->items()->createMany($baris->all());
+
+            if ($potongan > 0) {
+                $diskon->increment('used_count');
+            }
+
+            return $order;
+        });
+
+        $pesanan['kode'] = $order->code;
+        $pesanan['total'] = $order->total;
 
         return redirect()->route('checkout.done')->with('pesanan', $pesanan);
+    }
+
+    /**
+     * Baca ulang harga tiap baris keranjang dari tabel menu.
+     *
+     * Baris yang slug-nya tidak dikenal atau menunya sudah disembunyikan
+     * dibuang, jadi pesanan tidak bisa diisi menu karangan sendiri.
+     *
+     * @return Collection<int, array<string, mixed>>
+     */
+    private function hargaUlang(string $json): Collection
+    {
+        $keranjang = collect(json_decode($json, true) ?: []);
+        $menu = MenuItem::available()
+            ->whereIn('slug', $keranjang->pluck('slug')->filter()->all())
+            ->get()
+            ->keyBy('slug');
+
+        return $keranjang
+            ->filter(fn ($baris) => is_array($baris) && isset($menu[$baris['slug'] ?? '']))
+            ->map(function (array $baris) use ($menu) {
+                $item = $menu[$baris['slug']];
+                $qty = max(1, min(20, (int) ($baris['qty'] ?? 1)));
+
+                return [
+                    'menu_item_id' => $item->id,
+                    'name' => $item->name,
+                    'stall' => $item->stall,
+                    'price' => $item->price,
+                    'qty' => $qty,
+                    'options' => Str::limit((string) ($baris['options'] ?? ''), 190) ?: null,
+                    'note' => Str::limit((string) ($baris['note'] ?? ''), 120) ?: null,
+                ];
+            })
+            ->values();
+    }
+
+    /** Nama metode di form belum sama dengan yang dipakai laporan. */
+    private function metodeTersimpan(string $metode): string
+    {
+        return match ($metode) {
+            'saldo' => 'kartu-pelajar',
+            'ewallet' => 'qris',
+            default => $metode,
+        };
     }
 
     /**

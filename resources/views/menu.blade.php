@@ -19,7 +19,8 @@
                                 <p class="mt-4 leading-relaxed text-white/85">{{ $promo['text'] }}</p>
 
                                 <div class="mt-7 flex flex-wrap items-center gap-4">
-                                    <a href="#makanan-berat" class="rounded-full bg-white px-7 py-3 font-semibold text-neon-700 shadow-lg transition hover:-translate-y-0.5">
+                                    {{-- Tiap slide menuju menunya sendiri, bukan jangkar kategori. --}}
+                                    <a href="{{ route('menu.show', $promo['slug']) }}" class="rounded-full bg-white px-7 py-3 font-semibold text-neon-700 shadow-lg transition hover:-translate-y-0.5">
                                         Lihat Menu
                                     </a>
                                     @if ($promo['price'])
@@ -59,8 +60,21 @@
         </div>
     </section>
 
+    {{-- Keterangan penyaring stan dari bilah atas --}}
+    @if ($stan)
+        <section class="bg-cream px-4 pt-10 sm:px-6">
+            <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-3 rounded-2xl bg-white px-5 py-4 shadow-sm">
+                <span class="text-stone-500">Menampilkan {{ $jumlahMenu }} menu dari</span>
+                <span class="headline text-lg text-stone-900">{{ $stan }}</span>
+                <a href="{{ route('menu') }}" class="ml-auto rounded-full border-2 border-stone-300 px-5 py-2 text-sm font-semibold text-stone-600 transition hover:border-stone-800 hover:text-stone-900">
+                    Tampilkan semua stan
+                </a>
+            </div>
+        </section>
+    @endif
+
     {{-- Kategori menu --}}
-    @foreach ($categories as $category)
+    @forelse ($categories as $category)
         <section id="{{ Str::slug($category['label']) }}" class="scroll-mt-28 bg-cream px-4 py-12 sm:px-6 lg:py-16">
             <div class="mx-auto max-w-7xl">
                 <div class="flex flex-wrap items-end justify-between gap-4 border-b-2 border-stone-900/10 pb-5">
@@ -115,7 +129,17 @@
                 </div>
             </div>
         </section>
-    @endforeach
+    @empty
+        <section class="bg-cream px-4 py-16 sm:px-6">
+            <div class="mx-auto max-w-7xl rounded-2xl bg-white px-8 py-12 text-center shadow-sm">
+                <h2 class="headline text-2xl text-stone-900">Belum ada menu yang bisa ditampilkan</h2>
+                <p class="mt-2 text-stone-500">Stan ini sedang tidak menjual apa pun hari ini.</p>
+                <a href="{{ route('menu') }}" class="mt-6 inline-block rounded-full bg-neon-500 px-7 py-3 font-semibold text-white transition hover:bg-neon-600">
+                    Lihat semua stan
+                </a>
+            </div>
+        </section>
+    @endforelse
 
     {{-- Ajakan kembali ke beranda --}}
     <section class="bg-cream px-4 pb-16 sm:px-6">

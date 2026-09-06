@@ -66,7 +66,9 @@
                             Ingat saya
                         </label>
 
-                        <a href="#" class="text-sm font-semibold text-neon-700 underline-offset-4 transition hover:underline">
+                        {{-- Akun siswa diurus koperasi, jadi arahkan ke petugasnya. --}}
+                        <a href="mailto:{{ config('grabo.kontak.email') }}?subject={{ rawurlencode('Lupa kata sandi Grabo') }}&body={{ rawurlencode("Nama:\nNIS:\nKelas:\n\nSaya lupa kata sandi akun Grabo dan minta disetel ulang.") }}"
+                            class="text-sm font-semibold text-neon-700 underline-offset-4 transition hover:underline">
                             Lupa kata sandi?
                         </a>
                     </div>
@@ -80,8 +82,9 @@
                 </form>
 
                 <p class="mt-8 text-center text-stone-500">
-                    Belum punya akun?
-                    <a href="#" class="font-semibold text-neon-700 underline-offset-4 hover:underline">Daftar sekarang</a>
+                    Belum punya akun? Akun dibuatkan koperasi sekolah &mdash;
+                    <a href="mailto:{{ config('grabo.kontak.email') }}?subject={{ rawurlencode('Pendaftaran akun Grabo') }}&body={{ rawurlencode("Nama:\nNIS:\nKelas:\n\nSaya ingin didaftarkan akun Grabo.") }}"
+                        class="font-semibold text-neon-700 underline-offset-4 hover:underline">minta didaftarkan</a>.
                 </p>
             </div>
 

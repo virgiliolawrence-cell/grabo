@@ -251,13 +251,68 @@
 
             const copyButton = document.getElementById('copyOrderCode');
 
-            copyButton?.addEventListener('click', () => {
-                const code = document.getElementById('orderCode').textContent.trim();
+            /*
+             * Clipboard API bisa ditolak (halaman tanpa HTTPS atau di dalam
+             * iframe), jadi ada dua cadangan: execCommand, lalu menyorot
+             * kodenya supaya tinggal ditekan Ctrl+C.
+             */
+            function salinLewatTextarea(text) {
+                const field = document.createElement('textarea');
+                field.value = text;
+                field.setAttribute('readonly', '');
+                field.style.position = 'fixed';
+                field.style.opacity = '0';
+                document.body.appendChild(field);
+                field.select();
 
-                navigator.clipboard?.writeText(code).then(
-                    () => { copyButton.textContent = 'Kode tersalin'; },
-                    () => { copyButton.textContent = 'Salin manual: ' + code; },
-                );
+                let berhasil = false;
+
+                try {
+                    berhasil = document.execCommand('copy');
+                } catch (error) {
+                    berhasil = false;
+                }
+
+                field.remove();
+
+                return berhasil;
+            }
+
+            function sorotKode(element) {
+                const range = document.createRange();
+                range.selectNodeContents(element);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+
+            let resetLabel = null;
+
+            copyButton?.addEventListener('click', async () => {
+                const codeElement = document.getElementById('orderCode');
+                const code = codeElement.textContent.trim();
+
+                const beritahu = (pesan) => {
+                    copyButton.textContent = pesan;
+                    clearTimeout(resetLabel);
+                    resetLabel = setTimeout(() => { copyButton.textContent = 'Salin kode'; }, 2500);
+                };
+
+                try {
+                    await navigator.clipboard.writeText(code);
+                    beritahu('Kode tersalin');
+                    return;
+                } catch (error) {
+                    // Lanjut ke cadangan di bawah.
+                }
+
+                if (salinLewatTextarea(code)) {
+                    beritahu('Kode tersalin');
+                    return;
+                }
+
+                sorotKode(codeElement);
+                beritahu('Kode disorot — tekan Ctrl+C');
             });
         })();
     </script>

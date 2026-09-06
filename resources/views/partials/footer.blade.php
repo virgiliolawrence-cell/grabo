@@ -14,10 +14,12 @@
             <div>
                 <h3 class="text-[11px] uppercase tracking-[0.2em] text-white">Navigasi</h3>
                 <ul class="mt-4 space-y-2.5">
-                    <li><a href="#home" class="transition hover:text-neon-400">Home</a></li>
-                    <li><a href="#menu" class="transition hover:text-neon-400">Menu</a></li>
+                    {{-- Jangkar #home hanya ada di beranda, jadi dari halaman lain pakai rute. --}}
+                    <li><a href="{{ request()->routeIs('home') ? '#home' : route('home') }}" class="transition hover:text-neon-400">Home</a></li>
+                    <li><a href="{{ route('menu') }}" class="transition hover:text-neon-400">Menu</a></li>
                     <li><a href="{{ route('promo') }}" class="transition hover:text-neon-400">Promo</a></li>
-                    <li><a href="{{ route('login') }}" class="transition hover:text-neon-400">Masuk</a></li>
+                    <li><a href="{{ route('checkout') }}" class="transition hover:text-neon-400">Checkout</a></li>
+                    <li><a href="{{ route('admin.login') }}" class="transition hover:text-neon-400">Dashboard pengelola</a></li>
                 </ul>
             </div>
 
@@ -25,8 +27,16 @@
                 <h3 class="text-[11px] uppercase tracking-[0.2em] text-white">Kontak</h3>
                 <ul class="mt-4 space-y-2.5">
                     <li>Koperasi &amp; Kantin Sekolah</li>
-                    <li>(021) 555&ndash;0198</li>
-                    <li>halo@grabo.sch.id</li>
+                    <li>
+                        <a href="tel:+62{{ ltrim(preg_replace('/\D/', '', config('grabo.kontak.telepon')), '0') }}" class="transition hover:text-neon-400">
+                            (021) 555&ndash;0198
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:{{ config('grabo.kontak.email') }}" class="transition hover:text-neon-400">
+                            {{ config('grabo.kontak.email') }}
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

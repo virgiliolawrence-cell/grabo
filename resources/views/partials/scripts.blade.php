@@ -1,4 +1,54 @@
     <script>
+        /*
+         * Dropdown bilah atas (pilih stan, bahasa).
+         * Satu penanganan untuk semua [data-dropdown]: klik membuka, klik di
+         * luar atau Escape menutup, dan hanya satu yang terbuka sekaligus.
+         */
+        const dropdowns = [...document.querySelectorAll('[data-dropdown]')].map((root) => ({
+            root,
+            toggle: root.querySelector('[data-dropdown-toggle]'),
+            panel: root.querySelector('[data-dropdown-panel]'),
+            caret: root.querySelector('[data-dropdown-caret]'),
+        }));
+
+        function closeDropdowns(except = null) {
+            dropdowns.forEach((item) => {
+                if (item === except || item.panel.hidden) {
+                    return;
+                }
+
+                item.panel.hidden = true;
+                item.toggle.setAttribute('aria-expanded', 'false');
+                item.caret?.classList.remove('rotate-180');
+            });
+        }
+
+        dropdowns.forEach((item) => {
+            item.toggle?.addEventListener('click', (event) => {
+                event.stopPropagation();
+                closeDropdowns(item);
+
+                const opening = item.panel.hidden;
+                item.panel.hidden = !opening;
+                item.toggle.setAttribute('aria-expanded', String(opening));
+                item.caret?.classList.toggle('rotate-180', opening);
+            });
+        });
+
+        if (dropdowns.length > 0) {
+            document.addEventListener('click', (event) => {
+                if (!event.target.closest('[data-dropdown]')) {
+                    closeDropdowns();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeDropdowns();
+                }
+            });
+        }
+
         const menuToggle = document.getElementById('menuToggle');
         const mobileMenu = document.getElementById('mobileMenu');
 
@@ -95,12 +145,12 @@
         const PROMO_KEY = 'grabo.promo';
         const rupiah = (value) => 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
 
-        /* Kode promo yang dipajang di halaman Promo. */
-        const PROMO_CODES = {
-            HEMAT14: { discount: 2000, min: 14000, label: 'Paket hemat' },
-            ROTI21: { discount: 9000, min: 18000, label: 'Beli 2 gratis 1' },
-            SEGAR5: { discount: 1000, min: 5000, label: 'Promo minuman' },
-        };
+        /*
+         * Kode promo aktif, dibaca dari tabel diskon lewat dashboard admin.
+         * Hanya untuk menghitung tampilan; potongan sebenarnya dihitung ulang
+         * di server saat pesanan disimpan.
+         */
+        const PROMO_CODES = @json(\App\Http\Controllers\PromoController::codes());
 
         function readPromo() {
             try {
@@ -405,6 +455,32 @@
             }
         });
 
+        /*
+         * Tombol "Pakai kode" di halaman promo. Kodenya disimpan walau
+         * keranjang masih kosong; potongan baru dihitung setelah belanjanya
+         * memenuhi minimal, dan keterangan itu yang ditampilkan.
+         */
+        document.querySelectorAll('[data-use-promo]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const code = button.dataset.usePromo;
+                const promo = PROMO_CODES[code];
+
+                if (!promo) {
+                    showToast(`Kode ${code} sedang tidak aktif.`);
+                    return;
+                }
+
+                writePromo(code);
+                renderCart();
+
+                const subtotal = readCart().reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+                showToast(subtotal >= promo.min
+                    ? `Kode ${code} dipakai. Potongan ${rupiah(promo.discount)}.`
+                    : `Kode ${code} disimpan. Berlaku setelah belanja ${rupiah(promo.min)}.`);
+            });
+        });
+
         document.getElementById('promoRemove')?.addEventListener('click', () => {
             writePromo(null);
             showPromoMessage('', true);
@@ -691,6 +767,13 @@
                 document.getElementById('checkoutSubtotal').textContent = rupiah(subtotal);
                 document.getElementById('checkoutTotal').textContent = rupiah(total);
                 document.getElementById('checkoutTotalInput').value = total;
+
+                // Server memakai daftar ini untuk menghitung ulang dan menyimpan pesanan.
+                document.getElementById('checkoutCartInput').value = JSON.stringify(
+                    items.map(({ slug, name, stall, price, qty, options, note }) =>
+                        ({ slug, name, stall, price, qty, options, note }))
+                );
+                document.getElementById('checkoutPromoInput').value = code ?? '';
 
                 const discountRow = document.getElementById('checkoutDiscountRow');
                 discountRow.classList.toggle('hidden', discount === 0);

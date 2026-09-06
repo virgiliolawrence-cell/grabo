@@ -2,25 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Discount;
 use Illuminate\Contracts\View\View;
 
 class PromoController extends Controller
 {
     /**
-     * Daftar kode promo beserta syaratnya.
+     * Daftar kode promo yang sedang aktif, dari tabel diskon.
      *
-     * Nilainya sengaja disamakan dengan PROMO_CODES di partials/scripts.blade.php.
-     * Saat keranjang sudah dihitung di server, keduanya harus membaca sumber ini.
+     * Dipakai PROMO_CODES di partials/scripts.blade.php untuk menghitung
+     * potongan di layar. Angka yang menentukan tetap di CheckoutController,
+     * yang membaca tabel yang sama saat pesanan disimpan.
      *
      * @return array<string, array<string, mixed>>
      */
     public static function codes(): array
     {
-        return [
-            'HEMAT14' => ['discount' => 2000, 'min' => 14000, 'label' => 'Paket hemat'],
-            'ROTI21' => ['discount' => 9000, 'min' => 18000, 'label' => 'Beli 2 gratis 1'],
-            'SEGAR5' => ['discount' => 1000, 'min' => 5000, 'label' => 'Promo minuman'],
-        ];
+        return Discount::where('is_active', true)
+            ->get()
+            ->filter(fn (Discount $d) => $d->isUsableOn(now()))
+            ->mapWithKeys(fn (Discount $d) => [
+                $d->code => ['discount' => $d->amount, 'min' => $d->min_spend, 'label' => $d->label],
+            ])
+            ->all();
     }
 
     /**

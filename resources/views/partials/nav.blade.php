@@ -23,48 +23,90 @@
     <div class="bg-stone-950 text-white/65">
         <div class="mx-auto grid max-w-7xl grid-cols-2 items-center gap-4 px-6 py-3 text-[13px] lg:grid-cols-3">
             <div class="flex items-center gap-6">
-                <button type="button" class="flex items-center gap-2 transition hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
-                        <path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-                        <circle cx="12" cy="10" r="2.3" stroke="currentColor" stroke-width="1.6" />
-                    </svg>
-                    Cari stan kantin
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3 w-3" aria-hidden="true">
-                        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </button>
-                <button type="button" class="hidden items-center gap-2 transition hover:text-white sm:flex">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
-                        <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
-                        <path d="M3.5 12h17M12 3.5c4 4.6 4 12.4 0 17-4-4.6-4-12.4 0-17Z" stroke="currentColor" stroke-width="1.6" />
-                    </svg>
-                    ID
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3 w-3" aria-hidden="true">
-                        <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </button>
+                {{-- Pilih stan: menyaring halaman menu lewat ?stan= --}}
+                <div class="relative" data-dropdown>
+                    <button type="button" data-dropdown-toggle aria-expanded="false" aria-haspopup="true"
+                        class="flex items-center gap-2 transition hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
+                            <path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+                            <circle cx="12" cy="10" r="2.3" stroke="currentColor" stroke-width="1.6" />
+                        </svg>
+                        {{ request('stan') ?: 'Cari stan kantin' }}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3 w-3 transition-transform" data-dropdown-caret aria-hidden="true">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+
+                    <div data-dropdown-panel hidden
+                        class="absolute left-0 top-full z-[60] mt-2 w-60 overflow-hidden rounded-2xl bg-white py-2 text-stone-700 shadow-2xl ring-1 ring-stone-900/10">
+                        <p class="px-4 pb-2 pt-1 text-[10px] uppercase tracking-[0.18em] text-stone-400">Stan yang buka</p>
+                        <a href="{{ route('menu') }}"
+                            class="block px-4 py-2 transition hover:bg-neon-50 hover:text-neon-700 {{ request('stan') ? '' : 'font-semibold text-neon-700' }}">
+                            Semua stan
+                        </a>
+                        @foreach ($daftarStan as $stall)
+                            <a href="{{ route('menu', ['stan' => $stall]) }}"
+                                class="block px-4 py-2 transition hover:bg-neon-50 hover:text-neon-700 {{ request('stan') === $stall ? 'font-semibold text-neon-700' : '' }}">
+                                {{ $stall }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Bahasa: baru ada satu, jadi daftarnya apa adanya. --}}
+                <div class="relative hidden sm:block" data-dropdown>
+                    <button type="button" data-dropdown-toggle aria-expanded="false" aria-haspopup="true"
+                        class="flex items-center gap-2 transition hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
+                            <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
+                            <path d="M3.5 12h17M12 3.5c4 4.6 4 12.4 0 17-4-4.6-4-12.4 0-17Z" stroke="currentColor" stroke-width="1.6" />
+                        </svg>
+                        ID
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3 w-3 transition-transform" data-dropdown-caret aria-hidden="true">
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+
+                    <div data-dropdown-panel hidden
+                        class="absolute left-0 top-full z-[60] mt-2 w-56 overflow-hidden rounded-2xl bg-white py-2 text-stone-700 shadow-2xl ring-1 ring-stone-900/10">
+                        <p class="flex items-center justify-between px-4 py-2 font-semibold text-neon-700">
+                            Bahasa Indonesia
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
+                                <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </p>
+                        <p class="px-4 py-2 text-stone-400">English &mdash; belum tersedia</p>
+                    </div>
+                </div>
             </div>
 
             <p class="hidden text-center font-semibold text-white lg:block">grabo.sch.id</p>
 
             <div class="flex items-center justify-end gap-5">
-                <a href="#" aria-label="Instagram" class="transition hover:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
-                        <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.7" />
-                        <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7" />
-                        <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
-                    </svg>
-                </a>
-                <a href="#" aria-label="TikTok" class="hidden transition hover:text-white sm:block">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-                        <path d="M14 3h2.6c.3 1.9 1.4 3.4 3.4 3.7v2.6c-1.3.1-2.5-.2-3.6-.9v5.9a5.6 5.6 0 1 1-5.6-5.6c.3 0 .6 0 .9.1v2.7a2.9 2.9 0 1 0 2 2.8V3Z" />
-                    </svg>
-                </a>
-                <a href="#" aria-label="Facebook" class="hidden transition hover:text-white sm:block">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
-                        <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H16.7V3.6c-.29-.04-1.3-.13-2.48-.13-2.45 0-4.13 1.5-4.13 4.25V9.9H7.4V13h2.69v8h3.41Z" />
-                    </svg>
-                </a>
+                {{-- Alamat akunnya diatur di config/grabo.php; yang kosong tidak dirender. --}}
+                @if ($ig = config('grabo.sosial.instagram'))
+                    <a href="{{ $ig }}" target="_blank" rel="noopener noreferrer" aria-label="Instagram Grabo" class="transition hover:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
+                            <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.7" />
+                            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7" />
+                            <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
+                        </svg>
+                    </a>
+                @endif
+                @if ($tiktok = config('grabo.sosial.tiktok'))
+                    <a href="{{ $tiktok }}" target="_blank" rel="noopener noreferrer" aria-label="TikTok Grabo" class="hidden transition hover:text-white sm:block">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                            <path d="M14 3h2.6c.3 1.9 1.4 3.4 3.4 3.7v2.6c-1.3.1-2.5-.2-3.6-.9v5.9a5.6 5.6 0 1 1-5.6-5.6c.3 0 .6 0 .9.1v2.7a2.9 2.9 0 1 0 2 2.8V3Z" />
+                        </svg>
+                    </a>
+                @endif
+                @if ($fb = config('grabo.sosial.facebook'))
+                    <a href="{{ $fb }}" target="_blank" rel="noopener noreferrer" aria-label="Facebook Grabo" class="hidden transition hover:text-white sm:block">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                            <path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5H16.7V3.6c-.29-.04-1.3-.13-2.48-.13-2.45 0-4.13 1.5-4.13 4.25V9.9H7.4V13h2.69v8h3.41Z" />
+                        </svg>
+                    </a>
+                @endif
                 {{-- Identitas pemakai + tombol keluar --}}
                 @if (session('grabo_user'))
                     <span class="hidden max-w-[220px] truncate lg:inline" title="{{ session('grabo_user') }}">

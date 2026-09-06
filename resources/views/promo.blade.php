@@ -62,6 +62,11 @@
                             <div class="mt-4 flex items-center gap-2 rounded-xl border border-dashed border-neon-300 bg-neon-50 px-4 py-2.5">
                                 <span class="text-[10px] uppercase tracking-[0.16em] text-neon-700">Kode</span>
                                 <span class="font-semibold tracking-[0.12em] text-neon-800">{{ $promo['code'] }}</span>
+                                {{-- Menyimpan kode ke keranjang, jadi tidak perlu diketik ulang saat checkout. --}}
+                                <button type="button" data-use-promo="{{ $promo['code'] }}"
+                                    class="ml-auto rounded-full bg-white px-4 py-1.5 text-sm font-semibold text-neon-700 shadow-sm transition hover:bg-neon-500 hover:text-white">
+                                    Pakai kode
+                                </button>
                             </div>
 
                             <a href="{{ route('menu') }}"
