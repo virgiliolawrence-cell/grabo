@@ -28,7 +28,7 @@ return [
                     'stall' => 'Stan Bu Rina',
                     'price' => 12000,
                     'type' => 'makanan',
-                    'badge' => 'Best Seller',
+                    'badge' => 'Paling Laris',
                     'rating' => 4.8,
                     'reviews' => 412,
                     'sold' => 1860,
@@ -136,7 +136,7 @@ return [
         ],
 
         [
-            'label' => 'Gorengan & Snack',
+            'label' => 'Gorengan & Camilan',
             'note' => 'Teman ngobrol saat istirahat kedua.',
             'items' => [
 
@@ -145,7 +145,7 @@ return [
                     'name' => 'Batagor Saus Kacang',
                     'stall' => 'Stan Kang Asep',
                     'price' => 9000,
-                    'type' => 'snack',
+                    'type' => 'camilan',
                     'badge' => null,
                     'rating' => 4.7,
                     'reviews' => 224,
@@ -171,9 +171,9 @@ return [
                 [
                     'slug' => 'roti-bakar-mentega',
                     'name' => 'Roti Bakar Mentega',
-                    'stall' => 'Stan Snack Corner',
+                    'stall' => 'Stan Camilan',
                     'price' => 8000,
-                    'type' => 'snack',
+                    'type' => 'camilan',
                     'badge' => 'Menu Baru',
                     'rating' => 4.5,
                     'reviews' => 96,
@@ -201,7 +201,7 @@ return [
                     'name' => 'Batagor Kuah Pedas',
                     'stall' => 'Stan Kang Asep',
                     'price' => 10000,
-                    'type' => 'snack',
+                    'type' => 'camilan',
                     'badge' => null,
                     'rating' => 4.6,
                     'reviews' => 118,
@@ -226,9 +226,9 @@ return [
                 [
                     'slug' => 'roti-bakar-coklat',
                     'name' => 'Roti Bakar Coklat',
-                    'stall' => 'Stan Snack Corner',
+                    'stall' => 'Stan Camilan',
                     'price' => 9000,
-                    'type' => 'snack',
+                    'type' => 'camilan',
                     'badge' => null,
                     'rating' => 4.8,
                     'reviews' => 143,
@@ -264,7 +264,7 @@ return [
                     'stall' => 'Stan Minuman',
                     'price' => 4000,
                     'type' => 'minuman',
-                    'badge' => 'Best Seller',
+                    'badge' => 'Paling Laris',
                     'rating' => 4.9,
                     'reviews' => 688,
                     'sold' => 3240,

@@ -24,11 +24,11 @@ class EnsureAdmin
             return redirect()->route('admin.login');
         }
 
-        if (! Auth::user()->canAccessDashboard()) {
+        if (! Auth::user()->bolehBukaDasbor()) {
             Auth::logout();
 
             return redirect()->route('admin.login')
-                ->withErrors(['email' => 'Akun ini tidak punya akses ke dashboard.']);
+                ->withErrors(['email' => 'Akun ini tidak punya akses ke dasbor.']);
         }
 
         return $next($request);

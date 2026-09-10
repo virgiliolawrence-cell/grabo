@@ -12,7 +12,7 @@ class AdminLoginController extends Controller
 {
     public function create(): View|RedirectResponse
     {
-        if (Auth::check() && Auth::user()->canAccessDashboard()) {
+        if (Auth::check() && Auth::user()->bolehBukaDasbor()) {
             return redirect()->route('admin.dashboard');
         }
 
@@ -33,12 +33,12 @@ class AdminLoginController extends Controller
                 ->withErrors(['email' => 'Email atau kata sandi salah.']);
         }
 
-        if (! Auth::user()->canAccessDashboard()) {
+        if (! Auth::user()->bolehBukaDasbor()) {
             Auth::logout();
 
             return back()
                 ->withInput($request->only('email'))
-                ->withErrors(['email' => 'Akun ini tidak punya akses ke dashboard.']);
+                ->withErrors(['email' => 'Akun ini tidak punya akses ke dasbor.']);
         }
 
         $request->session()->regenerate();
@@ -52,6 +52,6 @@ class AdminLoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('admin.login')->with('status', 'Kamu sudah keluar dari dashboard.');
+        return redirect()->route('admin.login')->with('status', 'Kamu sudah keluar dari dasbor.');
     }
 }

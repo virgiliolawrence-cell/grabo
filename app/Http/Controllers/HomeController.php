@@ -34,15 +34,15 @@ class HomeController extends Controller
 
         $steps = [
             [
-                'title' => 'Browse Menu',
+                'title' => 'Pilih Menu',
                 'text' => 'Telusuri menu dari seluruh stan kantin, lengkap dengan harga dan sisa porsi hari ini.',
             ],
             [
-                'title' => 'Place Order',
+                'title' => 'Kirim Pesanan',
                 'text' => 'Masukkan pilihanmu ke keranjang, bayar dengan saldo pelajar, lalu pesanan diteruskan ke stan.',
             ],
             [
-                'title' => 'Pick Up Food',
+                'title' => 'Ambil Pesanan',
                 'text' => 'Tunggu notifikasi siap diambil, tunjukkan kode pesanan di loket, dan makanan langsung diserahkan.',
             ],
         ];

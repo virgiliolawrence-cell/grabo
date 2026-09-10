@@ -13,10 +13,10 @@ class TransactionController extends Controller
 {
     /** Label metode bayar, supaya penyaring dan tabel memakai kata yang sama. */
     private const METODE = [
-        'tunai' => 'Tunai di stan',
-        'kartu-pelajar' => 'Kartu pelajar',
+        'tunai' => 'Tunai di loket',
+        'saldo' => 'Saldo kartu pelajar',
         'qris' => 'QRIS',
-        'transfer' => 'Transfer / VA',
+        'transfer' => 'Transfer bank',
     ];
 
     /**

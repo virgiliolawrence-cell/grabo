@@ -15,11 +15,11 @@
                 <h3 class="text-[11px] uppercase tracking-[0.2em] text-white">Navigasi</h3>
                 <ul class="mt-4 space-y-2.5">
                     {{-- Jangkar #home hanya ada di beranda, jadi dari halaman lain pakai rute. --}}
-                    <li><a href="{{ request()->routeIs('home') ? '#home' : route('home') }}" class="transition hover:text-neon-400">Home</a></li>
+                    <li><a href="{{ request()->routeIs('home') ? '#home' : route('home') }}" class="transition hover:text-neon-400">Beranda</a></li>
                     <li><a href="{{ route('menu') }}" class="transition hover:text-neon-400">Menu</a></li>
                     <li><a href="{{ route('promo') }}" class="transition hover:text-neon-400">Promo</a></li>
-                    <li><a href="{{ route('checkout') }}" class="transition hover:text-neon-400">Checkout</a></li>
-                    <li><a href="{{ route('admin.login') }}" class="transition hover:text-neon-400">Dashboard pengelola</a></li>
+                    <li><a href="{{ route('checkout') }}" class="transition hover:text-neon-400">Pembayaran</a></li>
+                    <li><a href="{{ route('admin.login') }}" class="transition hover:text-neon-400">Dasbor pengelola</a></li>
                 </ul>
             </div>
 

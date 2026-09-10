@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard') &mdash; Grabo</title>
+    <title>@yield('title', 'Dasbor') &mdash; Grabo</title>
     <link rel="icon" href="{{ $graboLogo }}" sizes="any">
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -12,7 +12,7 @@
 
 <body class="min-h-screen bg-stone-100 text-stone-800 antialiased">
 
-    {{-- Bilah atas dashboard --}}
+    {{-- Bilah atas dasbor --}}
     <header class="bg-stone-950 text-white">
         <div class="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-4 px-5 py-3.5 lg:px-8">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
@@ -20,7 +20,7 @@
                     <img src="{{ $graboLogo }}" alt="Grabo" class="h-8 w-auto" width="30" height="32">
                 </span>
                 <span class="leading-tight">
-                    <span class="block headline text-lg">Dashboard</span>
+                    <span class="block headline text-lg">Dasbor</span>
                     <span class="block text-[10px] uppercase tracking-[0.2em] text-white/50">Kantin Grabo</span>
                 </span>
             </a>
@@ -35,7 +35,7 @@
                 ];
             @endphp
 
-            <nav class="order-3 flex w-full flex-wrap gap-1 lg:order-none lg:w-auto" aria-label="Navigasi dashboard">
+            <nav class="order-3 flex w-full flex-wrap gap-1 lg:order-none lg:w-auto" aria-label="Navigasi dasbor">
                 @foreach ($menuAdmin as $item)
                     @php $aktif = request()->routeIs(Str::before($item['route'], '.index') . '*'); @endphp
                     <a href="{{ route($item['route']) }}"
@@ -47,7 +47,7 @@
             <div class="flex items-center gap-3 text-sm">
                 <span class="hidden text-right leading-tight sm:block">
                     <span class="block font-semibold">{{ auth()->user()->name }}</span>
-                    <span class="block text-[10px] uppercase tracking-[0.16em] text-white/50">{{ auth()->user()->role }}</span>
+                    <span class="block text-[10px] uppercase tracking-[0.16em] text-white/50">{{ auth()->user()->labelPeran() }}</span>
                 </span>
                 <a href="{{ route('home') }}" class="hidden rounded-lg border border-white/25 px-3 py-2 text-white/70 transition hover:text-white lg:block">
                     Lihat situs

@@ -35,7 +35,7 @@ Route::post('/login', [LoginController::class, 'store'])->name('login.attempt');
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
 /*
- * Dashboard pengelola kantin. Terpisah dari halaman siswa: masuknya lewat
+ * Dasbor pengelola kantin. Terpisah dari halaman siswa: masuknya lewat
  * tabel users (Auth::attempt + hash), dan dijaga middleware 'admin'.
  */
 Route::prefix('admin')->name('admin.')->group(function () {

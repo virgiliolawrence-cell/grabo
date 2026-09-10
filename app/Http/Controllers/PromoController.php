@@ -47,7 +47,7 @@ class PromoController extends Controller
             [
                 'label' => 'Beli 2 Gratis 1',
                 'title' => 'Roti Bakar Coklat',
-                'text' => 'Pesan dua roti bakar dari Stan Snack Corner, dapat satu gratis untuk teman sebangku.',
+                'text' => 'Pesan dua roti bakar dari Stan Camilan, dapat satu gratis untuk teman sebangku.',
                 'price' => 'Rp 18.000',
                 'was' => 'Rp 27.000',
                 'code' => 'ROTI21',

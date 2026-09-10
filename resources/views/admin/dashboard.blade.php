@@ -34,7 +34,7 @@
                         <tr class="border-b border-stone-100">
                             <th class="pb-3 pr-4 font-medium">Kode</th>
                             <th class="pb-3 pr-4 font-medium">Siswa</th>
-                            <th class="pb-3 pr-4 font-medium">Item</th>
+                            <th class="pb-3 pr-4 font-medium">Porsi</th>
                             <th class="pb-3 pr-4 font-medium">Total</th>
                             <th class="pb-3 font-medium">Status</th>
                         </tr>

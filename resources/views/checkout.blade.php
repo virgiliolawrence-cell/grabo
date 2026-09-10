@@ -1,7 +1,7 @@
 @extends('layouts.grabo')
 
 @section('title', 'Pembayaran — Grabo')
-@section('description', 'Selesaikan pesanan kantin: pilih waktu pengambilan dan metode pembayaran, tunai di loket maupun online.')
+@section('description', 'Selesaikan pesanan kantin: pilih waktu pengambilan dan metode pembayaran, tunai di loket maupun daring.')
 
 @section('content')
 
@@ -17,7 +17,7 @@
             <h1 class="mt-4 headline text-[clamp(2rem,4.5vw,3.25rem)] text-stone-900">Pembayaran</h1>
             <p class="mt-3 max-w-2xl leading-relaxed text-stone-500">
                 Periksa pesananmu, tentukan kapan mau diambil, lalu pilih cara membayar.
-                Bisa bayar tunai di loket atau lewat pembayaran online.
+                Bisa bayar tunai di loket atau lewat pembayaran daring.
             </p>
 
             {{-- Keranjang kosong: tidak ada yang bisa dibayar --}}
@@ -117,9 +117,9 @@
                             @endforeach
                         </div>
 
-                        <p class="mt-6 text-[11px] uppercase tracking-[0.18em] text-stone-500">Bayar online</p>
+                        <p class="mt-6 text-[11px] uppercase tracking-[0.18em] text-stone-500">Bayar daring</p>
                         <div class="mt-3 space-y-3">
-                            @foreach ($metodeOnline as $metode)
+                            @foreach ($metodeDaring as $metode)
                                 <label class="option-card flex cursor-pointer items-start gap-3 rounded-xl border-2 border-stone-200 p-4 transition hover:border-neon-300 hover:bg-neon-50">
                                     <input type="radio" name="metode" value="{{ $metode['value'] }}" class="sr-only"
                                         @checked(old('metode') === $metode['value'])>
@@ -148,12 +148,12 @@
                                 <option value="Mandiri">Mandiri</option>
                                 <option value="BCA">BCA</option>
                             </select>
-                            <p class="mt-2 text-sm text-stone-500">Nomor virtual account muncul di halaman berikutnya.</p>
+                            <p class="mt-2 text-sm text-stone-500">Nomor rekening virtual muncul di halaman berikutnya.</p>
                         </div>
 
-                        <div id="detailEwallet" class="mt-4 hidden rounded-xl border border-stone-200 bg-stone-50 p-4">
-                            <label for="ewallet" class="block text-[11px] uppercase tracking-[0.18em] text-stone-500">Pilih e-wallet</label>
-                            <select id="ewallet" name="ewallet"
+                        <div id="detailDompet" class="mt-4 hidden rounded-xl border border-stone-200 bg-stone-50 p-4">
+                            <label for="dompet" class="block text-[11px] uppercase tracking-[0.18em] text-stone-500">Pilih dompet digital</label>
+                            <select id="dompet" name="dompet"
                                 class="mt-2 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-stone-900 outline-none transition focus:border-neon-500 focus:ring-4 focus:ring-neon-500/20">
                                 <option value="GoPay">GoPay</option>
                                 <option value="OVO">OVO</option>

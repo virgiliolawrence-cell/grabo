@@ -12,14 +12,14 @@
     };
 
     $navItems = [
-        ['label' => 'Home', 'target' => 'home', 'href' => $isHome ? '#home' : route('home') . '#home'],
+        ['label' => 'Beranda', 'target' => 'home', 'href' => $isHome ? '#home' : route('home') . '#home'],
         ['label' => 'Menu', 'target' => 'menu', 'href' => route('menu')],
         ['label' => 'Promo', 'target' => 'promo', 'href' => route('promo')],
         ['label' => 'Kontak', 'target' => 'kontak', 'href' => $isHome ? '#kontak' : route('home') . '#kontak'],
     ];
 @endphp
 
-    {{-- Utility bar --}}
+    {{-- Bilah atas --}}
     <div class="bg-stone-950 text-white/65">
         <div class="mx-auto grid max-w-7xl grid-cols-2 items-center gap-4 px-6 py-3 text-[13px] lg:grid-cols-3">
             <div class="flex items-center gap-6">
@@ -75,7 +75,7 @@
                                 <path d="M5 12.5l4.5 4.5L19 7.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </p>
-                        <p class="px-4 py-2 text-stone-400">English &mdash; belum tersedia</p>
+                        <p class="px-4 py-2 text-stone-400">Bahasa Inggris &mdash; belum tersedia</p>
                     </div>
                 </div>
             </div>
@@ -125,7 +125,7 @@
         </div>
     </div>
 
-    {{-- Navbar --}}
+    {{-- Bilah navigasi --}}
     <header class="site-header sticky top-0 z-50 rounded-b-[1.75rem] text-white">
         <div class="header-inner relative mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:gap-8">
             {{-- Merek --}}

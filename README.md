@@ -1,58 +1,92 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Grabo
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Situs pemesanan kantin sekolah. Siswa memilih menu dari ponsel, membayar tunai
+di loket atau lewat pembayaran daring, lalu mengambil pesanan tanpa mengantre.
+Pengelola kantin mengurus menu, siswa, transaksi, dan diskon lewat dasbor.
 
-## About Laravel
+Seluruh tampilan, pesan kesalahan, dan komentar kode memakai bahasa Indonesia.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Kebutuhan
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP 8.3 atau lebih baru
+- Composer
+- Node.js 20 atau lebih baru
+- SQLite (bawaan PHP)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Cara menjalankan
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+npm install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate --seed
+npm run build
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Untuk mengembangkan tampilan, jalankan `npm run dev` di jendela terpisah supaya
+perubahan CSS langsung terlihat.
 
-## Contributing
+## Akun contoh
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Kata sandi ketiganya `grabo12345`. Ini hanya untuk pengembangan — ganti sebelum
+dipakai sungguhan.
 
-## Code of Conduct
+| Email | Peran | Bisa apa |
+|---|---|---|
+| `admin@grabo.sch.id` | Administrator | semua modul dasbor |
+| `burina@grabo.sch.id` | Petugas Kantin | semua modul dasbor |
+| `pakjoko@grabo.sch.id` | Petugas Kantin | semua modul dasbor |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Halaman siswa masih memakai masuk sementara: email berformat benar dan kata
+sandi minimal 8 karakter sudah diterima, statusnya hanya ditandai di session.
 
-## Security Vulnerabilities
+## Peta halaman
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Siswa** &mdash; semuanya dijaga middleware `student`.
 
-## License
+| Alamat | Isi |
+|---|---|
+| `/` | Beranda: hero, menu populer, cara memesan |
+| `/menu` | Seluruh menu per kategori, bisa disaring per stan lewat `?stan=` |
+| `/menu/{slug}` | Deskripsi satu menu, pilihan varian, tambah ke keranjang |
+| `/promo` | Kode promo yang sedang aktif |
+| `/checkout` | Data pemesan, waktu ambil, metode bayar |
+| `/checkout/selesai` | Kode pesanan dan cara membayar |
+| `/login` | Halaman masuk |
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Pengelola** &mdash; dijaga middleware `admin`.
+
+| Alamat | Isi |
+|---|---|
+| `/admin/masuk` | Masuk dasbor |
+| `/admin` | Ringkasan: tiga kartu angka, transaksi terbaru, menu terlaris |
+| `/admin/menu` | Manajemen menu: harga, stok, tampil/sembunyi |
+| `/admin/siswa` | Daftar siswa dan saldo kartunya |
+| `/admin/transaksi` | Laporan transaksi, penyaring, ubah status pesanan |
+| `/admin/diskon` | Manajemen kode promo |
+
+## Susunan data
+
+| Tabel | Isi |
+|---|---|
+| `users` | Akun pengelola: `admin` dan `petugas` |
+| `students` | Daftar siswa beserta saldo kartu |
+| `menu_items` | Katalog menu tiap stan |
+| `discounts` | Kode promo, potongan, dan syaratnya |
+| `orders` / `order_items` | Pesanan; nama dan harga menu disalin ke barisnya supaya laporan lama tidak ikut berubah saat harga diganti |
+
+## Catatan
+
+- Angka dari browser tidak dipercaya. Saat pesanan disimpan, harga tiap baris
+  dibaca ulang dari tabel menu dan potongan dari tabel diskon.
+- Belum ada gerbang pembayaran. Kode QR dan nomor rekening virtual di halaman
+  selesai hanyalah contoh.
+- Saldo kartu siswa tercatat, tapi belum ikut terpotong saat memesan.
+- Alamat media sosial dan kontak diatur di `config/grabo.php`. Yang dikosongkan
+  tidak akan dirender.
+
+## Lisensi
+
+Berjalan di atas Laravel, yang berlisensi [MIT](https://opensource.org/licenses/MIT).

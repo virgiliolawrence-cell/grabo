@@ -51,7 +51,7 @@
                                 <img src="{{ asset('images/food/photos/batagor.jpg') }}" alt="Batagor dengan saus kacang" class="h-40 w-full object-cover" width="240" height="160">
                             </span>
                             <span class="mt-4 block border-b-2 border-neon-500 pb-1 text-center text-lg text-stone-800">
-                                Jelajahi Menu Snack
+                                Jelajahi Menu Camilan
                             </span>
                         </a>
                     </div>
@@ -86,12 +86,12 @@
             </div>
         </section>
 
-        {{-- Popular Menu --}}
+        {{-- Menu populer --}}
         <section id="menu" class="scroll-mt-28 bg-cream">
             <div class="mx-auto max-w-7xl px-6 py-20 lg:py-24">
                 <div class="flex flex-col gap-6 border-b-2 border-stone-900/10 pb-8 lg:flex-row lg:items-end lg:justify-between">
                     <div>
-                        <span class="text-[11px] uppercase tracking-[0.24em] text-neon-800">Popular Menu</span>
+                        <span class="text-[11px] uppercase tracking-[0.24em] text-neon-800">Menu Populer</span>
                         <h2 class="mt-3 headline text-[clamp(2.5rem,7vw,5.5rem)] text-stone-900">Paling Dicari</h2>
                     </div>
                     <p class="max-w-sm leading-relaxed text-stone-500">
@@ -154,11 +154,11 @@
             </div>
         </section>
 
-        {{-- How It Works --}}
+        {{-- Cara memesan --}}
         <section id="how" class="scroll-mt-28 bg-white">
             <div class="mx-auto max-w-7xl px-6 py-20 lg:py-24">
                 <div class="mx-auto max-w-3xl text-center">
-                    <span class="text-[11px] uppercase tracking-[0.24em] text-neon-800">How It Works</span>
+                    <span class="text-[11px] uppercase tracking-[0.24em] text-neon-800">Cara Memesan</span>
                     <h2 class="mt-3 headline text-[clamp(2.5rem,7vw,5.5rem)] text-stone-900">Tiga Langkah Saja</h2>
                     <p class="mt-4 text-lg leading-relaxed text-stone-500">
                         Dari memilih menu sampai makanan ada di tangan, semuanya selesai sebelum jam istirahat habis.
@@ -202,7 +202,7 @@
                 </div>
                 <div class="flex flex-wrap items-center justify-center gap-4">
                     <a href="#menu" class="inline-flex items-center gap-2.5 rounded-full bg-white px-8 py-4 text-lg font-semibold text-neon-700 shadow-lg shadow-neon-900/20 transition hover:-translate-y-0.5">
-                        Order Now
+                        Pesan Sekarang
                     </a>
                     <a href="{{ route('login') }}" class="inline-flex items-center gap-2 rounded-full border-2 border-white/70 px-7 py-4 text-lg text-white transition hover:bg-white/10">
                         Masuk

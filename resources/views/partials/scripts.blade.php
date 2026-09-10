@@ -146,7 +146,7 @@
         const rupiah = (value) => 'Rp ' + new Intl.NumberFormat('id-ID').format(value);
 
         /*
-         * Kode promo aktif, dibaca dari tabel diskon lewat dashboard admin.
+         * Kode promo aktif, dibaca dari tabel diskon lewat dasbor admin.
          * Hanya untuk menghitung tampilan; potongan sebenarnya dihitung ulang
          * di server saat pesanan disimpan.
          */
@@ -525,10 +525,10 @@
          */
         const OPTION_GROUPS = {
             makanan: [
-                { label: 'Level pedas', choices: [{ label: 'Tidak pedas' }, { label: 'Sedang' }, { label: 'Pedas' }] },
+                { label: 'Tingkat pedas', choices: [{ label: 'Tidak pedas' }, { label: 'Sedang' }, { label: 'Pedas' }] },
                 { label: 'Porsi', choices: [{ label: 'Normal' }, { label: 'Jumbo', price: 3000 }] },
             ],
-            snack: [
+            camilan: [
                 { label: 'Porsi', choices: [{ label: 'Normal' }, { label: 'Tambah saus', price: 2000 }] },
             ],
             minuman: [
@@ -790,7 +790,7 @@
                 const chosen = checkoutForm.querySelector('input[name="metode"]:checked')?.value;
 
                 document.getElementById('detailTransfer').classList.toggle('hidden', chosen !== 'transfer');
-                document.getElementById('detailEwallet').classList.toggle('hidden', chosen !== 'ewallet');
+                document.getElementById('detailDompet').classList.toggle('hidden', chosen !== 'dompet');
                 document.getElementById('detailQris').classList.toggle('hidden', chosen !== 'qris');
                 document.getElementById('detailSaldo').classList.toggle('hidden', chosen !== 'saldo');
             }

@@ -81,7 +81,7 @@ class MenuManagementController extends Controller
             'name' => ['required', 'string', 'max:80'],
             'stall' => ['required', 'string', 'max:60'],
             'category' => ['required', 'string', 'max:40'],
-            'type' => ['required', Rule::in(['makanan', 'snack', 'minuman'])],
+            'type' => ['required', Rule::in(['makanan', 'camilan', 'minuman'])],
             'price' => ['required', 'integer', 'min:0', 'max:1000000'],
             'stock' => ['required', 'integer', 'min:0', 'max:9999'],
             'badge' => ['nullable', 'string', 'max:30'],

@@ -40,22 +40,22 @@ class CheckoutController extends Controller
                     'badge' => 'Tanpa uang kembalian',
                 ],
             ],
-            'metodeOnline' => [
+            'metodeDaring' => [
                 [
                     'value' => 'qris',
                     'label' => 'QRIS',
-                    'note' => 'Bayar dari aplikasi bank atau e-wallet apa pun.',
+                    'note' => 'Bayar dari aplikasi bank atau dompet digital apa pun.',
                     'badge' => 'Paling cepat',
                 ],
                 [
                     'value' => 'transfer',
                     'label' => 'Transfer bank',
-                    'note' => 'Nomor virtual account muncul setelah pesanan dikirim.',
+                    'note' => 'Nomor rekening virtual muncul setelah pesanan dikirim.',
                     'badge' => null,
                 ],
                 [
-                    'value' => 'ewallet',
-                    'label' => 'E-wallet',
+                    'value' => 'dompet',
+                    'label' => 'Dompet digital',
                     'note' => 'GoPay, OVO, atau DANA yang terhubung ke akun sekolah.',
                     'badge' => null,
                 ],
@@ -76,9 +76,9 @@ class CheckoutController extends Controller
             'nama' => ['required', 'string', 'max:60'],
             'kelas' => ['required', 'string', 'max:20'],
             'waktu' => ['required', 'in:sekarang,istirahat-1,istirahat-2'],
-            'metode' => ['required', 'in:tunai,saldo,qris,transfer,ewallet'],
+            'metode' => ['required', 'in:tunai,saldo,qris,transfer,dompet'],
             'bank' => ['nullable', 'string', 'max:30'],
-            'ewallet' => ['nullable', 'string', 'max:30'],
+            'dompet' => ['nullable', 'string', 'max:30'],
             'catatan' => ['nullable', 'string', 'max:200'],
             'promo' => ['nullable', 'string', 'max:30'],
             'keranjang' => ['required', 'json'],
@@ -103,7 +103,7 @@ class CheckoutController extends Controller
                 'student_class' => $pesanan['kelas'],
                 'pickup_slot' => $pesanan['waktu'],
                 'payment_method' => $this->metodeTersimpan($pesanan['metode']),
-                'payment_detail' => $pesanan['bank'] ?? $pesanan['ewallet'] ?? null,
+                'payment_detail' => $pesanan['bank'] ?? $pesanan['dompet'] ?? null,
                 'discount_id' => $potongan > 0 ? $diskon->id : null,
                 'subtotal' => $subtotal,
                 'discount_amount' => $potongan,
@@ -162,14 +162,10 @@ class CheckoutController extends Controller
             ->values();
     }
 
-    /** Nama metode di form belum sama dengan yang dipakai laporan. */
+    /** Dompet digital diproses lewat QRIS, jadi laporannya dicatat sebagai QRIS. */
     private function metodeTersimpan(string $metode): string
     {
-        return match ($metode) {
-            'saldo' => 'kartu-pelajar',
-            'ewallet' => 'qris',
-            default => $metode,
-        };
+        return $metode === 'dompet' ? 'qris' : $metode;
     }
 
     /**
@@ -191,15 +187,15 @@ class CheckoutController extends Controller
                 'saldo' => 'Saldo kartu pelajar',
                 'qris' => 'QRIS',
                 'transfer' => 'Transfer bank ' . ($pesanan['bank'] ?? ''),
-                'ewallet' => 'E-wallet ' . ($pesanan['ewallet'] ?? ''),
+                'dompet' => 'Dompet digital ' . ($pesanan['dompet'] ?? ''),
             ],
             'labelWaktu' => [
                 'sekarang' => 'Secepatnya',
                 'istirahat-1' => 'Istirahat 1 &middot; pukul 09.30',
                 'istirahat-2' => 'Istirahat 2 &middot; pukul 12.00',
             ],
-            // Pembayaran online masih menunggu konfirmasi; tunai/saldo langsung disiapkan.
-            'online' => in_array($pesanan['metode'], ['qris', 'transfer', 'ewallet'], true),
+            // Pembayaran daring masih menunggu konfirmasi; tunai/saldo langsung disiapkan.
+            'daring' => in_array($pesanan['metode'], ['qris', 'transfer', 'dompet'], true),
         ]);
     }
 }

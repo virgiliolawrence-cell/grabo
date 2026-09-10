@@ -34,11 +34,11 @@
             </div>
 
             {{--
-                Ringkasan item diambil dari keranjang di localStorage, karena
-                pesanannya belum tersimpan di database.
+                Ringkasan menu diambil dari keranjang di localStorage, karena
+                pesanannya tersimpan di server, bukan dibawa ke halaman ini.
             --}}
             <div id="orderItemsCard" class="mt-6 hidden rounded-2xl bg-white p-7 shadow-sm sm:p-8">
-                <h2 class="headline text-xl text-stone-900">Item yang dipesan</h2>
+                <h2 class="headline text-xl text-stone-900">Menu yang dipesan</h2>
                 <div id="orderItems" class="mt-5 space-y-3"></div>
             </div>
 
@@ -108,7 +108,7 @@
 
                         <div>
                             <p class="leading-relaxed text-stone-500">
-                                Pindai kode ini dari aplikasi bank atau e-wallet, lalu bayar
+                                Pindai kode ini dari aplikasi bank atau dompet digital, lalu bayar
                                 <strong class="text-stone-900">Rp {{ number_format($pesanan['total'], 0, ',', '.') }}</strong>.
                             </p>
                             <p class="mt-2 text-sm text-neon-700">Kode berlaku 15 menit.</p>
@@ -118,19 +118,19 @@
                         </div>
                     </div>
                 @elseif ($pesanan['metode'] === 'transfer')
-                    <p class="mt-4 leading-relaxed text-stone-500">Transfer ke nomor virtual account berikut:</p>
+                    <p class="mt-4 leading-relaxed text-stone-500">Transfer ke nomor rekening virtual berikut:</p>
                     <div class="mt-3 rounded-xl border border-stone-200 bg-stone-50 px-5 py-4">
-                        <p class="text-[11px] uppercase tracking-[0.18em] text-stone-500">{{ $pesanan['bank'] ?? 'Bank' }} Virtual Account</p>
+                        <p class="text-[11px] uppercase tracking-[0.18em] text-stone-500">{{ $pesanan['bank'] ?? 'Bank' }} Rekening Virtual</p>
                         <p class="headline mt-1 text-2xl tracking-[0.06em] text-stone-900">8808 {{ substr(preg_replace('/\D/', '', $pesanan['kode'] . '00000000'), 0, 8) }}</p>
                     </div>
                     <p class="mt-3 text-sm text-stone-400">Nomor contoh &mdash; belum terhubung ke bank.</p>
                 @else
                     <p class="mt-4 leading-relaxed text-stone-500">
-                        Buka aplikasi <strong class="text-stone-900">{{ $pesanan['ewallet'] ?? 'e-wallet' }}</strong>,
+                        Buka aplikasi <strong class="text-stone-900">{{ $pesanan['dompet'] ?? 'dompet digital' }}</strong>,
                         lalu setujui tagihan sebesar
                         <strong class="text-stone-900">Rp {{ number_format($pesanan['total'], 0, ',', '.') }}</strong>.
                     </p>
-                    <p class="mt-3 text-sm text-stone-400">Tagihan contoh &mdash; belum terhubung ke penyedia e-wallet.</p>
+                    <p class="mt-3 text-sm text-stone-400">Tagihan contoh &mdash; belum terhubung ke penyedia dompet digital.</p>
                 @endif
             </div>
 
@@ -153,7 +153,7 @@
 
                     <li class="flex gap-4">
                         <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-neon-50 text-neon-600">
-                            @if ($online)
+                            @if ($daring)
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-5 w-5" aria-hidden="true">
                                     <rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.8" />
                                     <path d="M2 10h20" stroke="currentColor" stroke-width="1.8" />
@@ -167,10 +167,10 @@
                         </span>
                         <div>
                             <p class="font-semibold text-stone-900">
-                                {{ $online ? 'Selesaikan pembayaran' : 'Stan mulai menyiapkan' }}
+                                {{ $daring ? 'Selesaikan pembayaran' : 'Stan mulai menyiapkan' }}
                             </p>
                             <p class="mt-0.5 text-sm text-stone-500">
-                                {{ $online
+                                {{ $daring
                                     ? 'Ikuti cara membayar di atas. Pesanan baru dimasak setelah pembayaran masuk.'
                                     : 'Pesanan langsung masuk antrean masak. Siapkan pembayaran saat mengambil.' }}
                             </p>
@@ -217,7 +217,7 @@
                 const raw = JSON.parse(localStorage.getItem('grabo.cart'));
                 items = Array.isArray(raw) ? raw : [];
             } catch (error) {
-                // localStorage diblokir: ringkasan item dilewati saja.
+                // localStorage diblokir: ringkasan menu dilewati saja.
             }
 
             const box = document.getElementById('orderItems');

@@ -39,7 +39,7 @@
             <div>
                 <label for="type" class="block text-[11px] uppercase tracking-[0.18em] text-stone-500">Jenis varian</label>
                 <select id="type" name="type" class="mt-2 w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 outline-none focus:border-neon-500">
-                    @foreach (['makanan' => 'Makanan (level pedas, porsi)', 'snack' => 'Snack (porsi, saus)', 'minuman' => 'Minuman (suhu, gula, es)'] as $value => $label)
+                    @foreach (['makanan' => 'Makanan (tingkat pedas, porsi)', 'camilan' => 'Camilan (porsi, saus)', 'minuman' => 'Minuman (suhu, gula, es)'] as $value => $label)
                         <option value="{{ $value }}" @selected(old('type', $item->type) === $value)>{{ $label }}</option>
                     @endforeach
                 </select>
@@ -59,7 +59,7 @@
 
             <div>
                 <label for="badge" class="block text-[11px] uppercase tracking-[0.18em] text-stone-500">Label (opsional)</label>
-                <input type="text" id="badge" name="badge" value="{{ old('badge', $item->badge) }}" placeholder="Best Seller"
+                <input type="text" id="badge" name="badge" value="{{ old('badge', $item->badge) }}" placeholder="Paling Laris"
                     class="mt-2 w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 outline-none focus:border-neon-500 focus:bg-white focus:ring-4 focus:ring-neon-500/20">
             </div>
 

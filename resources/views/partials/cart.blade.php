@@ -7,7 +7,7 @@
     <header class="flex items-center justify-between gap-4 border-b border-stone-100 px-6 py-5">
         <div>
             <h2 id="cartTitle" class="headline text-2xl text-stone-900">Keranjang</h2>
-            <p class="mt-1 text-sm text-stone-500"><span data-cart-count>0</span> item siap dipesan</p>
+            <p class="mt-1 text-sm text-stone-500"><span data-cart-count>0</span> menu siap dipesan</p>
         </div>
 
         <button type="button" id="cartClose" aria-label="Tutup keranjang"

@@ -22,13 +22,13 @@ class GraboSeeder extends Seeder
         $this->seedOrders();
     }
 
-    /** Akun yang boleh membuka dashboard. */
+    /** Akun yang boleh membuka dasbor. */
     private function seedAdmins(): void
     {
         $admins = [
-            ['name' => 'Admin Koperasi', 'email' => 'admin@grabo.sch.id', 'role' => User::ROLE_ADMIN],
-            ['name' => 'Bu Rina', 'email' => 'burina@grabo.sch.id', 'role' => User::ROLE_STAFF],
-            ['name' => 'Pak Joko', 'email' => 'pakjoko@grabo.sch.id', 'role' => User::ROLE_STAFF],
+            ['name' => 'Admin Koperasi', 'email' => 'admin@grabo.sch.id', 'role' => User::PERAN_ADMIN],
+            ['name' => 'Bu Rina', 'email' => 'burina@grabo.sch.id', 'role' => User::PERAN_PETUGAS],
+            ['name' => 'Pak Joko', 'email' => 'pakjoko@grabo.sch.id', 'role' => User::PERAN_PETUGAS],
         ];
 
         foreach ($admins as $admin) {
@@ -138,7 +138,7 @@ class GraboSeeder extends Seeder
         $students = Student::where('is_active', true)->get();
         $menuItems = MenuItem::all();
         $discounts = Discount::all()->keyBy('code');
-        $methods = ['tunai', 'saldo', 'qris', 'transfer', 'ewallet'];
+        $metode = ['tunai', 'saldo', 'qris', 'transfer'];
         $slots = ['sekarang', 'istirahat-1', 'istirahat-2'];
         $statuses = ['selesai', 'selesai', 'selesai', 'disiapkan', 'menunggu', 'batal'];
 
@@ -152,7 +152,7 @@ class GraboSeeder extends Seeder
                 'student_name' => $student->name,
                 'student_class' => $student->class,
                 'pickup_slot' => $slots[array_rand($slots)],
-                'payment_method' => $methods[array_rand($methods)],
+                'payment_method' => $metode[array_rand($metode)],
                 'status' => $statuses[array_rand($statuses)],
                 'subtotal' => 0,
                 'total' => 0,

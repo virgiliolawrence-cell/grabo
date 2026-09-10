@@ -12,7 +12,7 @@ class MenuController extends Controller
     /**
      * Seluruh kategori menu beserta isinya.
      *
-     * Isinya diambil dari tabel menu_items supaya perubahan di dashboard
+     * Isinya diambil dari tabel menu_items supaya perubahan di dasbor
      * admin langsung terlihat siswa. Urutan dan kalimat pengantar tiap
      * kategori masih dari config/menu.php karena tidak diatur per menu.
      */
@@ -104,7 +104,7 @@ class MenuController extends Controller
                 'slug' => 'roti-bakar-coklat',
                 'eyebrow' => 'Menu Baru',
                 'title' => 'Roti Bakar Coklat',
-                'text' => 'Roti panggang isi coklat dari Stan Snack Corner, pas untuk istirahat kedua.',
+                'text' => 'Roti panggang isi coklat dari Stan Camilan, pas untuk istirahat kedua.',
                 'price' => 'Rp 9.000',
                 'image' => 'images/food/photos/promo-roti-coklat.jpg',
                 'alt' => 'Roti bakar isi coklat yang sudah dipanggang',

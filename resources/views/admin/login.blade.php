@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk Dashboard — Grabo</title>
+    <title>Masuk Dasbor — Grabo</title>
     <link rel="icon" href="{{ $graboLogo }}" sizes="any">
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -18,7 +18,7 @@
                 <img src="{{ $graboLogo }}" alt="Grabo" class="h-10 w-auto" width="38" height="40">
             </span>
             <span class="leading-tight text-white">
-                <span class="block headline text-xl">Dashboard Kantin</span>
+                <span class="block headline text-xl">Dasbor Kantin</span>
                 <span class="block text-[10px] uppercase tracking-[0.2em] text-white/50">Khusus pengelola</span>
             </span>
         </div>
@@ -61,7 +61,7 @@
 
                 <button type="submit"
                     class="w-full rounded-full bg-neon-500 px-6 py-3.5 font-semibold text-white transition hover:bg-neon-600">
-                    Masuk Dashboard
+                    Masuk Dasbor
                 </button>
             </form>
         </div>

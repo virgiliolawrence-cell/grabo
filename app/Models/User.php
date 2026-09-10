@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -20,11 +19,17 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    public const ROLE_ADMIN = 'admin';   // akses penuh, termasuk kelola admin
-    public const ROLE_STAFF = 'staff';   // petugas kantin: menu, pesanan, siswa
+    public const PERAN_ADMIN = 'admin';     // akses penuh, termasuk kelola admin
+    public const PERAN_PETUGAS = 'petugas'; // petugas kantin: menu, pesanan, siswa
+
+    /** Nama peran yang ditampilkan di layar. */
+    public const NAMA_PERAN = [
+        self::PERAN_ADMIN => 'Administrator',
+        self::PERAN_PETUGAS => 'Petugas Kantin',
+    ];
 
     /**
-     * Get the attributes that should be cast.
+     * Kolom yang perlu diubah tipenya saat dibaca.
      *
      * @return array<string, string>
      */
@@ -37,14 +42,19 @@ class User extends Authenticatable
         ];
     }
 
-    /** Boleh membuka dashboard? */
-    public function canAccessDashboard(): bool
+    /** Boleh membuka dasbor? */
+    public function bolehBukaDasbor(): bool
     {
-        return $this->is_active && in_array($this->role, [self::ROLE_ADMIN, self::ROLE_STAFF], true);
+        return $this->is_active && array_key_exists($this->role, self::NAMA_PERAN);
     }
 
-    public function isAdmin(): bool
+    public function labelPeran(): string
     {
-        return $this->role === self::ROLE_ADMIN;
+        return self::NAMA_PERAN[$this->role] ?? $this->role;
+    }
+
+    public function adalahAdmin(): bool
+    {
+        return $this->role === self::PERAN_ADMIN;
     }
 }

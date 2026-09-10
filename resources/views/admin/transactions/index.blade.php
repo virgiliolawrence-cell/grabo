@@ -41,7 +41,7 @@
         </label>
         <div class="flex items-end gap-2">
             <button type="submit" class="rounded-xl bg-stone-900 px-5 py-2.5 font-semibold text-white transition hover:bg-stone-700">Terapkan</button>
-            <a href="{{ route('admin.transactions.index') }}" class="rounded-xl border border-stone-200 px-4 py-2.5 text-stone-600 transition hover:bg-stone-100">Reset</a>
+            <a href="{{ route('admin.transactions.index') }}" class="rounded-xl border border-stone-200 px-4 py-2.5 text-stone-600 transition hover:bg-stone-100">Atur ulang</a>
         </div>
     </form>
 
@@ -86,7 +86,7 @@
                     <th class="p-4 font-medium">Kode</th>
                     <th class="p-4 font-medium">Waktu</th>
                     <th class="p-4 font-medium">Siswa</th>
-                    <th class="p-4 font-medium">Item</th>
+                    <th class="p-4 font-medium">Porsi</th>
                     <th class="p-4 font-medium">Metode</th>
                     <th class="p-4 font-medium">Total</th>
                     <th class="p-4 font-medium">Status</th>
