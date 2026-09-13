@@ -9,7 +9,7 @@ export default defineConfig({
             input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
             fonts: [
-                // Figtree = grotesk antarmuka (pengganti bebas lisensi untuk Styrene/tipografi Claude).
+                // Figtree = grotesk untuk antarmuka dan teks isi.
                 bunny('Figtree', {
                     weights: [400, 500, 600, 700],
                 }),

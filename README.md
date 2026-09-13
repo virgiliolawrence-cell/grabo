@@ -24,7 +24,6 @@ pesanan tanpa ikut mengantre.
 - [Pengujian](#pengujian)
 - [Batasan Saat Ini](#batasan-saat-ini)
 - [Rencana Lanjutan](#rencana-lanjutan)
-- [Lisensi](#lisensi)
 
 ---
 
@@ -388,8 +387,3 @@ promo sesuai yang dimengerti keranjang.
 4. Pesanan tersimpan ke database supaya petugas bisa menandai status
    menunggu → disiapkan → selesai.
 5. Saldo kartu pelajar ikut terpotong saat memesan.
-
-## Lisensi
-
-Dikembangkan sebagai proyek sekolah. Berjalan di atas Laravel yang berlisensi
-[MIT](https://opensource.org/licenses/MIT).
