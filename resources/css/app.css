@@ -8,10 +8,10 @@
      * Figtree untuk antarmuka & teks, Anton untuk judul poster raksasa.
      */
     --font-sans: 'Figtree', 'Segoe UI', ui-sans-serif, system-ui, sans-serif;
-    --font-display: 'Anton', 'Arial Narrow', Impact, ui-sans-serif, sans-serif;
+    --font-tampilan: 'Anton', 'Arial Narrow', Impact, ui-sans-serif, sans-serif;
 
-    --color-cream: #F3F1EC;
-    --color-cream-dark: #E8E4DC;
+    --color-krem: #F3F1EC;
+    --color-krem-tua: #E8E4DC;
 
     /*
      * Neon orange — warna utama Grabo.
@@ -40,15 +40,15 @@
 }
 
 /* Judul poster: Anton hanya punya satu berat, jadi jangan pakai font-bold di sini. */
-@utility headline {
-    font-family: var(--font-display);
+@utility judul-besar {
+    font-family: var(--font-tampilan);
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: -0.01em;
     line-height: 0.82;
 }
 
-@utility text-balance-heading {
+@utility judul-seimbang {
     text-wrap: balance;
 }
 
@@ -59,7 +59,7 @@
  * diagonal + tekstur halus, supaya terpisah jelas dari isi halaman.
  * ---------------------------------------------------------------
  */
-.site-header {
+.kepala-situs {
     /*
      * Jangan set `position` di sini. Aturan ini tidak berada di dalam @layer,
      * sehingga akan mengalahkan utilitas `sticky` dari Tailwind di markup
@@ -77,7 +77,7 @@
 }
 
 /* Tekstur halus supaya gradien tidak terasa datar. */
-.site-header::before {
+.kepala-situs::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -89,7 +89,7 @@
 }
 
 /* Kilau diagonal tipis. */
-.site-header::after {
+.kepala-situs::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -98,21 +98,21 @@
     background: linear-gradient(115deg, transparent 36%, rgb(255 255 255 / 0.13) 50%, transparent 64%);
 }
 
-.site-header.is-scrolled {
+.kepala-situs.is-tergulir {
     box-shadow: 0 22px 45px -22px rgb(124 42 18 / 0.75);
 }
 
-.site-header .header-inner {
+.kepala-situs .isi-kepala {
     transition: padding 0.3s ease;
 }
 
-.site-header.is-scrolled .header-inner {
+.kepala-situs.is-tergulir .isi-kepala {
     padding-top: 0.65rem;
     padding-bottom: 0.65rem;
 }
 
 /* Kapsul kaca tempat tautan navigasi berada. */
-.nav-capsule {
+.kapsul-nav {
     background-color: rgb(41 20 8 / 0.22);
     border: 1px solid rgb(255 255 255 / 0.22);
     box-shadow:
@@ -125,7 +125,7 @@
  * bukan latar yang muncul-hilang di masing-masing tautan.
  * Posisinya dihitung di home.blade.php.
  */
-.nav-indicator {
+.penanda-nav {
     position: absolute;
     top: 0;
     left: 0;
@@ -145,15 +145,15 @@
         opacity 0.25s ease;
 }
 
-.nav-indicator.is-ready {
+.penanda-nav.is-siap {
     opacity: 1;
 }
 
 /*
  * Tab navigasi: status aktif ditentukan oleh scrollspy di home.blade.php,
- * yang menambahkan kelas .is-active pada tautan bagian yang sedang dilihat.
+ * yang menambahkan kelas .is-aktif pada tautan bagian yang sedang dilihat.
  */
-.nav-link {
+.tautan-nav {
     position: relative;
     z-index: 1;
     border-radius: 9999px;
@@ -166,35 +166,35 @@
         color 0.3s ease;
 }
 
-.nav-link:hover {
+.tautan-nav:hover {
     background-color: rgb(255 255 255 / 0.16);
     color: #fff;
 }
 
-.nav-link:focus-visible {
+.tautan-nav:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 2px;
 }
 
-/* Latar putihnya berasal dari .nav-indicator yang meluncur. */
-.nav-link.is-active {
+/* Latar putihnya berasal dari .penanda-nav yang meluncur. */
+.tautan-nav.is-aktif {
     color: var(--color-neon-700);
     font-weight: 600;
 }
 
-.nav-link.is-active:hover {
+.tautan-nav.is-aktif:hover {
     background-color: transparent;
     color: var(--color-neon-800);
 }
 
 /* Tanpa animasi: penanda langsung pindah. */
 @media (prefers-reduced-motion: reduce) {
-    .nav-indicator {
+    .penanda-nav {
         transition: opacity 0.2s ease;
     }
 }
 
-.nav-link-mobile {
+.tautan-nav-ponsel {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -207,21 +207,21 @@
         color 0.2s ease;
 }
 
-.nav-link-mobile:hover {
+.tautan-nav-ponsel:hover {
     background-color: rgb(255 255 255 / 0.12);
     color: #fff;
 }
 
-.nav-link-mobile.is-active {
+.tautan-nav-ponsel.is-aktif {
     background-color: #fff;
     color: var(--color-neon-700);
     font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .site-header,
-    .site-header .header-inner,
-    .nav-link {
+    .kepala-situs,
+    .kepala-situs .isi-kepala,
+    .tautan-nav {
         transition: none;
     }
 }
@@ -231,33 +231,33 @@
  * Radio-nya disembunyikan, kartunya yang menandakan status terpilih.
  */
 /*
- * Status terpilih ditandai kelas .is-selected dari JavaScript, bukan hanya
+ * Status terpilih ditandai kelas .is-terpilih dari JavaScript, bukan hanya
  * :has(). Selain :has() belum ada di browser lama, evaluasinya juga tidak
  * selalu diperbarui saat radio berubah lewat skrip.
  */
-.option-card.is-selected,
-.option-card:has(input:checked) {
+.kartu-pilihan.is-terpilih,
+.kartu-pilihan:has(input:checked) {
     border-color: var(--color-neon-500);
     background-color: var(--color-neon-50);
 }
 
-.option-card:has(input:focus-visible) {
+.kartu-pilihan:has(input:focus-visible) {
     outline: 2px solid var(--color-neon-500);
     outline-offset: 2px;
 }
 
-.option-card.is-selected .option-dot,
-.option-card:has(input:checked) .option-dot {
+.kartu-pilihan.is-terpilih .titik-pilihan,
+.kartu-pilihan:has(input:checked) .titik-pilihan {
     border-color: var(--color-neon-500);
     border-width: 6px;
 }
 
 /* Tombol yang sedang menunggu proses. */
-.spin {
-    animation: spin 1s linear infinite;
+.berputar {
+    animation: berputar 1s linear infinite;
 }
 
-@keyframes spin {
+@keyframes berputar {
     to {
         transform: rotate(360deg);
     }
@@ -267,13 +267,13 @@
  * Centang pada halaman pesanan diterima: lingkaran lalu tanda centangnya
  * digambar berurutan, bukan langsung muncul.
  */
-.check-ring {
+.lingkar-centang {
     stroke-dasharray: 166;
     stroke-dashoffset: 166;
     animation: check-draw 0.55s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
 
-.check-mark {
+.goresan-centang {
     stroke-dasharray: 48;
     stroke-dashoffset: 48;
     animation: check-draw 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.45s forwards;
@@ -286,34 +286,34 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .spin {
+    .berputar {
         animation: none;
     }
 
-    .check-ring,
-    .check-mark {
+    .lingkar-centang,
+    .goresan-centang {
         animation: none;
         stroke-dashoffset: 0;
     }
 }
 
 /* Thumbnail galeri di halaman deskripsi produk. */
-.gallery-thumb[aria-current='true'] {
+.gambar-kecil-galeri[aria-current='true'] {
     border-color: var(--color-neon-500);
 }
 
 /* Track yang bisa digeser tanpa scrollbar terlihat. */
-.no-scrollbar {
+.tanpa-bilah-gulir {
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-.no-scrollbar::-webkit-scrollbar {
+.tanpa-bilah-gulir::-webkit-scrollbar {
     display: none;
 }
 
 /* Titik penanda slide promo. */
-.promo-dot {
+.titik-promo {
     height: 0.5rem;
     width: 0.5rem;
     border-radius: 9999px;
@@ -323,23 +323,39 @@
         background-color 0.3s ease;
 }
 
-.promo-dot.is-current {
+.titik-promo.is-kini {
     width: 1.75rem;
     background-color: #fff;
 }
 
-@keyframes float-slow {
+/*
+ * Kartu promo yang kodenya sedang tersimpan di keranjang.
+ * Dipasang lewat JavaScript (lihat tandaiKartuAktif di partials/scripts).
+ */
+.kartu-promo.is-dipakai {
+    outline: 2px solid #059669;
+    outline-offset: 2px;
+    box-shadow: 0 18px 40px -18px rgb(5 150 105 / 0.55);
+}
+
+.kartu-promo.is-dipakai [data-kotak-kode] {
+    border-style: solid;
+    border-color: #059669;
+    background-color: #ecfdf5;
+}
+
+@keyframes mengapung-lambat {
     0%,
     100% {
-        transform: translateY(0) rotate(var(--float-rotate, 0deg));
+        transform: translateY(0) rotate(var(--putaran-apung, 0deg));
     }
     50% {
-        transform: translateY(-14px) rotate(var(--float-rotate, 0deg));
+        transform: translateY(-14px) rotate(var(--putaran-apung, 0deg));
     }
 }
 
-.animate-float {
-    animation: float-slow 6s ease-in-out infinite;
+.animasi-mengapung {
+    animation: mengapung-lambat 6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -347,7 +363,7 @@
         scroll-behavior: auto;
     }
 
-    .animate-float {
+    .animasi-mengapung {
         animation: none;
     }
 }

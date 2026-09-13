@@ -2,9 +2,13 @@
 
 Situs pemesanan kantin sekolah. Siswa memilih menu dari ponsel, membayar tunai
 di loket atau lewat pembayaran daring, lalu mengambil pesanan tanpa mengantre.
-Pengelola kantin mengurus menu, siswa, transaksi, dan diskon lewat dasbor.
 
 Seluruh tampilan, pesan kesalahan, dan komentar kode memakai bahasa Indonesia.
+
+> **Tahap sekarang: tampilan saja.** Belum ada tabel Grabo maupun dasbor
+> pengelola &mdash; menu dibaca dari `config/menu.php`, keranjang disimpan di
+> browser, dan status masuk hanya ditandai di session. Bagian pengelolaan
+> dikerjakan menyusul.
 
 ## Kebutuhan
 
@@ -20,7 +24,7 @@ composer install
 npm install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate --seed
+php artisan migrate
 npm run build
 php artisan serve
 ```
@@ -28,64 +32,73 @@ php artisan serve
 Untuk mengembangkan tampilan, jalankan `npm run dev` di jendela terpisah supaya
 perubahan CSS langsung terlihat.
 
-## Akun contoh
-
-Kata sandi ketiganya `grabo12345`. Ini hanya untuk pengembangan — ganti sebelum
-dipakai sungguhan.
-
-| Email | Peran | Bisa apa |
-|---|---|---|
-| `admin@grabo.sch.id` | Administrator | semua modul dasbor |
-| `burina@grabo.sch.id` | Petugas Kantin | semua modul dasbor |
-| `pakjoko@grabo.sch.id` | Petugas Kantin | semua modul dasbor |
+## Cara masuk
 
 Halaman siswa masih memakai masuk sementara: email berformat benar dan kata
-sandi minimal 8 karakter sudah diterima, statusnya hanya ditandai di session.
+sandi minimal 8 karakter sudah diterima. Belum ada pencocokan ke tabel apa pun.
 
 ## Peta halaman
 
-**Siswa** &mdash; semuanya dijaga middleware `student`.
+Semuanya dijaga middleware `siswa`, kecuali halaman masuk.
 
 | Alamat | Isi |
 |---|---|
 | `/` | Beranda: hero, menu populer, cara memesan |
 | `/menu` | Seluruh menu per kategori, bisa disaring per stan lewat `?stan=` |
-| `/menu/{slug}` | Deskripsi satu menu, pilihan varian, tambah ke keranjang |
-| `/promo` | Kode promo yang sedang aktif |
-| `/checkout` | Data pemesan, waktu ambil, metode bayar |
-| `/checkout/selesai` | Kode pesanan dan cara membayar |
-| `/login` | Halaman masuk |
+| `/menu/{slug}` | Deskripsi satu sajian, pilihan varian, tambah ke keranjang |
+| `/promo` | Kode promo; sekali tekan kodenya disalin dan ditandai sedang dipakai |
+| `/kontak` | Jam layanan, daftar stan, pertanyaan umum, dan formulir pesan |
+| `/pembayaran` | Data pemesan, waktu ambil, metode bayar |
+| `/pembayaran/selesai` | Kode pesanan dan cara membayar |
+| `/masuk` | Halaman masuk |
 
-**Pengelola** &mdash; dijaga middleware `admin`.
+## Di mana datanya
 
-| Alamat | Isi |
+| Berkas | Isi |
 |---|---|
-| `/admin/masuk` | Masuk dasbor |
-| `/admin` | Ringkasan: tiga kartu angka, transaksi terbaru, menu terlaris |
-| `/admin/menu` | Manajemen menu: harga, stok, tampil/sembunyi |
-| `/admin/siswa` | Daftar siswa dan saldo kartunya |
-| `/admin/transaksi` | Laporan transaksi, penyaring, ubah status pesanan |
-| `/admin/diskon` | Manajemen kode promo |
+| `config/menu.php` | Katalog sajian: nama, stan, harga, deskripsi, foto, galeri |
+| `config/grabo.php` | Email, telepon, dan alamat media sosial kantin |
+| `PromoController::kodePromo()` | Kode promo beserta potongan dan belanja minimalnya |
+| `localStorage` | Isi keranjang (`grabo.keranjang`) dan kode promo aktif (`grabo.promo`) |
 
-## Susunan data
+Foto menu ada di `public/images/food/photos/`, dinamai sesuai slug menunya.
+Ilustrasi 2D untuk hero ada di `public/images/food/*.svg`.
 
-| Tabel | Isi |
+## Penamaan
+
+Nama berkas, kelas, method, variabel, kelas CSS, atribut `data-*`, dan id
+elemen semuanya bahasa Indonesia.
+
+| Bagian | Contoh |
 |---|---|
-| `users` | Akun pengelola: `admin` dan `petugas` |
-| `students` | Daftar siswa beserta saldo kartu |
-| `menu_items` | Katalog menu tiap stan |
-| `discounts` | Kode promo, potongan, dan syaratnya |
-| `orders` / `order_items` | Pesanan; nama dan harga menu disalin ke barisnya supaya laporan lama tidak ikut berubah saat harga diganti |
+| Controller | `BerandaController`, `MenuController`, `PembayaranController`, `KontakController`, `Autentikasi/MasukController` |
+| Method | `tampilkan()`, `daftar()`, `form()`, `simpan()`, `selesai()`, `keluar()` |
+| Middleware | `PastikanSiswaSudahMasuk` (alias `siswa`) |
+| View | `beranda`, `menu`, `menu-rincian`, `promo`, `kontak`, `pembayaran`, `pembayaran-selesai`, `autentikasi/masuk` |
+| Folder view | `tataletak/`, `bagian/`, `autentikasi/` |
+| Nama rute | `beranda`, `menu`, `menu.rincian`, `promo`, `kontak`, `pembayaran`, `pembayaran.kirim`, `pembayaran.selesai`, `masuk`, `masuk.proses`, `keluar` |
+| Kunci katalog | `nama`, `stan`, `harga`, `jenis`, `sematan`, `galeri`, `spesifikasi` |
+| Kelas CSS | `judul-besar`, `kepala-situs`, `kapsul-nav`, `kartu-pilihan`, `titik-promo` |
+| id elemen | `panelKeranjang`, `formPembayaran`, `jumlahRincian`, `kodePromo` |
+
+Yang **tidak** diterjemahkan karena itu nama bawaan, bukan milik proyek ini:
+
+- Direktori kerangka Laravel (`app/Http/Controllers`, `app/Models`, `resources/views`)
+- Kelas dan method kerangka (`Controller`, `Request`, `handle()`, `boot()`, `casts()`)
+- Kelas utilitas Tailwind (`flex`, `items-center`, `bg-white`)
+- API peramban (`localStorage`, `classList`, `addEventListener`, `Intl.NumberFormat`)
+- Kunci aturan validasi (`required`, `max`) dan kolom tabel bawaan (`name`, `email`, `password`)
 
 ## Catatan
 
-- Angka dari browser tidak dipercaya. Saat pesanan disimpan, harga tiap baris
-  dibaca ulang dari tabel menu dan potongan dari tabel diskon.
+- Angka dari browser tidak dipercaya. Saat pesanan dikirim, harga tiap baris
+  dibaca ulang dari katalog dan potongan promo dihitung ulang di server.
+- Pesanan belum disimpan. Rinciannya hanya dititipkan ke session untuk
+  ditampilkan di halaman selesai.
 - Belum ada gerbang pembayaran. Kode QR dan nomor rekening virtual di halaman
   selesai hanyalah contoh.
-- Saldo kartu siswa tercatat, tapi belum ikut terpotong saat memesan.
-- Alamat media sosial dan kontak diatur di `config/grabo.php`. Yang dikosongkan
-  tidak akan dirender.
+- Formulir kontak belum mengirim lewat server; tombolnya menyusun surat di
+  aplikasi email siswa.
 
 ## Lisensi
 

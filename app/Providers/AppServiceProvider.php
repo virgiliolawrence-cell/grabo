@@ -33,8 +33,8 @@ class AppServiceProvider extends ServiceProvider
          * lewat composer, bukan View::share, supaya query-nya hanya jalan saat
          * navbar benar-benar dirender (halaman admin tidak memakainya).
          */
-        View::composer('partials.nav', function ($view) {
-            $view->with('daftarStan', MenuController::stalls());
+        View::composer('bagian.navigasi', function ($tampilan) {
+            $tampilan->with('daftarStan', MenuController::daftarStan());
         });
     }
 }

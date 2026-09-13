@@ -2,18 +2,19 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Isi database dengan data awal.
+     *
+     * Belum ada yang perlu diisi: menu dibaca dari config/menu.php dan
+     * keranjang disimpan di browser. Tambahkan lagi begitu tabel Grabo
+     * dan dasbor pengelola dikerjakan.
      */
     public function run(): void
     {
-        $this->call(GraboSeeder::class);
+        //
     }
 }

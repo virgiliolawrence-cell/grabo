@@ -1,49 +1,46 @@
 <?php
 
-use App\Models\MenuItem;
+use App\Http\Controllers\MenuController;
 
 /*
- * Uji dasar halaman siswa. Semua halaman dijaga middleware 'student',
+ * Uji dasar halaman siswa. Semua halaman dijaga middleware 'siswa',
  * jadi statusnya ditandai dulu di session sebelum halamannya dibuka.
  */
 
+function masuk(): Tests\TestCase
+{
+    return test()->withSession([
+        'grabo_sudah_masuk' => true,
+        'grabo_pengguna' => 'siswa@grabo.sch.id',
+    ]);
+}
+
 test('halaman siswa mengalihkan ke halaman masuk kalau belum masuk', function () {
-    $this->get('/')->assertRedirect(route('login'));
-    $this->get('/menu')->assertRedirect(route('login'));
-    $this->get('/checkout')->assertRedirect(route('login'));
+    $this->get(route('beranda'))->assertRedirect(route('masuk'));
+    $this->get(route('menu'))->assertRedirect(route('masuk'));
+    $this->get(route('kontak'))->assertRedirect(route('masuk'));
+    $this->get(route('pembayaran'))->assertRedirect(route('masuk'));
 });
 
-test('beranda terbuka setelah masuk', function () {
-    $this->withSession(['grabo_logged_in' => true, 'grabo_user' => 'siswa@grabo.sch.id'])
-        ->get('/')
-        ->assertStatus(200)
-        ->assertSee('Menu Populer');
+test('semua halaman siswa terbuka setelah masuk', function (string $namaRute) {
+    masuk()->get(route($namaRute))->assertStatus(200);
+})->with(['beranda', 'menu', 'promo', 'kontak', 'pembayaran']);
+
+test('halaman menu menampilkan seluruh sajian dari katalog', function () {
+    $halaman = masuk()->get(route('menu'))->assertStatus(200);
+
+    foreach (MenuController::semuaSajian() as $sajian) {
+        $halaman->assertSee($sajian['nama']);
+    }
 });
 
-test('halaman menu menampilkan menu dari database', function () {
-    $menu = MenuItem::factory()->create([
-        'slug' => 'nasi-uduk-uji',
-        'name' => 'Nasi Uduk Uji',
-        'stall' => 'Stan Uji',
-        'category' => 'Makanan Berat',
-        'is_available' => true,
-    ]);
-
-    $this->withSession(['grabo_logged_in' => true, 'grabo_user' => 'siswa@grabo.sch.id'])
-        ->get('/menu')
+test('halaman menu bisa disaring per stan', function () {
+    masuk()->get(route('menu', ['stan' => 'Stan Bu Rina']))
         ->assertStatus(200)
-        ->assertSee($menu->name);
+        ->assertSee('Nasi Goreng Kampung')
+        ->assertDontSee('Susu Coklat Dingin');
 });
 
-test('menu yang disembunyikan tidak muncul di halaman menu', function () {
-    $menu = MenuItem::factory()->create([
-        'slug' => 'menu-tersembunyi',
-        'name' => 'Menu Tersembunyi',
-        'is_available' => false,
-    ]);
-
-    $this->withSession(['grabo_logged_in' => true, 'grabo_user' => 'siswa@grabo.sch.id'])
-        ->get('/menu')
-        ->assertStatus(200)
-        ->assertDontSee($menu->name);
+test('slug sajian yang tidak dikenal menghasilkan 404', function () {
+    masuk()->get(route('menu.rincian', 'sajian-karangan'))->assertStatus(404);
 });
