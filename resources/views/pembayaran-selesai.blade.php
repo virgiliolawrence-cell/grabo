@@ -196,6 +196,9 @@
                 <a href="{{ route('menu') }}" class="rounded-full bg-neon-500 px-7 py-3.5 font-semibold text-white shadow-[0_0_28px_rgba(255,106,0,0.45)] transition hover:-translate-y-0.5 hover:bg-neon-600">
                     Kembali Belanja
                 </a>
+                <a href="{{ route('pesanan-saya') }}" class="rounded-full border-2 border-stone-300 px-7 py-3.5 font-semibold text-stone-700 transition hover:border-stone-800 hover:text-stone-900">
+                    Pantau Pesanan
+                </a>
                 <a href="{{ route('beranda') }}" class="rounded-full border-2 border-stone-300 px-7 py-3.5 font-semibold text-stone-700 transition hover:border-stone-800 hover:text-stone-900">
                     Kembali ke beranda
                 </a>

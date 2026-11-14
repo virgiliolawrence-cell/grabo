@@ -54,7 +54,7 @@
 
 /*
  * ---------------------------------------------------------------
- * Navbar
+ * Bilah navigasi
  * Latar sendiri: gradien jingga dalam + dua cahaya lembut + kilau
  * diagonal + tekstur halus, supaya terpisah jelas dari isi halaman.
  * ---------------------------------------------------------------
@@ -63,7 +63,7 @@
     /*
      * Jangan set `position` di sini. Aturan ini tidak berada di dalam @layer,
      * sehingga akan mengalahkan utilitas `sticky` dari Tailwind di markup
-     * dan membuat navbar ikut tergulir. Posisi diatur lewat kelas `sticky top-0`.
+     * dan membuat bilah navigasi ikut tergulir. Posisi diatur lewat kelas `sticky top-0`.
      */
     isolation: isolate;
     background:
@@ -98,7 +98,7 @@
     background: linear-gradient(115deg, transparent 36%, rgb(255 255 255 / 0.13) 50%, transparent 64%);
 }
 
-.kepala-situs.is-tergulir {
+.kepala-situs.tergulir {
     box-shadow: 0 22px 45px -22px rgb(124 42 18 / 0.75);
 }
 
@@ -106,13 +106,13 @@
     transition: padding 0.3s ease;
 }
 
-.kepala-situs.is-tergulir .isi-kepala {
+.kepala-situs.tergulir .isi-kepala {
     padding-top: 0.65rem;
     padding-bottom: 0.65rem;
 }
 
 /* Kapsul kaca tempat tautan navigasi berada. */
-.kapsul-nav {
+.kapsul-navigasi {
     background-color: rgb(41 20 8 / 0.22);
     border: 1px solid rgb(255 255 255 / 0.22);
     box-shadow:
@@ -125,7 +125,7 @@
  * bukan latar yang muncul-hilang di masing-masing tautan.
  * Posisinya dihitung di home.blade.php.
  */
-.penanda-nav {
+.penanda-navigasi {
     position: absolute;
     top: 0;
     left: 0;
@@ -135,9 +135,9 @@
     box-shadow: 0 8px 20px -10px rgb(0 0 0 / 0.55);
     opacity: 0;
     pointer-events: none;
-    transform: translate3d(var(--nav-x, 0), var(--nav-y, 0), 0);
-    width: var(--nav-w, 0);
-    height: var(--nav-h, 0);
+    transform: translate3d(var(--navigasi-x, 0), var(--navigasi-y, 0), 0);
+    width: var(--navigasi-w, 0);
+    height: var(--navigasi-h, 0);
     transition:
         transform 0.45s cubic-bezier(0.34, 1.15, 0.38, 1),
         width 0.45s cubic-bezier(0.34, 1.15, 0.38, 1),
@@ -145,15 +145,15 @@
         opacity 0.25s ease;
 }
 
-.penanda-nav.is-siap {
+.penanda-navigasi.siap {
     opacity: 1;
 }
 
 /*
  * Tab navigasi: status aktif ditentukan oleh scrollspy di home.blade.php,
- * yang menambahkan kelas .is-aktif pada tautan bagian yang sedang dilihat.
+ * yang menambahkan kelas .aktif pada tautan bagian yang sedang dilihat.
  */
-.tautan-nav {
+.tautan-navigasi {
     position: relative;
     z-index: 1;
     border-radius: 9999px;
@@ -166,35 +166,35 @@
         color 0.3s ease;
 }
 
-.tautan-nav:hover {
+.tautan-navigasi:hover {
     background-color: rgb(255 255 255 / 0.16);
     color: #fff;
 }
 
-.tautan-nav:focus-visible {
+.tautan-navigasi:focus-visible {
     outline: 2px solid #fff;
     outline-offset: 2px;
 }
 
-/* Latar putihnya berasal dari .penanda-nav yang meluncur. */
-.tautan-nav.is-aktif {
+/* Latar putihnya berasal dari .penanda-navigasi yang meluncur. */
+.tautan-navigasi.aktif {
     color: var(--color-neon-700);
     font-weight: 600;
 }
 
-.tautan-nav.is-aktif:hover {
+.tautan-navigasi.aktif:hover {
     background-color: transparent;
     color: var(--color-neon-800);
 }
 
 /* Tanpa animasi: penanda langsung pindah. */
 @media (prefers-reduced-motion: reduce) {
-    .penanda-nav {
+    .penanda-navigasi {
         transition: opacity 0.2s ease;
     }
 }
 
-.tautan-nav-ponsel {
+.tautan-navigasi-ponsel {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -207,12 +207,12 @@
         color 0.2s ease;
 }
 
-.tautan-nav-ponsel:hover {
+.tautan-navigasi-ponsel:hover {
     background-color: rgb(255 255 255 / 0.12);
     color: #fff;
 }
 
-.tautan-nav-ponsel.is-aktif {
+.tautan-navigasi-ponsel.aktif {
     background-color: #fff;
     color: var(--color-neon-700);
     font-weight: 600;
@@ -221,7 +221,7 @@
 @media (prefers-reduced-motion: reduce) {
     .kepala-situs,
     .kepala-situs .isi-kepala,
-    .tautan-nav {
+    .tautan-navigasi {
         transition: none;
     }
 }
@@ -231,11 +231,11 @@
  * Radio-nya disembunyikan, kartunya yang menandakan status terpilih.
  */
 /*
- * Status terpilih ditandai kelas .is-terpilih dari JavaScript, bukan hanya
+ * Status terpilih ditandai kelas .terpilih dari JavaScript, bukan hanya
  * :has(). Selain :has() belum ada di browser lama, evaluasinya juga tidak
  * selalu diperbarui saat radio berubah lewat skrip.
  */
-.kartu-pilihan.is-terpilih,
+.kartu-pilihan.terpilih,
 .kartu-pilihan:has(input:checked) {
     border-color: var(--color-neon-500);
     background-color: var(--color-neon-50);
@@ -246,7 +246,7 @@
     outline-offset: 2px;
 }
 
-.kartu-pilihan.is-terpilih .titik-pilihan,
+.kartu-pilihan.terpilih .titik-pilihan,
 .kartu-pilihan:has(input:checked) .titik-pilihan {
     border-color: var(--color-neon-500);
     border-width: 6px;
@@ -270,16 +270,16 @@
 .lingkar-centang {
     stroke-dasharray: 166;
     stroke-dashoffset: 166;
-    animation: check-draw 0.55s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    animation: gambar-centang 0.55s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
 
 .goresan-centang {
     stroke-dasharray: 48;
     stroke-dashoffset: 48;
-    animation: check-draw 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.45s forwards;
+    animation: gambar-centang 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.45s forwards;
 }
 
-@keyframes check-draw {
+@keyframes gambar-centang {
     to {
         stroke-dashoffset: 0;
     }
@@ -323,7 +323,7 @@
         background-color 0.3s ease;
 }
 
-.titik-promo.is-kini {
+.titik-promo.kini {
     width: 1.75rem;
     background-color: #fff;
 }
@@ -332,13 +332,13 @@
  * Kartu promo yang kodenya sedang tersimpan di keranjang.
  * Dipasang lewat JavaScript (lihat tandaiKartuAktif di partials/scripts).
  */
-.kartu-promo.is-dipakai {
+.kartu-promo.dipakai {
     outline: 2px solid #059669;
     outline-offset: 2px;
     box-shadow: 0 18px 40px -18px rgb(5 150 105 / 0.55);
 }
 
-.kartu-promo.is-dipakai [data-kotak-kode] {
+.kartu-promo.dipakai [data-kotak-kode] {
     border-style: solid;
     border-color: #059669;
     background-color: #ecfdf5;
@@ -364,6 +364,267 @@
     }
 
     .animasi-mengapung {
+        animation: none;
+    }
+}
+
+/*
+ * ---------------------------------------------------------------
+ * Bilah navigasi dasbor penjual
+ * Pil jingga yang meluncur antar-tab; posisinya diatur skrip di
+ * bagian/penjual/kepala.blade.php lewat --x, --y, --w, --h.
+ * ---------------------------------------------------------------
+ */
+.tautan-penjual {
+    position: relative;
+    z-index: 1;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+    color: rgb(255 255 255 / 0.6);
+    transition:
+        color 0.3s ease,
+        background-color 0.25s ease;
+}
+
+.tautan-penjual:hover,
+.tautan-penjual.disorot {
+    color: #fff;
+}
+
+.tautan-penjual.aktif {
+    font-weight: 600;
+}
+
+/* Tanpa JavaScript: tab aktif diberi latar sendiri, tab lain latar saat hover. */
+.navigasi-penjual:not(.pil-siap) .tautan-penjual.aktif {
+    background-color: var(--color-neon-500);
+    color: #fff;
+}
+
+.navigasi-penjual:not(.pil-siap) .tautan-penjual:not(.aktif):hover {
+    background-color: rgb(255 255 255 / 0.1);
+}
+
+.tautan-penjual:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.penanda-penjual,
+.bayangan-penjual {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: var(--w, 0);
+    height: var(--h, 0);
+    border-radius: 9999px;
+    background: linear-gradient(135deg, var(--color-neon-400), var(--color-neon-600));
+    box-shadow:
+        0 8px 22px -8px rgb(255 106 0 / 0.75),
+        inset 0 1px 0 rgb(255 255 255 / 0.3);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(var(--x, 0), var(--y, 0), 0);
+    transition:
+        transform 0.45s cubic-bezier(0.34, 1.3, 0.38, 1),
+        width 0.45s cubic-bezier(0.34, 1.3, 0.38, 1),
+        height 0.3s ease,
+        opacity 0.25s ease,
+        background 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.penanda-penjual.siap,
+.bayangan-penjual.siap {
+    opacity: 1;
+}
+
+/* Pil tipis yang mengikuti kursor; tab aktif tetap memegang pil jingga. */
+.bayangan-penjual {
+    background: rgb(255 255 255 / 0.1);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.16);
+    transition:
+        transform 0.35s cubic-bezier(0.34, 1.2, 0.38, 1),
+        width 0.35s cubic-bezier(0.34, 1.2, 0.38, 1),
+        height 0.3s ease,
+        opacity 0.2s ease;
+}
+
+/* Garis jingga di bawah bilah navigasi dengan kilau yang berjalan. */
+.garis-penjual {
+    background:
+        linear-gradient(100deg, transparent 0%, transparent 40%, rgb(255 255 255 / 0.65) 50%, transparent 60%, transparent 100%),
+        linear-gradient(90deg, var(--color-neon-800), var(--color-neon-500), var(--color-neon-700));
+    background-size:
+        250% 100%,
+        100% 100%;
+    background-repeat: no-repeat;
+    animation: kilau-garis 4.5s ease-in-out infinite;
+}
+
+@keyframes kilau-garis {
+    from {
+        background-position:
+            150% 0,
+            0 0;
+    }
+    to {
+        background-position:
+            -150% 0,
+            0 0;
+    }
+}
+
+/*
+ * Perpindahan halaman dasbor (View Transitions, diaktifkan di tataletak/penjual).
+ * Bilah navigasi tidak ikut memudar; hanya isi halaman yang bergeser halus. Pil jingga
+ * di bilah navigasi baru meluncur dari tab lama ke tab baru selama transisi berlangsung.
+ */
+.kepala-penjual {
+    view-transition-name: kepala-penjual;
+}
+
+.isi-penjual {
+    view-transition-name: isi-penjual;
+}
+
+::view-transition-old(kepala-penjual) {
+    display: none;
+}
+
+::view-transition-new(kepala-penjual) {
+    animation: none;
+}
+
+::view-transition-group(isi-penjual) {
+    animation-duration: 0.3s;
+}
+
+::view-transition-old(isi-penjual) {
+    animation: isi-keluar 0.18s ease-in both;
+}
+
+::view-transition-new(isi-penjual) {
+    animation: isi-masuk 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) 0.06s both;
+}
+
+@keyframes isi-keluar {
+    to {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes isi-masuk {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+/*
+ * Perpindahan halaman siswa (diaktifkan di tataletak/grabo). Bilah atas dan
+ * bilah navigasi tetap di tempat; isi halaman memudar sambil bergeser, dan pil putih
+ * di bilah navigasi meluncur dari tab lama ke tab baru.
+ */
+.bilah-atas {
+    view-transition-name: bilah-atas;
+}
+
+.kepala-situs {
+    view-transition-name: kepala-situs;
+}
+
+.isi-situs {
+    view-transition-name: isi-situs;
+}
+
+::view-transition-old(bilah-atas),
+::view-transition-old(kepala-situs) {
+    display: none;
+}
+
+::view-transition-new(bilah-atas),
+::view-transition-new(kepala-situs) {
+    animation: none;
+}
+
+::view-transition-group(kepala-situs) {
+    animation-duration: 0.35s;
+    animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+::view-transition-old(isi-situs) {
+    animation: isi-keluar 0.2s ease-in both;
+}
+
+::view-transition-new(isi-situs) {
+    animation: isi-masuk-situs 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) 0.08s both;
+}
+
+@keyframes isi-masuk-situs {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.995);
+    }
+}
+
+/* Peramban tanpa View Transitions: isi cukup muncul memudar saat dimuat. */
+@supports not (view-transition-name: none) {
+    .isi-penjual {
+        animation: isi-masuk 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+
+    .isi-situs {
+        animation: isi-masuk-situs 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+}
+
+/*
+ * Muncul saat digulir: kartu & judul di bawah layar pertama naik perlahan saat
+ * terlihat. Kelasnya dipasang skrip di bagian/skrip.blade.php, jadi tanpa
+ * JavaScript semuanya langsung tampil.
+ */
+.siap-muncul {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) var(--jeda-muncul, 0s),
+        transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) var(--jeda-muncul, 0s);
+}
+
+.siap-muncul.muncul {
+    opacity: 1;
+    transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+
+    .isi-penjual,
+    .isi-situs {
+        animation: none;
+    }
+
+    .siap-muncul {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .penanda-penjual,
+    .bayangan-penjual,
+    .tautan-penjual {
+        transition: opacity 0.2s ease;
+    }
+
+    .garis-penjual {
         animation: none;
     }
 }

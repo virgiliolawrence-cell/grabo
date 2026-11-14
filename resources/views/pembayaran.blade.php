@@ -56,14 +56,14 @@
                         <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <label for="nama" class="block text-[11px] uppercase tracking-[0.18em] text-stone-500">Nama siswa</label>
-                                <input type="text" id="nama" name="nama" required value="{{ old('nama') }}" placeholder="Nama lengkap"
+                                <input type="text" id="nama" name="nama" required value="{{ old('nama', auth()->user()->nama) }}" placeholder="Nama lengkap"
                                     class="mt-2 w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-neon-500 focus:bg-white focus:ring-4 focus:ring-neon-500/20">
                                 @error('nama') <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p> @enderror
                             </div>
 
                             <div>
                                 <label for="kelas" class="block text-[11px] uppercase tracking-[0.18em] text-stone-500">Kelas</label>
-                                <input type="text" id="kelas" name="kelas" required value="{{ old('kelas') }}" placeholder="Contoh: XII TKJ 1"
+                                <input type="text" id="kelas" name="kelas" required value="{{ old('kelas', auth()->user()->kelas) }}" placeholder="Contoh: XII TKJ 1"
                                     class="mt-2 w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3 text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-neon-500 focus:bg-white focus:ring-4 focus:ring-neon-500/20">
                                 @error('kelas') <p class="mt-1.5 text-sm text-red-600">{{ $message }}</p> @enderror
                             </div>

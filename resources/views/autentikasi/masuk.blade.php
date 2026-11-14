@@ -37,11 +37,11 @@
                     </div>
 
                     <div>
-                        <label for="sandi" class="block text-[11px] uppercase tracking-[0.18em] text-stone-500">
+                        <label for="kata_sandi" class="block text-[11px] uppercase tracking-[0.18em] text-stone-500">
                             Kata sandi
                         </label>
                         <div class="relative mt-2">
-                            <input type="password" id="sandi" name="sandi" autocomplete="current-password" required
+                            <input type="password" id="kata_sandi" name="kata_sandi" autocomplete="current-password" required
                                 placeholder="Minimal 8 karakter"
                                 aria-describedby="galatSandi"
                                 class="w-full rounded-xl border border-stone-200 bg-stone-50 px-4 py-3.5 pr-12 text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-neon-500 focus:bg-white focus:ring-4 focus:ring-neon-500/20">
@@ -60,8 +60,8 @@
                     </div>
 
                     <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
-                        <label for="ingatSaya" class="flex items-center gap-2.5 text-sm text-stone-600">
-                            <input type="checkbox" id="ingatSaya" name="ingatSaya" value="1"
+                        <label for="ingat_saya" class="flex items-center gap-2.5 text-sm text-stone-600">
+                            <input type="checkbox" id="ingat_saya" name="ingat_saya" value="1"
                                 class="h-4 w-4 rounded border-stone-300 text-neon-500 accent-neon-500 focus:ring-neon-500">
                             Ingat saya
                         </label>
@@ -93,7 +93,7 @@
 
         {{-- Kolom kanan: gambar --}}
         <div class="relative hidden overflow-hidden lg:block lg:w-1/2">
-            <img src="{{ asset('images/food/photos/nasi-goreng-kampung.jpg') }}" alt=""
+            <img src="{{ asset('gambar/sajian/nasi-goreng-kampung.jpg') }}" alt=""
                 class="absolute inset-0 h-full w-full object-cover" aria-hidden="true">
             {{-- Gradien berat di bawah saja, supaya fotonya tetap terlihat. --}}
             <div class="absolute inset-0 bg-gradient-to-t from-neon-900/95 via-neon-800/70 to-neon-600/30"></div>
@@ -130,7 +130,7 @@
     <script>
         const formMasuk = document.getElementById('formMasuk');
         const kolomEmail = document.getElementById('email');
-        const kolomSandi = document.getElementById('sandi');
+        const kolomSandi = document.getElementById('kata_sandi');
         const galatEmail = document.getElementById('galatEmail');
         const galatSandi = document.getElementById('galatSandi');
         const catatanForm = document.getElementById('catatanForm');
@@ -184,7 +184,7 @@
 
         [kolomEmail, kolomSandi].forEach((kolom) => {
             kolom.addEventListener('input', () => {
-                bersihkanGalat(field, kolom === kolomEmail ? galatEmail : galatSandi);
+                bersihkanGalat(kolom, kolom === kolomEmail ? galatEmail : galatSandi);
             });
         });
 
@@ -204,5 +204,13 @@
             catatanForm.textContent = @json(session('status'));
             catatanForm.classList.remove('hidden');
         @endif
+
+        {{-- Galat dari server (mis. email/sandi tidak cocok) ditampilkan di kolomnya. --}}
+        @error('email')
+            tampilkanGalat(kolomEmail, galatEmail, @json($message));
+        @enderror
+        @error('kata_sandi')
+            tampilkanGalat(kolomSandi, galatSandi, @json($message));
+        @enderror
     </script>
 @endsection

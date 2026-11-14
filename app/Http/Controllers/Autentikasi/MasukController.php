@@ -6,39 +6,52 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class MasukController extends Controller
 {
     /**
-     * Formulir masuk.
+     * Formulir masuk. Yang sudah masuk tidak dihadang middleware 'guest'
+     * di rute, jadi dialihkan dari sini.
      */
     public function form(Request $permintaan): View|RedirectResponse
     {
-        // Sudah masuk: tidak perlu melihat formulir lagi.
-        if ($permintaan->session()->get('grabo_sudah_masuk')) {
-            return redirect()->route('beranda');
+        if ($permintaan->user()) {
+            return redirect()->to($this->halamanAwal($permintaan));
         }
 
         return view('autentikasi.masuk');
     }
 
     /**
-     * Proses masuk.
-     *
-     * Belum ada tabel pengguna, jadi kredensial hanya divalidasi formatnya dan
-     * status masuk ditandai di session. Ganti dengan Auth::attempt() begitu
-     * model Pengguna dan migrasinya tersedia.
+     * Proses masuk dengan akun di tabel pengguna.
      */
     public function proses(Request $permintaan): RedirectResponse
     {
         $kredensial = $permintaan->validate([
             'email' => ['required', 'email'],
-            'sandi' => ['required', 'string', 'min:8'],
+            'kata_sandi' => ['required', 'string', 'min:8'],
         ]);
 
+        $berhasil = Auth::attempt(
+            // Kunci 'password' wajib bagi Auth::attempt; nilainya dicocokkan ke kolom kata_sandi.
+            ['email' => $kredensial['email'], 'password' => $kredensial['kata_sandi']],
+            $permintaan->boolean('ingat_saya'),
+        );
+
+        if (! $berhasil) {
+            throw ValidationException::withMessages([
+                'email' => 'Email atau kata sandi tidak cocok.',
+            ]);
+        }
+
         $permintaan->session()->regenerate();
-        $permintaan->session()->put('grabo_sudah_masuk', true);
-        $permintaan->session()->put('grabo_pengguna', $kredensial['email']);
+
+        // Penjual langsung ke dasbor; murid kembali ke halaman yang tadi dituju.
+        if ($permintaan->user()->adalahPenjual()) {
+            return redirect()->route('penjual.pembelian');
+        }
 
         return redirect()->intended(route('beranda'));
     }
@@ -48,9 +61,16 @@ class MasukController extends Controller
      */
     public function keluar(Request $permintaan): RedirectResponse
     {
-        $permintaan->session()->forget(['grabo_sudah_masuk', 'grabo_pengguna']);
-        $permintaan->session()->regenerate();
+        Auth::logout();
+
+        $permintaan->session()->invalidate();
+        $permintaan->session()->regenerateToken();
 
         return redirect()->route('masuk')->with('status', 'Kamu sudah keluar dari akun.');
+    }
+
+    private function halamanAwal(Request $permintaan): string
+    {
+        return $permintaan->user()->adalahPenjual() ? route('penjual.pembelian') : route('beranda');
     }
 }

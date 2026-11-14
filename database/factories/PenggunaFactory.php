@@ -14,26 +14,42 @@ class PenggunaFactory extends Factory
 {
     protected $model = Pengguna::class;
 
-    /** Kata sandi yang sedang dipakai factory ini. */
+    /**
+     * Sandi yang sudah di-hash, dipakai ulang supaya pengujian tidak lambat.
+     */
     protected static ?string $sandi;
 
     /**
-     * Nilai bawaan model saat dibuat lewat factory.
+     * Bawaannya akun murid.
      *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'nama' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$sandi ??= Hash::make('password'),
+            'kata_sandi' => static::$sandi ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'peran' => Pengguna::PERAN_MURID,
+            'nis' => (string) fake()->unique()->numberBetween(2024001, 2026999),
+            'kelas' => fake()->randomElement(['X', 'XI', 'XII']).' '.fake()->randomElement(['RPL', 'TKJ', 'AKL']).' '.fake()->numberBetween(1, 2),
         ];
     }
 
-    /** Akun yang emailnya belum diverifikasi. */
+    /**
+     * Akun pengelola dasbor penjual.
+     */
+    public function penjual(): static
+    {
+        return $this->state(fn (array $atribut) => [
+            'peran' => Pengguna::PERAN_PENJUAL,
+            'nis' => null,
+            'kelas' => null,
+        ]);
+    }
+
     public function belumTerverifikasi(): static
     {
         return $this->state(fn (array $atribut) => [

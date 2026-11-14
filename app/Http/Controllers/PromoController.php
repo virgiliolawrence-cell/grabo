@@ -2,26 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Diskon;
 use Illuminate\Contracts\View\View;
 
 class PromoController extends Controller
 {
     /**
-     * Daftar kode promo beserta syaratnya.
+     * Kode promo yang sedang aktif beserta syaratnya, dari tabel diskon.
      *
      * Dipakai KODE_PROMO di bagian/skrip.blade.php untuk menghitung potongan
-     * di layar. Pindahkan ke tabel diskon begitu dasbor pengelola dikerjakan,
-     * dan hitung ulang potongannya di server saat pesanan dikirim.
+     * di layar. Saat pesanan dikirim, potongannya dihitung ulang di server.
      *
-     * @return array<string, array<string, mixed>>
+     * @return array<string, array{potongan: int, belanjaMinimal: int, label: string}>
      */
     public static function kodePromo(): array
     {
-        return [
-            'HEMAT14' => ['potongan' => 2000, 'belanjaMinimal' => 14000, 'label' => 'Paket hemat'],
-            'ROTI21' => ['potongan' => 9000, 'belanjaMinimal' => 18000, 'label' => 'Beli 2 gratis 1'],
-            'SEGAR5' => ['potongan' => 1000, 'belanjaMinimal' => 5000, 'label' => 'Promo minuman'],
-        ];
+        return Diskon::query()
+            ->where('aktif', true)
+            ->get()
+            ->mapWithKeys(fn (Diskon $diskon) => [$diskon->kode => [
+                'potongan' => $diskon->potongan,
+                'belanjaMinimal' => $diskon->belanja_minimal,
+                'label' => $diskon->label,
+            ]])
+            ->all();
     }
 
     /**
@@ -37,7 +41,7 @@ class PromoController extends Controller
                 'harga' => 'Rp 14.000',
                 'hargaAsli' => 'Rp 16.000',
                 'kode' => 'HEMAT14',
-                'gambar' => 'images/food/photos/nasi-goreng-kampung.jpg',
+                'gambar' => 'gambar/sajian/nasi-goreng-kampung.jpg',
                 'alt' => 'Sepiring nasi goreng kampung lengkap dengan kerupuk',
                 'sematan' => 'Paling laris',
             ],
@@ -48,7 +52,7 @@ class PromoController extends Controller
                 'harga' => 'Rp 18.000',
                 'hargaAsli' => 'Rp 27.000',
                 'kode' => 'ROTI21',
-                'gambar' => 'images/food/photos/roti-bakar-coklat.jpg',
+                'gambar' => 'gambar/sajian/roti-bakar-coklat.jpg',
                 'alt' => 'Roti bakar isi coklat yang sudah dipanggang',
                 'sematan' => 'Menu baru',
             ],
@@ -59,7 +63,7 @@ class PromoController extends Controller
                 'harga' => 'Rp 5.000',
                 'hargaAsli' => 'Rp 6.000',
                 'kode' => 'SEGAR5',
-                'gambar' => 'images/food/photos/es-cendol.jpg',
+                'gambar' => 'gambar/sajian/es-cendol.jpg',
                 'alt' => 'Semangkuk es cendol dengan serutan es',
                 'sematan' => null,
             ],

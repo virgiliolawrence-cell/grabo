@@ -1,31 +1,49 @@
 # Grabo — Kantin Sekolah Digital
 
-Situs pemesanan kantin sekolah. Siswa memilih menu dari ponselnya saat masih di
-kelas, membayar tunai di loket atau lewat pembayaran daring, lalu mengambil
-pesanan tanpa ikut mengantre.
+Aplikasi web pemesanan kantin sekolah. **Murid** memilih menu dari ponselnya
+saat masih di kelas, membayar, lalu mengambil pesanan tanpa ikut mengantre.
+**Penjual** (pengelola kantin) memakai dasbor untuk melihat pesanan yang masuk,
+mencentang menu yang sudah disiapkan, mengelola menu dan diskon, serta melihat
+laporan transaksi.
 
 ![Beranda Grabo](docs/gambar/beranda.jpg)
+
+> Laporan lengkap pembagian tugas beserta gambar bukti hasil kerja:
+> [docs/Laporan-Proyek-Grabo.pdf](docs/Laporan-Proyek-Grabo.pdf)
 
 ---
 
 ## Daftar Isi
 
+- [Anggota Kelompok](#anggota-kelompok)
 - [Latar Belakang](#latar-belakang)
 - [Deskripsi Aplikasi](#deskripsi-aplikasi)
-- [Fitur Utama](#fitur-utama)
+- [Fitur Murid](#fitur-murid)
+- [Fitur Dasbor Penjual](#fitur-dasbor-penjual)
+- [Desain UI (Figma)](#desain-ui-figma)
 - [Tangkapan Layar](#tangkapan-layar)
 - [Teknologi](#teknologi)
 - [Cara Menjalankan](#cara-menjalankan)
-- [Cara Memakai](#cara-memakai)
+- [Akun Contoh](#akun-contoh)
 - [Struktur Proyek](#struktur-proyek)
-- [Sumber Data](#sumber-data)
+- [Basis Data](#basis-data)
 - [Keputusan Teknis](#keputusan-teknis)
 - [Aturan Penamaan](#aturan-penamaan)
+- [Alur Kerja Git](#alur-kerja-git)
 - [Pengujian](#pengujian)
 - [Batasan Saat Ini](#batasan-saat-ini)
 - [Rencana Lanjutan](#rencana-lanjutan)
 
 ---
+
+## Anggota Kelompok
+
+| Nama | Bagian | Tanggung jawab |
+|---|---|---|
+| Virgilio Lawrence | Backend Developer | Basis data, autentikasi & peran akun, penyimpanan pesanan, logika dasbor penjual, validasi, pengujian |
+| Vinno Alvian Chow | Frontend Developer | Halaman murid, tata letak dasbor penjual, animasi & transisi halaman, tampilan ponsel |
+| Ryo Marvel | Frontend Designer (UI/UX) | Desain Figma halaman Beranda, Menu, dan Promo |
+| Justin Geraldo | Backend Designer (UI/UX) | Desain halaman Masuk, Checkout, Pesanan Diterima, dan seluruh dasbor penjual |
 
 ## Latar Belakang
 
@@ -35,179 +53,170 @@ petugas stan kewalahan menerima pesanan lisan dari puluhan siswa sekaligus
 sambil menghitung uang kembalian.
 
 Grabo memindahkan tahap **memilih dan memesan** ke waktu sebelum bel istirahat
-berbunyi. Ketika bel berbunyi, siswa tinggal mengambil pesanan yang sudah
+berbunyi. Ketika bel berbunyi, murid tinggal mengambil pesanan yang sudah
 disiapkan.
 
 ## Deskripsi Aplikasi
 
-Grabo adalah aplikasi web yang mengumpulkan seluruh stan kantin sekolah dalam
-satu halaman. Aplikasi ini ditujukan untuk **siswa** sebagai pemesan, dengan
-bagian pengelolaan untuk **petugas kantin** yang sedang dikembangkan.
+Grabo mengumpulkan seluruh stan kantin sekolah dalam satu aplikasi dengan dua
+jenis akun:
 
-Alurnya sederhana:
+| Peran | Setelah masuk | Yang bisa dilakukan |
+|---|---|---|
+| **Murid** | Beranda | Memesan menu, memakai kode promo, membayar, memantau status pesanan |
+| **Penjual** | Dasbor penjual | Menyiapkan pesanan, mengelola menu, diskon, data murid, laporan, profil kantin |
+
+Alur satu pesanan dari dua sisi:
 
 ```
-Masuk  ->  Pilih menu  ->  Atur varian & jumlah  ->  Keranjang
-                                                        |
-        Ambil di loket  <-  Kode pesanan  <-  Pilih cara bayar
+Murid   : Masuk -> Pilih menu & varian -> Keranjang -> Bayar -> Kode pesanan
+                                                                    |
+Penjual :              Serahkan & selesai <- Centang tiap menu <- Pesanan masuk
+                                                  |
+Murid   :                      Pesanan Saya: "Siap diambil" -> ambil di loket
 ```
 
 Yang membedakan Grabo dari sekadar daftar menu:
 
-- **Satu halaman untuk semua stan.** Siswa tidak perlu berjalan dari stan ke
+- **Satu halaman untuk semua stan.** Murid tidak perlu berjalan dari stan ke
   stan untuk tahu apa yang dijual hari ini.
-- **Varian dihitung langsung.** Tambah porsi jumbo atau tambah saus langsung
-  mengubah harga di layar sebelum masuk keranjang.
-- **Harga tidak bisa dipalsukan.** Nilai kiriman dari browser dihitung ulang di
-  server memakai harga katalog, jadi total yang muncul selalu sah.
-- **Seluruh antarmuka bahasa Indonesia**, termasuk pesan kesalahan formulir dan
-  penomoran halaman.
+- **Harga tidak bisa dipalsukan.** Isi keranjang dari browser dihitung ulang di
+  server memakai harga di basis data.
+- **Daftar centang per menu.** Penjual mencentang setiap menu yang sudah
+  disiapkan, status pesanan ikut berubah, dan murid melihatnya di halaman
+  Pesanan Saya.
+- **Seluruh antarmuka dan kode berbahasa Indonesia**, termasuk pesan kesalahan
+  formulir, nama tabel, dan nama kelas.
 
-## Fitur Utama
+## Fitur Murid
 
-### 1. Masuk & penjagaan halaman
-
-- Halaman masuk terpisah (kiri formulir, kanan gambar) dengan validasi di sisi
-  klien: format email diperiksa, kata sandi minimal 8 karakter.
-- Tombol mata untuk menampilkan atau menyembunyikan kata sandi.
-- Seluruh halaman siswa dijaga middleware `siswa`. Membuka halaman apa pun
-  sebelum masuk akan dialihkan ke halaman masuk, dan tujuan awalnya diingat
-  supaya bisa dilanjutkan setelah masuk.
-- Tombol keluar mengakhiri sesi dan menutup kembali seluruh halaman.
+### 1. Masuk & keamanan akun
+- Masuk memakai akun di tabel `pengguna`; kata sandi disimpan ter-hash.
+- Pesan kesalahan tampil bila email atau kata sandi tidak cocok.
+- Murid diarahkan ke beranda; halaman yang dibuka sebelum masuk diingat dan
+  dilanjutkan setelah masuk.
+- Tombol mata untuk menampilkan kata sandi, dan pilihan **Ingat saya**.
 
 ### 2. Beranda
-
-- Hero poster dengan ilustrasi 2D dan ajakan memesan.
-- Tiga angka ringkas: siswa terdaftar, jumlah stan, waktu antre.
-- Tiga keunggulan layanan.
-- Enam menu populer yang bisa langsung dimasukkan ke keranjang lewat tombol
-  tambah cepat di kartunya.
-- Bagian "Cara Memesan" berisi tiga langkah: Pilih Menu → Kirim Pesanan →
-  Ambil Pesanan.
+- Poster pembuka "Pesan Sebelum Bel, Makan Duluan" dengan ilustrasi melayang.
+- Angka ringkas, tiga keunggulan layanan, menu populer, dan langkah cara memesan.
 
 ### 3. Daftar menu
+- Korsel promo yang bergeser otomatis.
+- Sajian dikelompokkan per kategori: Makanan Berat, Gorengan & Camilan, Minuman.
+- Penyaring per stan lewat menu turun "Cari stan kantin" di bilah atas.
+- Hanya menu yang sedang dijual yang tampil; menu yang ditandai habis oleh
+  penjual otomatis tersembunyi.
 
-- Korsel promo di bagian atas: geser otomatis, bisa dimajukan lewat tombol
-  panah atau titik penanda, dan setiap bingkai menuju halaman sajian itu.
-- Seluruh sajian dikelompokkan per kategori: Makanan Berat, Gorengan & Camilan,
-  dan Minuman.
-- **Penyaring per stan** lewat dropdown "Cari stan kantin" di bilah atas.
-  Kategori yang jadi kosong tidak ditampilkan, dan ada keterangan berapa sajian
-  yang tampil beserta tombol untuk menampilkan semua stan lagi.
-- Setiap kartu menampilkan foto, nama stan, harga, dan label seperti
-  "Paling Laris" atau "Menu Baru".
+### 4. Rincian sajian
+- Galeri foto, nilai ulasan, jumlah terjual, perkiraan waktu siap, spesifikasi.
+- Pilihan varian sesuai jenis sajian (tingkat pedas & porsi, tambah saus, atau
+  suhu, gula & es), harga ikut berubah, dan kolom catatan untuk stan.
+- Tombol **Tambah ke Keranjang** dan **Beli Sekarang**.
 
-### 4. Halaman rincian sajian
+### 5. Keranjang & kode promo
+- Panel geser dari kanan; isinya disimpan di `localStorage`.
+- Tombol tambah, kurang, dan ubah varian per baris.
+- Kode promo dari halaman Promo bisa disalin sekaligus dipasang ke keranjang.
 
-- Foto besar, remah roti navigasi, nilai ulasan, jumlah terjual, dan perkiraan
-  waktu siap.
-- **Pilihan varian** yang berbeda menurut jenis sajian:
-  - Makanan: tingkat pedas, porsi (porsi jumbo menambah harga)
-  - Camilan: porsi, tambah saus
-  - Minuman: suhu, kadar gula, banyak es
-- Subtotal berubah langsung setiap varian atau jumlah diubah.
-- Kolom catatan untuk stan, misalnya "sambalnya dipisah".
-- Dua tombol: **Tambah ke Keranjang** dan **Beli Sekarang** (langsung ke
-  halaman pembayaran).
-- Tabel spesifikasi: porsi, kemasan, bahan yang dikandung.
-- Saran tiga sajian lain dari kategori yang sama.
+### 6. Pembayaran & konfirmasi
+- Nama dan kelas otomatis terisi dari akun.
+- Waktu ambil: secepatnya, istirahat 1 (09.30), atau istirahat 2 (12.00).
+- Metode: tunai di loket, saldo kartu pelajar, QRIS, transfer bank, dompet digital.
+- Pesanan **disimpan ke basis data** dan mendapat kode unik, misalnya `GRB-7Q2KXA`.
 
-### 5. Keranjang
+### 7. Pesanan Saya
+- Riwayat pesanan murid beserta statusnya: Menunggu, Diproses, Siap diambil,
+  Selesai, atau Batal.
+- Centang hijau di setiap menu yang sudah disiapkan stan.
 
-- Panel geser dari samping, bisa ditutup lewat tombol, klik latar, atau Escape.
-- Lencana angka di ikon keranjang mengikuti jumlah porsi.
-- Setiap baris bisa ditambah, dikurangi, atau **diklik untuk diubah** — akan
-  membuka kembali halaman rincian sajian itu dengan varian yang sudah terpasang.
-- Tombol kosongkan keranjang.
-- Isinya disimpan di `localStorage`, jadi tetap ada saat berpindah halaman atau
-  menutup tab.
+### 8. Kontak
+- Kartu email, telepon, dan loket; jam layanan; daftar stan; pertanyaan umum;
+  formulir pesan.
 
-### 6. Kode promo
+## Fitur Dasbor Penjual
 
-- Halaman Promo memuat tiga penawaran bulan ini beserta harga sebelum dan
-  sesudah diskon.
-- Tombol **Salin kode** melakukan dua hal sekaligus: menyalin kode ke papan
-  klip dan menyimpannya ke keranjang.
-- Indikasi berlapis setelah ditekan: tombol berubah hijau bertanda centang,
-  muncul keterangan potongannya, dan kartunya diberi pita **"Sedang dipakai"**
-  yang tetap terpasang setelah halaman dimuat ulang.
-- Kode juga bisa diketik manual di panel keranjang. Kode yang belum memenuhi
-  belanja minimal ditolak dengan keterangan syaratnya.
+Semua halaman di `/penjual` hanya bisa dibuka akun berperan `penjual`. Murid
+yang mencoba membukanya dikeluarkan dan diminta masuk dengan akun penjual.
 
-### 7. Pembayaran
+| Halaman | Fungsi |
+|---|---|
+| **Manajemen Pembelian** | Semua pesanan terbaru, tab penyaring per status, pencarian kode/nama, **daftar centang per menu**, ubah status |
+| **Rincian Pesanan** | Kartu pesanan dengan daftar centang, tombol *Serahkan & selesai* dan *Batalkan* |
+| **Data Pembeli** | Daftar murid beserta jumlah pesanan, total belanja, pesanan terakhir; daftarkan akun murid baru |
+| **Rincian Pembeli** | Semua yang pernah dibeli satu murid: pesanan berjalan (bisa dicentang), riwayat, menu favorit |
+| **Manajemen Menu** | Tambah, ubah, unggah foto, tandai habis / jual lagi |
+| **Manajemen Diskon** | Tambah kode promo, aktifkan / nonaktifkan, hitungan pemakaian |
+| **Laporan Transaksi** | Saring per tanggal & metode bayar, baris total pendapatan, hapus transaksi |
+| **Profil Penjual** | Nama kantin, pengelola, kontak, lokasi, jam buka & tutup |
 
-- Ringkasan pesanan, subtotal, potongan promo, dan total bayar.
-- Empat langkah bernomor: data pemesan, waktu pengambilan, metode pembayaran,
-  catatan.
-- Waktu pengambilan: secepatnya, istirahat 1 (09.30), atau istirahat 2 (12.00).
-- **Bayar di tempat**: tunai di loket atau saldo kartu pelajar.
-- **Bayar daring**: QRIS, transfer bank (dengan pilihan bank), atau dompet
-  digital (GoPay, OVO, DANA). Panel rincian tiap metode muncul sesuai pilihan.
-- Total dihitung ulang di server dari harga katalog — nilai kiriman browser
-  tidak dipercaya.
+Status pesanan berjalan otomatis mengikuti centang:
 
-### 8. Konfirmasi pesanan
+```
+Menunggu --(centang pertama)--> Diproses --(semua tercentang)--> Siap diambil --(diserahkan)--> Selesai
+```
 
-- Animasi centang, **kode pesanan** yang ditunjukkan ke petugas, dan tombol
-  salin kode dengan tiga lapis cadangan (Clipboard API → `execCommand` →
-  menyorot kodenya supaya tinggal ditekan Ctrl+C).
-- Ringkasan menu yang dipesan, rincian pemesan, dan cara membayar sesuai metode
-  yang dipilih (kode QR contoh, nomor rekening virtual, atau instruksi tunai).
-- Tiga langkah selanjutnya beserta status pesanannya.
-- Keranjang dan kode promo otomatis dibersihkan setelah ringkasan tergambar.
+## Desain UI (Figma)
 
-### 9. Halaman kontak
+Desain dibuat di Figma lebih dulu, lalu dijadikan acuan saat membangun halaman.
+Berkas desain aslinya ada di [`docs/figma/`](docs/figma).
 
-- Tiga kartu kontak: email, telepon, dan loket koperasi — semuanya tautan aktif
-  (`mailto:` dan `tel:`).
-- Jam layanan per hari dan jam kedua istirahat.
-- Daftar stan yang buka; setiap stan menuju halaman menu yang sudah tersaring.
-- Empat pertanyaan yang sering muncul dalam bentuk akordeon.
-- Formulir pesan dengan penghitung huruf. Tombolnya menyusun surat di aplikasi
-  email siswa, lengkap dengan nama, kelas, topik, dan isi pesan.
-
-### 10. Navigasi & antarmuka
-
-- Bilah navigasi menempel di atas saat halaman digulir, dengan penanda pil
-  putih yang **meluncur** ke tab halaman yang sedang dibuka.
-- Bilah atas berisi dropdown pilih stan, pilihan bahasa, tautan media sosial,
-  identitas pemakai, dan tombol keluar.
-- Tampilan menyesuaikan lebar layar: menu ponsel terpisah, kartu menu dua kolom
-  di layar kecil dan empat kolom di layar lebar.
-- Menghormati `prefers-reduced-motion`: animasi dimatikan bila pemakai memilih
-  gerak minimal.
-- Seluruh tombol punya label yang terbaca pembaca layar (`aria-label`,
-  `aria-expanded`, `aria-current`).
+| Halaman | Desainer | Desain |
+|---|---|---|
+| Beranda | Ryo Marvel | ![Desain beranda](docs/gambar/desain-homepage.jpg) |
+| Menu | Ryo Marvel | ![Desain menu](docs/gambar/desain-menu.jpg) |
+| Promo | Ryo Marvel | ![Desain promo](docs/gambar/desain-promo.jpg) |
+| Masuk | Justin Geraldo | ![Desain halaman masuk](docs/gambar/desain-login.jpg) |
+| Checkout | Justin Geraldo | ![Desain checkout](docs/gambar/desain-checkout.jpg) |
+| Pesanan diterima | Justin Geraldo | ![Desain pesanan diterima](docs/gambar/desain-booking.jpg) |
+| Dasbor penjual | Justin Geraldo | Lihat tabel [Dasbor penjual](#dasbor-penjual) di Tangkapan Layar |
 
 ## Tangkapan Layar
+
+### Halaman murid
 
 | Halaman | Tampilan |
 |---|---|
 | Masuk | ![Halaman masuk](docs/gambar/masuk.jpg) |
 | Daftar menu | ![Daftar menu](docs/gambar/menu.jpg) |
 | Rincian sajian | ![Rincian sajian](docs/gambar/menu-rincian.jpg) |
+| Keranjang | ![Keranjang](docs/gambar/keranjang.jpg) |
 | Promo | ![Halaman promo](docs/gambar/promo.jpg) |
 | Pembayaran | ![Halaman pembayaran](docs/gambar/pembayaran.jpg) |
+| Pesanan diterima | ![Pesanan diterima](docs/gambar/pembayaran-selesai.jpg) |
+| Pesanan Saya | ![Pesanan Saya](docs/gambar/pesanan-saya.jpg) |
 | Kontak | ![Halaman kontak](docs/gambar/kontak.jpg) |
+
+### Dasbor penjual
+
+| Halaman | Tampilan |
+|---|---|
+| Manajemen Pembelian | ![Manajemen Pembelian](docs/gambar/dasbor-pembelian.jpg) |
+| Daftar centang | ![Pesanan setelah satu menu dicentang](docs/gambar/dasbor-centang-sesudah.jpg) |
+| Rincian pembeli | ![Rincian pembeli](docs/gambar/dasbor-pembeli-rincian.jpg) |
+| Manajemen Menu | ![Manajemen Menu](docs/gambar/dasbor-menu.jpg) |
+| Manajemen Diskon | ![Manajemen Diskon](docs/gambar/dasbor-diskon.jpg) |
+| Laporan Transaksi | ![Laporan Transaksi](docs/gambar/dasbor-laporan.jpg) |
+| Profil Penjual | ![Profil Penjual](docs/gambar/dasbor-profil.jpg) |
 
 ## Teknologi
 
 | Bagian | Dipakai | Alasan |
 |---|---|---|
-| Bahasa | PHP 8.3+ | Sudah tersedia di Laragon, dipakai di sekolah |
-| Kerangka | Laravel 13 | Routing, Blade, validasi, dan middleware siap pakai |
-| Templat | Blade | Menyusun halaman langsung dari PHP, tanpa API terpisah |
-| Gaya | Tailwind CSS v4 | Token warna dan font diatur di `@theme`, tanpa berkas konfigurasi |
+| Bahasa | PHP 8.3+ (dikembangkan di 8.5) | Sudah tersedia di Laragon, dipakai di sekolah |
+| Kerangka | Laravel 13 | Routing, Blade, Eloquent, validasi, dan autentikasi siap pakai |
+| Basis data | SQLite (bawaan) atau MySQL | SQLite langsung jalan tanpa server; MySQL dipakai di Laragon |
+| Templat | Blade + komponen anonim | Menyusun halaman langsung dari PHP, tanpa API terpisah |
+| Gaya | Tailwind CSS v4 | Token warna dan font diatur di `@theme` |
 | Pembangun aset | Vite 8 | Membangun CSS cepat dan memuat font mandiri |
-| Skrip | JavaScript biasa | Keranjang dan varian tidak butuh kerangka besar |
-| Penyimpanan sisi klien | `localStorage` | Keranjang bertahan antar halaman tanpa tabel |
-| Basis data | SQLite | Baru menyimpan tabel bawaan Laravel; tabel Grabo dikerjakan menyusul |
+| Skrip | JavaScript biasa | Keranjang, varian, dan animasi tidak butuh kerangka besar |
+| Transisi halaman | View Transitions API | Perpindahan halaman halus tanpa aplikasi satu halaman |
 | Font | Figtree + Anton | Figtree untuk teks, Anton untuk judul poster |
-| Pengujian | Pest | Sintaksnya ringkas dan mudah dibaca |
+| Pengujian | Pest 4 | Sintaksnya ringkas dan mudah dibaca |
 
 ## Cara Menjalankan
 
-Kebutuhan: PHP 8.3+, Composer, Node.js 20+, dan SQLite (sudah bawaan PHP).
+Kebutuhan: PHP 8.3+, Composer, dan Node.js 20+.
 
 ```bash
 git clone https://github.com/virgiliolawrence-cell/grabo.git
@@ -216,30 +225,33 @@ composer install
 npm install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate
+php artisan migrate --seed
+php artisan storage:link
 npm run build
 php artisan serve
 ```
 
 Buka `http://127.0.0.1:8000`.
 
-Untuk mengembangkan tampilan, jalankan `npm run dev` di jendela terpisah supaya
-perubahan CSS langsung terlihat tanpa membangun ulang.
+- `.env.example` memakai **SQLite**, jadi tidak perlu menyiapkan server basis
+  data. Untuk **MySQL** (misalnya di Laragon), buat basis data `grabo`, lalu ubah
+  `DB_CONNECTION=mysql` dan `DB_DATABASE=grabo` di `.env` sebelum `migrate --seed`.
+- `migrate --seed` membuat semua tabel lalu mengisi katalog, akun contoh, dan
+  pesanan contoh.
+- `storage:link` diperlukan agar foto menu yang diunggah penjual bisa tampil.
+- Untuk mengembangkan tampilan, jalankan `npm run dev` di jendela terpisah.
 
-## Cara Memakai
+## Akun Contoh
 
-1. **Masuk.** Halaman masuk terbuka lebih dulu. Autentikasi aslinya belum
-   dipasang, jadi email berformat benar dan kata sandi minimal 8 karakter sudah
-   diterima, misalnya `siswa@grabo.sch.id` / `grabo12345`.
-2. **Pilih menu.** Telusuri lewat halaman Menu, atau saring per stan dari
-   dropdown di bilah atas.
-3. **Atur pesanan.** Buka satu sajian, pilih variannya, tentukan jumlah, dan
-   tulis catatan bila perlu.
-4. **Pakai promo.** Buka halaman Promo, tekan **Salin kode** pada penawaran yang
-   diinginkan.
-5. **Bayar.** Buka keranjang, tekan lanjut ke pembayaran, isi data pemesan,
-   pilih waktu ambil dan metode bayar.
-6. **Ambil pesanan.** Tunjukkan kode pesanan ke petugas stan di loket.
+Dibuat oleh `database/seeders/PenggunaSeeder.php`. Kata sandi semua akun contoh
+tertulis di komentar bagian atas berkas itu.
+
+| Peran | Email |
+|---|---|
+| Penjual | `penjual@grabo.sch.id` |
+| Murid | `alya@grabo.sch.id`, `bima@grabo.sch.id`, `citra@grabo.sch.id`, `dimas@grabo.sch.id`, `eka@grabo.sch.id`, `fajar@grabo.sch.id` |
+
+Akun murid baru juga bisa dibuat penjual lewat **Pembeli → Daftarkan Murid**.
 
 ## Struktur Proyek
 
@@ -248,105 +260,143 @@ grabo/
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/
-│   │   │   ├── Autentikasi/MasukController.php   masuk, proses, keluar
-│   │   │   ├── BerandaController.php             beranda
-│   │   │   ├── MenuController.php                katalog, daftar, rincian, daftar stan
-│   │   │   ├── PembayaranController.php          formulir, simpan, selesai
-│   │   │   ├── PromoController.php               kode promo & halaman promo
-│   │   │   └── KontakController.php              jam layanan, tanya-jawab
-│   │   └── Middleware/
-│   │       └── PastikanSiswaSudahMasuk.php       penjaga halaman siswa
-│   └── Models/Pengguna.php                       akun bawaan Laravel
+│   │   │   ├── Autentikasi/MasukController.php      masuk, proses, keluar
+│   │   │   ├── BerandaController.php                beranda
+│   │   │   ├── MenuController.php                   katalog dari basis data, daftar, rincian
+│   │   │   ├── PembayaranController.php             formulir, simpan pesanan, selesai
+│   │   │   ├── PesananSayaController.php            riwayat pesanan murid
+│   │   │   ├── PromoController.php                  kode promo aktif & halaman promo
+│   │   │   ├── KontakController.php                 jam layanan, tanya-jawab
+│   │   │   └── Penjual/
+│   │   │       ├── KelolaPembelianController.php    daftar, rincian, ubah status, centang menu
+│   │   │       ├── DataPembeliController.php        daftar murid, rincian, daftarkan murid
+│   │   │       ├── KelolaMenuController.php         tambah, ubah, tandai habis
+│   │   │       ├── KelolaDiskonController.php       tambah, aktif/nonaktif
+│   │   │       ├── LaporanTransaksiController.php   saring, rekap, hapus
+│   │   │       └── ProfilPenjualController.php      profil kantin
+│   │   └── Middleware/PastikanPenjual.php           penjaga dasbor penjual
+│   └── Models/                                      Pengguna, Kategori, Sajian, Diskon,
+│                                                    Pesanan, ItemPesanan, ProfilKantin
 ├── config/
-│   ├── menu.php                                  katalog 12 sajian, 3 kategori
-│   └── grabo.php                                 email, telepon, media sosial
-├── lang/id/                                      pesan validasi & paginasi
+│   ├── menu.php                                     isi awal katalog (dibaca seeder)
+│   └── grabo.php                                    email, telepon, media sosial
+├── database/
+│   ├── migrations/                                  tabel pengguna, katalog, pesanan
+│   ├── factories/                                   Pengguna, Sajian, Diskon, Pesanan
+│   └── seeders/                                     Katalog, Pengguna, Pesanan
+├── lang/id/                                         pesan validasi, autentikasi, paginasi
 ├── resources/
-│   ├── css/app.css                               token warna, font, kelas khusus
+│   ├── css/app.css                                  token warna, font, animasi, kelas khusus
 │   └── views/
-│       ├── tataletak/                            grabo, autentikasi
-│       ├── bagian/                               navigasi, kaki, keranjang, skrip
-│       ├── autentikasi/masuk.blade.php
-│       ├── beranda.blade.php
-│       ├── menu.blade.php  menu-rincian.blade.php
-│       ├── promo.blade.php  kontak.blade.php
-│       └── pembayaran.blade.php  pembayaran-selesai.blade.php
-├── public/images/food/                           foto sajian & ilustrasi 2D
-├── docs/gambar/                                  tangkapan layar untuk README
-├── routes/web.php                                 seluruh rute halaman siswa
-└── tests/                                         15 pengujian Pest
+│       ├── tataletak/                               grabo (murid), penjual, autentikasi
+│       ├── bagian/                                  navigasi, kaki, keranjang, skrip
+│       │   └── penjual/                             kepala & kaki dasbor
+│       ├── components/                              lencana, penjual/judul-halaman,
+│       │                                            penjual/kartu-pesanan, penjual/centang-item
+│       ├── penjual/                                 semua halaman dasbor
+│       └── *.blade.php                              halaman murid
+├── public/gambar/
+│   ├── sajian/                                      foto menu
+│   ├── ilustrasi/                                   ilustrasi 2D beranda
+│   └── logo-grabo.png
+├── docs/
+│   ├── Laporan-Proyek-Grabo.pdf / .docx             laporan kelompok
+│   ├── figma/                                       ekspor desain Figma (PNG)
+│   └── gambar/                                      tangkapan layar README
+├── routes/web.php                                   rute murid & dasbor penjual
+└── tests/                                           57 pengujian Pest
 ```
 
-## Sumber Data
+## Basis Data
 
-Belum ada tabel Grabo; datanya ada di berkas konfigurasi dan browser.
+| Tabel | Isi |
+|---|---|
+| `pengguna` | Akun murid dan penjual: `nama`, `email`, `kata_sandi` (ter-hash), `peran`, `nis`, `kelas` |
+| `kategori` | Kelompok menu dan urutannya |
+| `sajian` | Menu: nama, stan, harga, jenis, deskripsi, foto, galeri, spesifikasi, `tersedia` |
+| `diskon` | Kode promo: `kode`, `label`, `potongan`, `belanja_minimal`, `aktif` |
+| `pesanan` | Kode, pembeli, waktu ambil, metode bayar, subtotal, potongan, total, `status` |
+| `item_pesanan` | Isi pesanan: menu, harga saat dipesan, jumlah, varian, catatan, `sudah_disiapkan` |
+| `profil_kantin` | Identitas kantin (satu baris) |
+
+Sumber lain:
 
 | Sumber | Isi |
 |---|---|
-| `config/menu.php` | Katalog sajian: nama, stan, harga, jenis varian, deskripsi, foto, galeri, spesifikasi |
+| `localStorage` | Isi keranjang (`grabo.keranjang`), kode promo aktif (`grabo.promo`), tab navigasi terakhir |
 | `config/grabo.php` | Email, telepon, dan alamat media sosial kantin |
-| `PromoController::kodePromo()` | Kode promo beserta potongan dan belanja minimalnya |
-| `localStorage` | Isi keranjang (`grabo.keranjang`) dan kode promo aktif (`grabo.promo`) |
-| Session | Status masuk (`grabo_sudah_masuk`) dan rincian pesanan terakhir |
-
-Foto sajian ada di `public/images/food/photos/`, dinamai sesuai slug sajiannya.
-Ilustrasi 2D untuk hero beranda ada di `public/images/food/*.svg`.
+| `public/storage/menu/` | Foto menu yang diunggah penjual |
 
 ## Keputusan Teknis
 
 **Total dihitung ulang di server.** Keranjang hidup di browser, jadi isinya bisa
-disunting siapa saja lewat peralatan pengembang. Karena itu
-`PembayaranController::simpan()` membaca ulang harga setiap baris dari katalog
-dan menghitung ulang potongan promo. Nilai `total` kiriman formulir diabaikan.
-Sudah diuji: mengirim keranjang berisi sajian karangan dengan `total=1`
-menghasilkan total yang benar, dan baris palsunya dibuang.
+disunting siapa saja. `PembayaranController::simpan()` membaca ulang harga dari
+tabel `sajian`, membuang menu yang tidak dikenal atau sedang habis, dan
+menghitung ulang potongan dari tabel `diskon`. Nilai `total` kiriman formulir
+diabaikan.
+
+**Harga disalin ke `item_pesanan`.** Nama, stan, dan harga menu disimpan apa
+adanya saat dipesan, jadi riwayat dan laporan tidak berubah meskipun menu
+diubah atau dihapus kemudian.
+
+**Status mengikuti daftar centang.** `KelolaPembelianController::centangItem()`
+menghitung menu yang sudah disiapkan: centang pertama mengubah status menjadi
+Diproses, semua tercentang menjadi Siap diambil. Menekan *Serahkan & selesai*
+mencentang semua menu sekaligus.
+
+**Satu sumber katalog.** Beranda, halaman menu, rincian, dan pembayaran membaca
+katalog lewat `MenuController::kategori()`, yang mengambil data dari tabel dan
+mengembalikannya dalam bentuk yang sama dengan katalog lama. View murid tidak
+perlu diubah saat katalog pindah ke basis data.
+
+**Peran dijaga di middleware.** Rute `/penjual` memakai `auth` dan
+`PastikanPenjual`. Murid yang tersesat ke dasbor dikeluarkan dan diarahkan ke
+halaman masuk dengan penjelasan, bukan dibiarkan di halaman 403.
+
+**Transisi halaman tanpa SPA.** Perpindahan halaman memakai View Transitions
+lintas dokumen. Bilah navigasi tetap di tempat, isi halaman bergeser halus, dan
+pil penanda tab meluncur dari tab sebelumnya. Semua animasi mati bila perangkat
+memakai `prefers-reduced-motion`.
 
 **Keranjang di `localStorage`, bukan session.** Isinya bertahan meski tab
-ditutup, dan tidak membebani server. Setiap pembacaan dibungkus `try/catch`
+ditutup dan tidak membebani server. Setiap pembacaan dibungkus `try/catch`
 karena mode penyamaran bisa melarang penyimpanan.
-
-**Satu sumber katalog.** Beranda, halaman menu, halaman rincian, dan perhitungan
-pembayaran semuanya memanggil `MenuController::kategori()`. Harga tidak mungkin
-berbeda antar halaman.
-
-**Penanda navigasi digeser lewat JavaScript.** Posisinya diukur dengan
-`ResizeObserver`, bukan dihitung sekali saat halaman dimuat, supaya tetap tepat
-setelah font selesai dimuat dan saat lebar jendela berubah.
-
-**Kelas `.is-terpilih` dipasang JavaScript.** Selektor `:has(input:checked)`
-belum ada di peramban lama dan tidak selalu diperbarui saat radio diubah lewat
-skrip, jadi kelasnya dipasang manual sebagai pendamping.
-
-**Foto dioptimalkan sebelum dipakai.** Foto kiriman sekolah aslinya sampai
-6000×4000 piksel (7,2 MB untuk 12 berkas). Sisi terpanjangnya dibatasi 1400 px
-dan disimpan ulang sebagai JPEG, jadi totalnya tinggal 1,3 MB — turun 81% tanpa
-perubahan terlihat pada ukuran tampil.
 
 ## Aturan Penamaan
 
-Nama berkas, kelas, method, variabel, kelas CSS, atribut `data-*`, dan id elemen
-semuanya bahasa Indonesia.
+Semua nama buatan proyek ini memakai bahasa Indonesia secara konsisten.
 
 | Bagian | Contoh |
 |---|---|
-| Controller | `BerandaController`, `MenuController`, `PembayaranController`, `KontakController`, `Autentikasi/MasukController` |
-| Method | `tampilkan()`, `daftar()`, `form()`, `simpan()`, `selesai()`, `keluar()` |
-| Middleware | `PastikanSiswaSudahMasuk` (alias `siswa`) |
-| View | `beranda`, `menu`, `menu-rincian`, `promo`, `kontak`, `pembayaran`, `pembayaran-selesai` |
-| Folder view | `tataletak/`, `bagian/`, `autentikasi/` |
-| Nama rute | `beranda`, `menu.rincian`, `pembayaran.kirim`, `masuk.proses`, `keluar` |
-| Kunci katalog | `nama`, `stan`, `harga`, `jenis`, `sematan`, `galeri`, `spesifikasi` |
-| Kelas CSS | `judul-besar`, `kepala-situs`, `kapsul-nav`, `kartu-pilihan`, `titik-promo` |
-| id elemen | `panelKeranjang`, `formPembayaran`, `jumlahRincian`, `kodePromo` |
-| Fungsi JS | `bacaKeranjang()`, `gambarKeranjang()`, `tampilkanNotifikasi()` |
+| Controller | `KelolaPembelianController`, `DataPembeliController`, `LaporanTransaksiController` |
+| Method | `daftar()`, `tampilkan()`, `simpan()`, `perbarui()`, `centangItem()`, `alihKetersediaan()` |
+| Model & tabel | `Pengguna` → `pengguna`, `Sajian` → `sajian`, `ItemPesanan` → `item_pesanan` |
+| Kolom | `nama`, `kata_sandi`, `belanja_minimal`, `sudah_disiapkan`, `waktu_ambil` |
+| Middleware | `PastikanPenjual` (alias `penjual`) |
+| Nama rute | `penjual.pembelian.centang`, `penjual.laporan.hapus`, `pesanan-saya` |
+| Isian formulir | `kata_sandi`, `ulangi_kata_sandi`, `ingat_saya`, `kategori_id` |
+| Komponen Blade | `x-lencana`, `x-penjual.kartu-pesanan`, `x-penjual.centang-item` |
+| Kelas CSS | `judul-besar`, `kapsul-navigasi`, `penanda-penjual`, `siap-muncul`, `aktif` |
+| Atribut & JS | `data-menu-turun`, `data-keranjang-tambah`, `geserPenandaNavigasi()`, `tampilkanNotifikasi()` |
+| Folder aset | `public/gambar/sajian`, `public/gambar/ilustrasi` |
 
-Yang **tidak** diterjemahkan karena itu nama bawaan, bukan milik proyek ini:
+Yang **tidak** diterjemahkan karena ditetapkan Laravel atau peramban:
 
-- Direktori kerangka Laravel (`app/Http/Controllers`, `app/Models`, `resources/views`)
-- Kelas dan method kerangka (`Controller`, `Request`, `handle()`, `boot()`, `casts()`)
-- Kelas utilitas Tailwind (`flex`, `items-center`, `bg-white`)
-- API peramban (`localStorage`, `classList`, `addEventListener`, `Intl.NumberFormat`)
-- Kunci aturan validasi (`required`, `max`) dan kolom tabel bawaan (`name`, `email`, `password`)
+- Akhiran jenis kelas: `Controller`, `Seeder`, `Factory`, `Test`
+- Method kerangka: `handle()`, `up()`, `run()`, `casts()`, `$permintaan->user()`
+- Kolom yang dibaca Laravel sendiri: `id`, `created_at`, `updated_at`,
+  `email_verified_at`, `remember_token`
+- Tabel internal Laravel: `sessions`, `cache`, `jobs`, `password_reset_tokens`
+- Kunci `password` pada `Auth::attempt()`; nilainya tetap dicocokkan ke kolom
+  `kata_sandi` lewat `Pengguna::getAuthPasswordName()`
+- Kelas utilitas Tailwind dan API peramban (`localStorage`, `classList`)
+
+## Alur Kerja Git
+
+- Fitur dikerjakan di branch terpisah, misalnya `fitur/dasbor-penjual`, lalu
+  digabung ke `main` setelah semua pengujian lulus.
+- Pesan commit berbahasa Indonesia, diawali kalimat ringkas tentang apa yang
+  berubah, lalu penjelasan alasannya bila perlu.
 
 ## Pengujian
 
@@ -354,36 +404,32 @@ Yang **tidak** diterjemahkan karena itu nama bawaan, bukan milik proyek ini:
 php artisan test
 ```
 
-15 pengujian Pest, terbagi dua:
+57 pengujian Pest. Basis data pengujian memakai SQLite di memori dan diisi
+katalog lewat `KatalogSeeder` sebelum setiap uji.
 
-**`tests/Feature/HalamanSiswaTest.php`** — penjagaan halaman sebelum masuk,
-kelima halaman terbuka setelah masuk, seluruh sajian tampil di halaman menu,
-penyaring per stan bekerja, dan slug yang tidak dikenal menghasilkan 404.
-
-**`tests/Unit/KatalogTest.php`** — setiap sajian punya berkas foto yang benar
-ada, setiap gambar galeri ada berkasnya, katalog tidak lagi memakai ilustrasi
-2D, slug tidak ada yang kembar, daftar stan tanpa pengulangan, dan bentuk kode
-promo sesuai yang dimengerti keranjang.
+| Berkas | Yang diuji |
+|---|---|
+| `Feature/HalamanPenjualTest.php` | Akses per peran, daftar centang & status otomatis, data pembeli, menu, diskon, laporan, hapus transaksi, profil, sorotan tab navigasi |
+| `Feature/PesananMuridTest.php` | Masuk & keluar per peran, kata sandi salah, pesanan tersimpan dengan harga katalog, Pesanan Saya |
+| `Feature/HalamanSiswaTest.php` | Penjagaan halaman, semua halaman murid terbuka, penyaring stan, slug tak dikenal |
+| `Feature/PesanValidasiTest.php` | Tidak ada pesan kesalahan yang tampil sebagai kunci mentah seperti `validation.gte` |
+| `Feature/PenggunaTest.php` | Tabel `pengguna` & kolom `kata_sandi`, masuk dengan kata sandi ter-hash |
+| `Unit/KatalogTest.php` | Foto menu tersedia, slug unik, daftar stan, bentuk kode promo |
 
 ## Batasan Saat Ini
 
-- **Autentikasi belum asli.** Email berformat benar dan kata sandi 8 karakter
-  sudah diterima; statusnya hanya ditandai di session, belum dicocokkan ke tabel.
-- **Pesanan belum disimpan.** Rinciannya dititipkan ke session untuk halaman
-  konfirmasi, lalu hilang.
 - **Belum ada gerbang pembayaran.** Kode QR dan nomor rekening virtual di
   halaman konfirmasi hanyalah contoh.
-- **Belum ada dasbor pengelola.** Menu masih disunting lewat `config/menu.php`.
+- **Harga tambahan varian** (misalnya porsi jumbo) baru dihitung di layar; server
+  masih memakai harga dasar menu.
+- **Satu akun penjual untuk semua stan.** Belum ada pembagian akses per stan.
 - **Formulir kontak belum mengirim lewat server**; tombolnya menyusun surat di
-  aplikasi email siswa.
+  aplikasi email murid.
 
 ## Rencana Lanjutan
 
-1. Tabel `siswa`, `sajian`, `pesanan`, `baris_pesanan`, dan `diskon` beserta
-   migrasi dan seeder-nya.
-2. Autentikasi asli memakai `Auth::attempt()` dan kata sandi ber-hash.
-3. Dasbor pengelola: manajemen menu, daftar siswa, laporan transaksi, dan
-   manajemen diskon.
-4. Pesanan tersimpan ke database supaya petugas bisa menandai status
-   menunggu → disiapkan → selesai.
+1. Harga varian ikut dihitung dan disimpan di server.
+2. Notifikasi ke murid ketika pesanan siap diambil.
+3. Akun penjual per stan, masing-masing hanya melihat pesanan stannya.
+4. Ekspor laporan transaksi ke Excel atau PDF.
 5. Saldo kartu pelajar ikut terpotong saat memesan.

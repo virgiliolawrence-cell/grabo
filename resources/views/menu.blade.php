@@ -53,7 +53,7 @@
 
             <div class="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2">
                 @foreach ($daftarPromo as $i => $promo)
-                    <button type="button" data-titik-promo class="titik-promo {{ $i === 0 ? 'is-kini' : '' }}"
+                    <button type="button" data-titik-promo class="titik-promo {{ $i === 0 ? 'kini' : '' }}"
                         aria-label="Ke promo {{ $i + 1 }}"></button>
                 @endforeach
             </div>

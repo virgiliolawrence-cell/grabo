@@ -9,13 +9,19 @@
     <link rel="icon" href="{{ $graboLogo }}" sizes="any">
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Transisi halus antar-halaman siswa (View Transitions lintas dokumen). Animasinya di app.css. --}}
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
 </head>
 
 <body class="bg-krem text-stone-800 antialiased">
 
 @include('bagian.navigasi')
 
-    <main>
+    <main class="isi-situs">
         @yield('content')
     </main>
 

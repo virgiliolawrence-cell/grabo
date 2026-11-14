@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\PastikanPenjual;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,8 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'siswa' => App\Http\Middleware\PastikanSiswaSudahMasuk::class,
+            'penjual' => PastikanPenjual::class,
         ]);
+
+        // Tamu yang membuka halaman ber-'auth' diarahkan ke formulir masuk.
+        $middleware->redirectGuestsTo(fn () => route('masuk'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

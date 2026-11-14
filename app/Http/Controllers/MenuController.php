@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kategori;
+use App\Models\Sajian;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -9,15 +11,25 @@ use Illuminate\Support\Collection;
 class MenuController extends Controller
 {
     /**
-     * Seluruh kategori menu beserta isinya.
+     * Seluruh kategori menu beserta sajian yang sedang dijual.
      *
-     * Sumbernya config/menu.php supaya beranda, halaman menu, dan halaman
-     * rincian memakai daftar yang sama. Belum ada tabel menu; pengelolaannya
-     * lewat dasbor dikerjakan menyusul.
+     * Sumbernya tabel kategori & sajian yang dikelola dari dasbor penjual.
+     * Bentuk array-nya sama dengan config/menu.php lama, jadi view tidak berubah.
+     *
+     * @return Collection<int, array{id: int, label: string, catatan: ?string, sajian: array<int, array<string, mixed>>}>
      */
     public static function kategori(): Collection
     {
-        return collect(config('menu.kategori'));
+        return Kategori::query()
+            ->orderBy('urutan')
+            ->with(['sajian' => fn ($kueri) => $kueri->where('tersedia', true)])
+            ->get()
+            ->map(fn (Kategori $kategori) => [
+                'id' => $kategori->id,
+                'label' => $kategori->label,
+                'catatan' => $kategori->catatan,
+                'sajian' => $kategori->sajian->map(fn (Sajian $sajian) => $sajian->keArrayKatalog())->all(),
+            ]);
     }
 
     /**
@@ -51,7 +63,7 @@ class MenuController extends Controller
                 'judul' => 'Mie Goreng Jawa',
                 'teks' => 'Digoreng begitu pesananmu masuk, jadi masih panas saat kamu ambil di loket.',
                 'harga' => 'Rp 11.000',
-                'gambar' => 'images/food/photos/mie-goreng-jawa.jpg',
+                'gambar' => 'gambar/sajian/mie-goreng-jawa.jpg',
                 'alt' => 'Mie goreng jawa sedang dimasak di atas wajan besar',
             ],
             [
@@ -60,7 +72,7 @@ class MenuController extends Controller
                 'judul' => 'Roti Bakar Coklat',
                 'teks' => 'Roti panggang isi coklat dari Stan Camilan, pas untuk istirahat kedua.',
                 'harga' => 'Rp 9.000',
-                'gambar' => 'images/food/photos/roti-bakar-coklat.jpg',
+                'gambar' => 'gambar/sajian/roti-bakar-coklat.jpg',
                 'alt' => 'Roti bakar isi coklat yang sudah dipanggang',
             ],
             [
@@ -69,7 +81,7 @@ class MenuController extends Controller
                 'judul' => 'Es Cendol',
                 'teks' => 'Cendol dengan santan dan gula merah, penyegar setelah jam olahraga.',
                 'harga' => 'Rp 6.000',
-                'gambar' => 'images/food/photos/es-cendol.jpg',
+                'gambar' => 'gambar/sajian/es-cendol.jpg',
                 'alt' => 'Semangkuk es cendol dengan serutan es',
             ],
         ];

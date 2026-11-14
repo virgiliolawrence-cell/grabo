@@ -2,7 +2,7 @@
     // Sorotan tab mengikuti halaman yang dibuka, bukan posisi scroll.
     $diBeranda = request()->routeIs('beranda');
 
-    $navAktif = match (true) {
+    $navigasiAktif = match (true) {
         request()->routeIs('beranda') => 'beranda',
         // Halaman deskripsi produk ikut menyalakan tab Menu.
         request()->routeIs('menu', 'menu.rincian') => 'menu',
@@ -20,24 +20,24 @@
 @endphp
 
     {{-- Bilah atas --}}
-    <div class="bg-stone-950 text-white/65">
+    <div class="bilah-atas bg-stone-950 text-white/65">
         <div class="mx-auto grid max-w-7xl grid-cols-2 items-center gap-4 px-6 py-3 text-[13px] lg:grid-cols-3">
             <div class="flex items-center gap-6">
                 {{-- Pilih stan: menyaring halaman menu lewat ?stan= --}}
-                <div class="relative" data-dropdown>
-                    <button type="button" data-dropdown-tombol aria-expanded="false" aria-haspopup="true"
+                <div class="relative" data-menu-turun>
+                    <button type="button" data-menu-turun-tombol aria-expanded="false" aria-haspopup="true"
                         class="flex items-center gap-2 transition hover:text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                             <path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
                             <circle cx="12" cy="10" r="2.3" stroke="currentColor" stroke-width="1.6" />
                         </svg>
                         {{ request('stan') ?: 'Cari stan kantin' }}
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3 w-3 transition-transform" data-dropdown-panah aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3 w-3 transition-transform" data-menu-turun-panah aria-hidden="true">
                             <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
 
-                    <div data-dropdown-panel hidden
+                    <div data-menu-turun-panel hidden
                         class="absolute left-0 top-full z-[60] mt-2 w-60 overflow-hidden rounded-2xl bg-white py-2 text-stone-700 shadow-2xl ring-1 ring-stone-900/10">
                         <p class="px-4 pb-2 pt-1 text-[10px] uppercase tracking-[0.18em] text-stone-400">Stan yang buka</p>
                         <a href="{{ route('menu') }}"
@@ -54,20 +54,20 @@
                 </div>
 
                 {{-- Bahasa: baru ada satu, jadi daftarnya apa adanya. --}}
-                <div class="relative hidden sm:block" data-dropdown>
-                    <button type="button" data-dropdown-tombol aria-expanded="false" aria-haspopup="true"
+                <div class="relative hidden sm:block" data-menu-turun>
+                    <button type="button" data-menu-turun-tombol aria-expanded="false" aria-haspopup="true"
                         class="flex items-center gap-2 transition hover:text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-4 w-4" aria-hidden="true">
                             <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" />
                             <path d="M3.5 12h17M12 3.5c4 4.6 4 12.4 0 17-4-4.6-4-12.4 0-17Z" stroke="currentColor" stroke-width="1.6" />
                         </svg>
                         ID
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3 w-3 transition-transform" data-dropdown-panah aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="h-3 w-3 transition-transform" data-menu-turun-panah aria-hidden="true">
                             <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
 
-                    <div data-dropdown-panel hidden
+                    <div data-menu-turun-panel hidden
                         class="absolute left-0 top-full z-[60] mt-2 w-56 overflow-hidden rounded-2xl bg-white py-2 text-stone-700 shadow-2xl ring-1 ring-stone-900/10">
                         <p class="flex items-center justify-between px-4 py-2 font-semibold text-neon-700">
                             Bahasa Indonesia
@@ -108,10 +108,15 @@
                     </a>
                 @endif
                 {{-- Identitas pemakai + tombol keluar --}}
-                @if (session('grabo_pengguna'))
-                    <span class="hidden max-w-[220px] truncate lg:inline" title="{{ session('grabo_pengguna') }}">
-                        {{ session('grabo_pengguna') }}
+                @auth
+                    <span class="hidden max-w-[180px] truncate lg:inline" title="{{ auth()->user()->email }}">
+                        {{ auth()->user()->nama }}
                     </span>
+                    @if (auth()->user()->adalahPenjual())
+                        <a href="{{ route('penjual.pembelian') }}" class="font-semibold text-white transition hover:text-neon-300">Dasbor</a>
+                    @else
+                        <a href="{{ route('pesanan-saya') }}" class="font-semibold text-white transition hover:text-neon-300">Pesanan Saya</a>
+                    @endif
                     <form method="POST" action="{{ route('keluar') }}" class="inline">
                         @csrf
                         <button type="submit" class="underline-offset-2 transition hover:text-white hover:underline">
@@ -120,7 +125,7 @@
                     </form>
                 @else
                     <span class="hidden lg:inline">Gratis ongkir antar kelas</span>
-                @endif
+                @endauth
             </div>
         </div>
     </div>
@@ -138,12 +143,12 @@
             </a>
 
             {{-- Tautan di dalam kapsul kaca --}}
-            <nav class="kapsul-nav absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full p-1.5 backdrop-blur-md backdrop-saturate-150 lg:flex" aria-label="Navigasi utama">
-                <span class="penanda-nav" aria-hidden="true"></span>
+            <nav class="kapsul-navigasi absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full p-1.5 backdrop-blur-md backdrop-saturate-150 lg:flex" aria-label="Navigasi utama">
+                <span class="penanda-navigasi" aria-hidden="true"></span>
                 @foreach ($tautanNav as $tautan)
-                    <a href="{{ $tautan['href'] }}" data-sasaran-nav="{{ $tautan['target'] }}"
-                        class="tautan-nav {{ $navAktif === $tautan['target'] ? 'is-aktif' : '' }}"
-                        @if ($navAktif === $tautan['target']) aria-current="true" @endif>{{ $tautan['label'] }}</a>
+                    <a href="{{ $tautan['href'] }}" data-sasaran-navigasi="{{ $tautan['target'] }}"
+                        class="tautan-navigasi {{ $navigasiAktif === $tautan['target'] ? 'aktif' : '' }}"
+                        @if ($navigasiAktif === $tautan['target']) aria-current="true" @endif>{{ $tautan['label'] }}</a>
                 @endforeach
             </nav>
 
@@ -176,10 +181,10 @@
         </div>
 
         <div id="menuPonsel" class="hidden px-4 pb-5 sm:px-6 lg:hidden">
-            <div class="kapsul-nav space-y-1 rounded-2xl p-2 backdrop-blur-md backdrop-saturate-150">
+            <div class="kapsul-navigasi space-y-1 rounded-2xl p-2 backdrop-blur-md backdrop-saturate-150">
                 @foreach ($tautanNav as $tautan)
-                    <a href="{{ $tautan['href'] }}" data-sasaran-nav="{{ $tautan['target'] }}"
-                        class="tautan-nav-ponsel {{ $navAktif === $tautan['target'] ? 'is-aktif' : '' }}">{{ $tautan['label'] }}</a>
+                    <a href="{{ $tautan['href'] }}" data-sasaran-navigasi="{{ $tautan['target'] }}"
+                        class="tautan-navigasi-ponsel {{ $navigasiAktif === $tautan['target'] ? 'aktif' : '' }}">{{ $tautan['label'] }}</a>
                 @endforeach
                 <a href="{{ route('menu') }}" class="mt-1 block rounded-2xl bg-white px-4 py-3 text-center font-semibold text-neon-700 sm:hidden">Pesan Sekarang</a>
             </div>

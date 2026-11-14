@@ -19,6 +19,7 @@ return [
     'boolean' => ':attribute hanya boleh berisi ya atau tidak.',
     'confirmed' => 'Konfirmasi :attribute tidak cocok.',
     'date' => ':attribute bukan tanggal yang benar.',
+    'date_format' => ':attribute harus berformat :format.',
     'different' => ':attribute dan :other harus berbeda.',
     'email' => ':attribute harus berupa alamat email yang benar.',
     'exists' => ':attribute yang dipilih tidak ada dalam data.',
@@ -29,6 +30,8 @@ return [
     'integer' => ':attribute harus berupa angka bulat.',
     'json' => ':attribute tidak terbaca. Muat ulang halamannya lalu coba lagi.',
     'lowercase' => ':attribute harus ditulis dengan huruf kecil.',
+    'mimes' => ':attribute harus berupa berkas :values.',
+    'not_in' => ':attribute yang dipilih tidak boleh dipakai.',
     'numeric' => ':attribute harus berupa angka.',
     'present' => ':attribute wajib ada.',
     'prohibited' => ':attribute tidak boleh diisi.',
@@ -70,52 +73,98 @@ return [
         'string' => ':attribute harus :size karakter.',
     ],
 
-    'custom' => [],
+    /*
+     * Perbandingan dengan kolom lain atau angka. Bila pembandingnya kolom lain
+     * (mis. 'gte:potongan'), :value berisi nilai kolom itu.
+     */
+    'gt' => [
+        'array' => ':attribute harus berisi lebih dari :value item.',
+        'file' => ':attribute harus lebih besar dari :value kilobita.',
+        'numeric' => ':attribute harus lebih besar dari :value.',
+        'string' => ':attribute harus lebih dari :value karakter.',
+    ],
+
+    'gte' => [
+        'array' => ':attribute minimal berisi :value item.',
+        'file' => ':attribute minimal berukuran :value kilobita.',
+        'numeric' => ':attribute tidak boleh lebih kecil dari :value.',
+        'string' => ':attribute minimal :value karakter.',
+    ],
+
+    'lt' => [
+        'array' => ':attribute harus berisi kurang dari :value item.',
+        'file' => ':attribute harus lebih kecil dari :value kilobita.',
+        'numeric' => ':attribute harus lebih kecil dari :value.',
+        'string' => ':attribute harus kurang dari :value karakter.',
+    ],
+
+    'lte' => [
+        'array' => ':attribute tidak boleh berisi lebih dari :value item.',
+        'file' => ':attribute tidak boleh lebih besar dari :value kilobita.',
+        'numeric' => ':attribute tidak boleh lebih besar dari :value.',
+        'string' => ':attribute tidak boleh lebih dari :value karakter.',
+    ],
+
+    'custom' => [
+        'belanja_minimal' => [
+            'gte' => 'Belanja minimal tidak boleh lebih kecil dari potongannya (Rp :value). Kalau tidak, diskonnya bisa membuat total menjadi nol.',
+        ],
+        'jam_tutup' => [
+            'after' => 'Jam tutup harus lebih lambat dari jam buka.',
+        ],
+        'sampai' => [
+            'after_or_equal' => 'Tanggal akhir tidak boleh lebih awal dari tanggal mulai.',
+        ],
+        'ulangi_kata_sandi' => [
+            'same' => 'Kata sandi yang diulang tidak sama.',
+        ],
+    ],
 
     /*
      * Nama kolom yang enak dibaca. Tanpa ini, pesannya memakai nama kolom
-     * apa adanya, misalnya "min_spend" atau "is_active".
+     * apa adanya, misalnya "belanja_minimal" atau "kategori_id".
      */
     'attributes' => [
-        'amount' => 'Potongan',
-        'badge' => 'Label',
-        'balance' => 'Saldo kartu',
+        // Pembayaran (halaman siswa).
         'bank' => 'Bank',
         'catatan' => 'Catatan',
-        'category' => 'Kategori',
-        'class' => 'Kelas',
-        'code' => 'Kode',
-        'description' => 'Deskripsi lengkap',
-        'discount' => 'Potongan',
-        'email' => 'Email',
-        'ends_at' => 'Tanggal berakhir',
         'dompet' => 'Dompet digital',
-        'image' => 'Path gambar',
-        'is_active' => 'Status aktif',
-        'is_available' => 'Status tampil',
         'kelas' => 'Kelas',
         'keranjang' => 'Isi keranjang',
-        'label' => 'Nama promo',
-        'message' => 'Pesan',
         'metode' => 'Metode pembayaran',
-        'min_spend' => 'Belanja minimal',
         'nama' => 'Nama siswa',
-        'name' => 'Nama',
-        'nis' => 'NIS',
-        'note' => 'Catatan',
-        'password' => 'Kata sandi',
-        'price' => 'Harga',
         'promo' => 'Kode promo',
-        'remember' => 'Ingat saya',
-        'stall' => 'Stan',
-        'starts_at' => 'Tanggal mulai',
-        'status' => 'Status',
-        'stock' => 'Stok',
-        'summary' => 'Ringkasan',
-        'topic' => 'Topik',
         'total' => 'Total',
-        'type' => 'Jenis varian',
         'waktu' => 'Waktu pengambilan',
+
+        // Masuk & akun.
+        'email' => 'Email',
+        'ingat_saya' => 'Ingat saya',
+        'kata_sandi' => 'Kata sandi',
+        'nis' => 'NIS',
+        'ulangi_kata_sandi' => 'Ulangan kata sandi',
+
+        // Formulir dasbor penjual.
+        'belanja_minimal' => 'Belanja minimal',
+        'dari' => 'Tanggal mulai',
+        'deskripsi' => 'Deskripsi',
+        'gambar' => 'Foto menu',
+        'harga' => 'Harga',
+        'jam_buka' => 'Jam buka',
+        'jam_tutup' => 'Jam tutup',
+        'jenis' => 'Jenis',
+        'kategori_id' => 'Kategori',
+        'kode' => 'Kode promo',
+        'label' => 'Nama promo',
+        'lokasi' => 'Lokasi',
+        'pengelola' => 'Pengelola',
+        'potongan' => 'Potongan',
+        'ringkasan' => 'Ringkasan',
+        'sampai' => 'Tanggal akhir',
+        'stan' => 'Stan',
+        'status' => 'Status',
+        'telepon' => 'Telepon',
+        'tersedia' => 'Status dijual',
     ],
 
 ];

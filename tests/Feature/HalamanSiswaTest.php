@@ -1,18 +1,17 @@
 <?php
 
 use App\Http\Controllers\MenuController;
+use App\Models\Pengguna;
+use Tests\TestCase;
 
 /*
- * Uji dasar halaman siswa. Semua halaman dijaga middleware 'siswa',
- * jadi statusnya ditandai dulu di session sebelum halamannya dibuka.
+ * Uji dasar halaman siswa. Semua halaman dijaga middleware 'auth',
+ * jadi masuk dulu sebagai murid sebelum halamannya dibuka.
  */
 
-function masuk(): Tests\TestCase
+function masuk(): TestCase
 {
-    return test()->withSession([
-        'grabo_sudah_masuk' => true,
-        'grabo_pengguna' => 'siswa@grabo.sch.id',
-    ]);
+    return test()->actingAs(Pengguna::factory()->create());
 }
 
 test('halaman siswa mengalihkan ke halaman masuk kalau belum masuk', function () {

@@ -1,11 +1,11 @@
 <?php
 
 /*
- * Katalog kantin.
+ * Isi awal katalog kantin.
  *
- * Dipakai bersama oleh halaman menu dan halaman detail produk, jadi
- * keduanya tidak bisa berbeda isi. Selama belum ada tabel menu di
- * database, daftar ini yang menjadi sumbernya.
+ * Hanya dibaca KatalogSeeder untuk mengisi tabel kategori & sajian.
+ * Setelah di-seed, menu dikelola dari dasbor penjual; mengubah berkas
+ * ini tidak berpengaruh sampai seeder dijalankan lagi.
  *
  * - 'type' menentukan varian yang ditawarkan di halaman detail
  *   (lihat OPTION_GROUPS di bagian/skrip.blade.php).
@@ -35,10 +35,10 @@ return [
                     'waktuSiap' => '±7 menit',
                     'ringkasan' => 'Nasi goreng kampung dengan kerupuk, sambal, dan lalapan segar.',
                     'deskripsi' => 'Nasi digoreng di wajan besar dengan bawang merah, terasi, dan kecap sampai keluar aroma sangit tipis yang khas. Disajikan bersama telur mata sapi, irisan timun, dan kerupuk yang dibungkus terpisah supaya tetap renyah sampai kelas.',
-                    'gambar' => 'images/food/photos/nasi-goreng-kampung.jpg',
+                    'gambar' => 'gambar/sajian/nasi-goreng-kampung.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/nasi-goreng-kampung.jpg', 'foto' => true, 'keterangan' => 'Porsi lengkap'],
+                        ['sumber' => 'gambar/sajian/nasi-goreng-kampung.jpg', 'foto' => true, 'keterangan' => 'Porsi lengkap'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => '1 piring + telur + kerupuk',
@@ -62,10 +62,10 @@ return [
                     'waktuSiap' => '±5 menit',
                     'ringkasan' => 'Mie ayam dengan tumisan jamur, ayam cincang, dan sawi hijau.',
                     'deskripsi' => 'Mie pangsit direbus dadakan lalu diaduk dengan minyak bawang buatan sendiri. Topping ayam cincang dan jamur ditumis manis gurih, ditemani sawi hijau dan kuah kaldu bening yang dibungkus terpisah.',
-                    'gambar' => 'images/food/photos/mie-ayam-jamur.jpg',
+                    'gambar' => 'gambar/sajian/mie-ayam-jamur.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/mie-ayam-jamur.jpg', 'foto' => true, 'keterangan' => 'Semangkuk mie ayam'],
+                        ['sumber' => 'gambar/sajian/mie-ayam-jamur.jpg', 'foto' => true, 'keterangan' => 'Semangkuk mie ayam'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => '1 mangkuk + kuah terpisah',
@@ -89,10 +89,10 @@ return [
                     'waktuSiap' => '±8 menit',
                     'ringkasan' => 'Ayam crispy diulek bersama sambal bawang, disajikan dengan nasi hangat.',
                     'deskripsi' => 'Ayam digoreng dengan tepung berbumbu sampai renyah, lalu diulek di cobek bersama sambal bawang yang baru dibuat pagi itu. Level pedasnya bisa diatur, dari yang aman untuk lidah pemula sampai yang bikin ngos-ngosan.',
-                    'gambar' => 'images/food/photos/ayam-geprek.jpg',
+                    'gambar' => 'gambar/sajian/ayam-geprek.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/ayam-geprek.jpg', 'foto' => true, 'keterangan' => 'Ayam geprek sambal bawang'],
+                        ['sumber' => 'gambar/sajian/ayam-geprek.jpg', 'foto' => true, 'keterangan' => 'Ayam geprek sambal bawang'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => '1 potong ayam + nasi',
@@ -116,10 +116,10 @@ return [
                     'waktuSiap' => '±6 menit',
                     'ringkasan' => 'Mie goreng jawa yang digoreng dadakan begitu pesanan masuk.',
                     'deskripsi' => 'Mie basah digoreng di wajan besar bersama telur, kol, dan sawi dengan kecap manis yang sedikit dikaramelkan. Baru dimasak setelah pesananmu diterima, jadi masih panas saat diambil di loket.',
-                    'gambar' => 'images/food/photos/mie-goreng-jawa.jpg',
+                    'gambar' => 'gambar/sajian/mie-goreng-jawa.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/mie-goreng-jawa.jpg', 'foto' => true, 'keterangan' => 'Dimasak dadakan'],
+                        ['sumber' => 'gambar/sajian/mie-goreng-jawa.jpg', 'foto' => true, 'keterangan' => 'Dimasak dadakan'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => '1 piring',
@@ -150,10 +150,10 @@ return [
                     'waktuSiap' => '±4 menit',
                     'ringkasan' => 'Batagor goreng renyah dengan saus kacang dan perasan jeruk limau.',
                     'deskripsi' => 'Batagor digoreng ulang sebentar supaya kulitnya kembali renyah, lalu disiram saus kacang kental yang diulek sendiri. Jeruk limau dan kecap diberikan terpisah supaya kamu bisa mengatur asam manisnya.',
-                    'gambar' => 'images/food/photos/batagor-saus-kacang.jpg',
+                    'gambar' => 'gambar/sajian/batagor-saus-kacang.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/batagor-saus-kacang.jpg', 'foto' => true, 'keterangan' => 'Sepiring batagor'],
+                        ['sumber' => 'gambar/sajian/batagor-saus-kacang.jpg', 'foto' => true, 'keterangan' => 'Sepiring batagor'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => '5 potong + saus',
@@ -177,10 +177,10 @@ return [
                     'waktuSiap' => '±5 menit',
                     'ringkasan' => 'Roti panggang mentega, renyah di luar dan lembut di dalamnya.',
                     'deskripsi' => 'Roti tawar tebal dipanggang di atas teflon dengan mentega sampai pinggirnya keemasan. Bagian dalamnya tetap lembut, dan taburan gula halus bisa diminta lebih sedikit lewat catatan pesanan.',
-                    'gambar' => 'images/food/photos/roti-bakar-mentega.jpg',
+                    'gambar' => 'gambar/sajian/roti-bakar-mentega.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/roti-bakar-mentega.jpg', 'foto' => true, 'keterangan' => 'Roti bakar mentega'],
+                        ['sumber' => 'gambar/sajian/roti-bakar-mentega.jpg', 'foto' => true, 'keterangan' => 'Roti bakar mentega'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => '2 potong',
@@ -204,10 +204,10 @@ return [
                     'waktuSiap' => '±5 menit',
                     'ringkasan' => 'Batagor dengan kuah pedas gurih untuk yang tidak suka saus kacang.',
                     'deskripsi' => 'Versi berkuah dari batagor Kang Asep: kaldu bening dengan cabai rawit ulek dan bawang goreng. Kuahnya dibungkus terpisah supaya batagornya tidak lembek di perjalanan menuju kelas.',
-                    'gambar' => 'images/food/photos/batagor-kuah-pedas.jpg',
+                    'gambar' => 'gambar/sajian/batagor-kuah-pedas.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/batagor-kuah-pedas.jpg', 'foto' => true, 'keterangan' => 'Batagor bersiram kuah'],
+                        ['sumber' => 'gambar/sajian/batagor-kuah-pedas.jpg', 'foto' => true, 'keterangan' => 'Batagor bersiram kuah'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => '5 potong + kuah',
@@ -231,10 +231,10 @@ return [
                     'waktuSiap' => '±5 menit',
                     'ringkasan' => 'Roti panggang isi coklat, pas untuk istirahat kedua.',
                     'deskripsi' => 'Roti dipanggang dengan mentega lalu diisi meses coklat yang dibiarkan meleleh sebentar sebelum dipotong. Manisnya sedang, jadi tidak bikin eneg walau dimakan sambil belajar.',
-                    'gambar' => 'images/food/photos/roti-bakar-coklat.jpg',
+                    'gambar' => 'gambar/sajian/roti-bakar-coklat.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/roti-bakar-coklat.jpg', 'foto' => true, 'keterangan' => 'Isi coklat meleleh'],
+                        ['sumber' => 'gambar/sajian/roti-bakar-coklat.jpg', 'foto' => true, 'keterangan' => 'Isi coklat meleleh'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => '2 potong',
@@ -265,10 +265,10 @@ return [
                     'waktuSiap' => '±2 menit',
                     'ringkasan' => 'Teh seduh dingin dengan es batu, menyegarkan setelah jam pelajaran.',
                     'deskripsi' => 'Teh tubruk diseduh pekat pagi hari lalu didinginkan, bukan teh instan. Kadar gula dan jumlah es bisa diatur saat memesan, jadi bisa disesuaikan dengan seleramu.',
-                    'gambar' => 'images/food/photos/es-teh-manis.jpg',
+                    'gambar' => 'gambar/sajian/es-teh-manis.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/es-teh-manis.jpg', 'foto' => true, 'keterangan' => 'Segelas es teh'],
+                        ['sumber' => 'gambar/sajian/es-teh-manis.jpg', 'foto' => true, 'keterangan' => 'Segelas es teh'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => 'Gelas 400 ml',
@@ -292,10 +292,10 @@ return [
                     'waktuSiap' => '±2 menit',
                     'ringkasan' => 'Teh dingin tanpa gula untuk yang sedang mengurangi manis.',
                     'deskripsi' => 'Teh yang sama dengan es teh manis, hanya tanpa gula sama sekali. Cocok diminum bersama makanan berat karena tidak menutupi rasa makanannya.',
-                    'gambar' => 'images/food/photos/es-teh-tawar.jpg',
+                    'gambar' => 'gambar/sajian/es-teh-tawar.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/es-teh-tawar.jpg', 'foto' => true, 'keterangan' => 'Segelas teh tawar'],
+                        ['sumber' => 'gambar/sajian/es-teh-tawar.jpg', 'foto' => true, 'keterangan' => 'Segelas teh tawar'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => 'Gelas 400 ml',
@@ -319,10 +319,10 @@ return [
                     'waktuSiap' => '±3 menit',
                     'ringkasan' => 'Cendol dengan santan dan gula merah, penyegar setelah jam olahraga.',
                     'deskripsi' => 'Cendol hijau dari tepung beras disiram santan encer dan gula merah cair yang dimasak sendiri. Es serutnya ditambahkan terakhir supaya santannya tidak langsung encer.',
-                    'gambar' => 'images/food/photos/es-cendol.jpg',
+                    'gambar' => 'gambar/sajian/es-cendol.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/es-cendol.jpg', 'foto' => true, 'keterangan' => 'Semangkuk es cendol'],
+                        ['sumber' => 'gambar/sajian/es-cendol.jpg', 'foto' => true, 'keterangan' => 'Semangkuk es cendol'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => 'Gelas 400 ml',
@@ -346,10 +346,10 @@ return [
                     'waktuSiap' => '±2 menit',
                     'ringkasan' => 'Susu coklat dingin yang dikocok dadakan, tidak terlalu manis.',
                     'deskripsi' => 'Bubuk coklat dilarutkan dengan air panas sedikit dulu supaya tidak menggumpal, baru dicampur susu dingin dan dikocok. Manisnya bisa dikurangi lewat pilihan gula.',
-                    'gambar' => 'images/food/photos/susu-coklat-dingin.jpg',
+                    'gambar' => 'gambar/sajian/susu-coklat-dingin.jpg',
                     'foto' => true,
                     'galeri' => [
-                        ['sumber' => 'images/food/photos/susu-coklat-dingin.jpg', 'foto' => true, 'keterangan' => 'Susu coklat dingin'],
+                        ['sumber' => 'gambar/sajian/susu-coklat-dingin.jpg', 'foto' => true, 'keterangan' => 'Susu coklat dingin'],
                     ],
                     'spesifikasi' => [
                         'Porsi' => 'Gelas 400 ml',

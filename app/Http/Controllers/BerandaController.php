@@ -7,7 +7,7 @@ use Illuminate\Contracts\View\View;
 class BerandaController extends Controller
 {
     /**
-     * Beranda: hero, angka ringkas, keunggulan, menu populer, dan cara pesan.
+     * Beranda: bagian pembuka, angka ringkas, keunggulan, menu populer, dan cara pesan.
      */
     public function tampilkan(): View
     {

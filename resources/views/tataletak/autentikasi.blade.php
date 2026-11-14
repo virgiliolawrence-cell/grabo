@@ -9,9 +9,15 @@
     <link rel="icon" href="{{ $graboLogo }}" sizes="any">
     @fonts
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    {{-- Masuk → beranda (dan keluar → masuk) ikut berganti dengan memudar halus. --}}
+    <style>
+        @view-transition {
+            navigation: auto;
+        }
+    </style>
 </head>
 
-{{-- Halaman auth berdiri sendiri: tanpa navbar, footer, atau keranjang. --}}
+{{-- Halaman masuk berdiri sendiri: tanpa bilah navigasi, kaki halaman, atau keranjang. --}}
 <body class="bg-white text-stone-800 antialiased">
     @yield('content')
 </body>

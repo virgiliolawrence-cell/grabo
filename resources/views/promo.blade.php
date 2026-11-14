@@ -38,7 +38,7 @@
                     <h2 class="judul-besar text-center text-2xl text-stone-900 lg:text-3xl">{{ $promo['label'] }}</h2>
 
                     {{--
-                        Kelas .is-dipakai dipasang JavaScript pada kartu yang kodenya
+                        Kelas .dipakai dipasang JavaScript pada kartu yang kodenya
                         sedang tersimpan di keranjang; gayanya ada di app.css.
                     --}}
                     <div class="kartu-promo group relative mt-5 flex flex-1 flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition hover:-translate-y-1.5 hover:shadow-xl hover:shadow-neon-900/10">

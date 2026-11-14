@@ -7,14 +7,14 @@ use Illuminate\Database\Seeder;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Isi database dengan data awal.
-     *
-     * Belum ada yang perlu diisi: menu dibaca dari config/menu.php dan
-     * keranjang disimpan di browser. Tambahkan lagi begitu tabel Grabo
-     * dan dasbor pengelola dikerjakan.
+     * Isi database untuk pengembangan: katalog, akun contoh, dan pesanan contoh.
      */
     public function run(): void
     {
-        //
+        $this->call([
+            KatalogSeeder::class,
+            PenggunaSeeder::class,
+            PesananSeeder::class,
+        ]);
     }
 }

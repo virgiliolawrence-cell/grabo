@@ -1,50 +1,50 @@
     <script>
         /*
-         * Dropdown bilah atas (pilih stan, bahasa).
-         * Satu penanganan untuk semua [data-dropdown]: klik membuka, klik di
+         * Menu turun bilah atas (pilih stan, bahasa).
+         * Satu penanganan untuk semua [data-menu-turun]: klik membuka, klik di
          * luar atau Escape menutup, dan hanya satu yang terbuka sekaligus.
          */
-        const daftarDropdown = [...document.querySelectorAll('[data-dropdown]')].map((akar) => ({
+        const daftarMenuTurun = [...document.querySelectorAll('[data-menu-turun]')].map((akar) => ({
             akar,
-            tombol: akar.querySelector('[data-dropdown-tombol]'),
-            panel: akar.querySelector('[data-dropdown-panel]'),
-            panah: akar.querySelector('[data-dropdown-panah]'),
+            tombol: akar.querySelector('[data-menu-turun-tombol]'),
+            panel: akar.querySelector('[data-menu-turun-panel]'),
+            panah: akar.querySelector('[data-menu-turun-panah]'),
         }));
 
-        function tutupSemuaDropdown(kecuali = null) {
-            daftarDropdown.forEach((dropdown) => {
-                if (dropdown === kecuali || dropdown.panel.hidden) {
+        function tutupSemuaMenuTurun(kecuali = null) {
+            daftarMenuTurun.forEach((menuTurun) => {
+                if (menuTurun === kecuali || menuTurun.panel.hidden) {
                     return;
                 }
 
-                dropdown.panel.hidden = true;
-                dropdown.tombol.setAttribute('aria-expanded', 'false');
-                dropdown.panah?.classList.remove('rotate-180');
+                menuTurun.panel.hidden = true;
+                menuTurun.tombol.setAttribute('aria-expanded', 'false');
+                menuTurun.panah?.classList.remove('rotate-180');
             });
         }
 
-        daftarDropdown.forEach((dropdown) => {
-            dropdown.tombol?.addEventListener('click', (peristiwa) => {
+        daftarMenuTurun.forEach((menuTurun) => {
+            menuTurun.tombol?.addEventListener('click', (peristiwa) => {
                 peristiwa.stopPropagation();
-                tutupSemuaDropdown(dropdown);
+                tutupSemuaMenuTurun(menuTurun);
 
-                const sedangDibuka = dropdown.panel.hidden;
-                dropdown.panel.hidden = !sedangDibuka;
-                dropdown.tombol.setAttribute('aria-expanded', String(sedangDibuka));
-                dropdown.panah?.classList.toggle('rotate-180', sedangDibuka);
+                const sedangDibuka = menuTurun.panel.hidden;
+                menuTurun.panel.hidden = !sedangDibuka;
+                menuTurun.tombol.setAttribute('aria-expanded', String(sedangDibuka));
+                menuTurun.panah?.classList.toggle('rotate-180', sedangDibuka);
             });
         });
 
-        if (daftarDropdown.length > 0) {
+        if (daftarMenuTurun.length > 0) {
             document.addEventListener('click', (peristiwa) => {
-                if (!peristiwa.target.closest('[data-dropdown]')) {
-                    tutupSemuaDropdown();
+                if (!peristiwa.target.closest('[data-menu-turun]')) {
+                    tutupSemuaMenuTurun();
                 }
             });
 
             document.addEventListener('keydown', (peristiwa) => {
                 if (peristiwa.key === 'Escape') {
-                    tutupSemuaDropdown();
+                    tutupSemuaMenuTurun();
                 }
             });
         }
@@ -72,68 +72,111 @@
         const kepalaSitus = document.querySelector('header');
 
         /* Penanda pil yang meluncur ke tab aktif. */
-        const kapsulNav = document.querySelector('nav.kapsul-nav');
-        const penandaNav = kapsulNav?.querySelector('.penanda-nav');
+        const kapsulNavigasi = document.querySelector('nav.kapsul-navigasi');
+        const penandaNavigasi = kapsulNavigasi?.querySelector('.penanda-navigasi');
 
-        function geserPenandaNav({ beranimasi = true } = {}) {
-            if (!kapsulNav || !penandaNav) {
+        /*
+         * Saat berpindah halaman, pil mulai dari tab halaman sebelumnya lalu
+         * meluncur ke tab sekarang. Selama meluncur, pengukuran ulang (font,
+         * ResizeObserver) ikut beranimasi supaya gerakannya tidak terpotong.
+         */
+        const KUNCI_TAB_NAVIGASI = 'grabo.navigasi.tabTerakhir';
+        let tautanAwalNavigasi = null;
+        let pilSedangMeluncur = false;
+
+        function geserPenandaNavigasi({ beranimasi = pilSedangMeluncur } = {}) {
+            if (!kapsulNavigasi || !penandaNavigasi) {
                 return;
             }
 
-            const tautanAktif = kapsulNav.querySelector('.tautan-nav.is-aktif');
+            const tautanAktif = tautanAwalNavigasi ?? kapsulNavigasi.querySelector('.tautan-navigasi.aktif');
 
             // Kapsul disembunyikan di layar kecil; lewati saat tidak terlihat.
-            if (!tautanAktif || kapsulNav.offsetParent === null || kapsulNav.clientWidth === 0) {
-                penandaNav.classList.remove('is-siap');
+            if (!tautanAktif || kapsulNavigasi.offsetParent === null || kapsulNavigasi.clientWidth === 0) {
+                penandaNavigasi.classList.remove('siap');
                 return;
             }
 
-            const kotakKapsul = kapsulNav.getBoundingClientRect();
+            const kotakKapsul = kapsulNavigasi.getBoundingClientRect();
             const kotakTautan = tautanAktif.getBoundingClientRect();
-            const gaya = getComputedStyle(kapsulNav);
+            const gaya = getComputedStyle(kapsulNavigasi);
             const tepiKiri = parseFloat(gaya.borderLeftWidth) || 0;
             const tepiAtas = parseFloat(gaya.borderTopWidth) || 0;
 
             if (!beranimasi) {
-                penandaNav.style.transition = 'none';
+                penandaNavigasi.style.transition = 'none';
             }
 
-            penandaNav.style.setProperty('--nav-x', `${kotakTautan.left - kotakKapsul.left - tepiKiri}px`);
-            penandaNav.style.setProperty('--nav-y', `${kotakTautan.top - kotakKapsul.top - tepiAtas}px`);
-            penandaNav.style.setProperty('--nav-w', `${kotakTautan.width}px`);
-            penandaNav.style.setProperty('--nav-h', `${kotakTautan.height}px`);
-            penandaNav.classList.add('is-siap');
+            penandaNavigasi.style.setProperty('--navigasi-x', `${kotakTautan.left - kotakKapsul.left - tepiKiri}px`);
+            penandaNavigasi.style.setProperty('--navigasi-y', `${kotakTautan.top - kotakKapsul.top - tepiAtas}px`);
+            penandaNavigasi.style.setProperty('--navigasi-w', `${kotakTautan.width}px`);
+            penandaNavigasi.style.setProperty('--navigasi-h', `${kotakTautan.height}px`);
+            penandaNavigasi.classList.add('siap');
 
             if (!beranimasi) {
-                // Paksa reflow supaya posisi awal tidak ikut dianimasikan.
-                void penandaNav.offsetWidth;
-                penandaNav.style.transition = '';
+                // Paksa hitung ulang tata letak supaya posisi awal tidak ikut dianimasikan.
+                void penandaNavigasi.offsetWidth;
+                penandaNavigasi.style.transition = '';
             }
         }
 
-        /* Navbar merapat saat halaman digulir. */
+        /* Bilah navigasi merapat saat halaman digulir. */
         function seleraskanBayangKepala() {
-            kepalaSitus?.classList.toggle('is-tergulir', window.scrollY > 16);
+            kepalaSitus?.classList.toggle('tergulir', window.scrollY > 16);
         }
 
         window.addEventListener('scroll', seleraskanBayangKepala, { passive: true });
         seleraskanBayangKepala();
 
-        window.addEventListener('resize', () => geserPenandaNav({ beranimasi: false }));
+        window.addEventListener('resize', () => geserPenandaNavigasi({ beranimasi: false }));
 
         /*
          * Ukur ulang lewat ResizeObserver: pemanggilan saat parsing bisa terjadi
-         * sebelum kapsul selesai di-layout, dan observer ini juga menangkap
+         * sebelum kapsul selesai ditata, dan pengamat ini juga menangkap
          * perubahan lebar setelah webfont dimuat.
          */
-        if (kapsulNav && 'ResizeObserver' in window) {
-            new ResizeObserver(() => geserPenandaNav({ beranimasi: false })).observe(kapsulNav);
+        if (kapsulNavigasi && 'ResizeObserver' in window) {
+            new ResizeObserver(() => geserPenandaNavigasi()).observe(kapsulNavigasi);
         }
 
-        document.fonts?.ready.then(() => geserPenandaNav({ beranimasi: false }));
-        window.addEventListener('load', () => geserPenandaNav({ beranimasi: false }));
+        document.fonts?.ready.then(() => geserPenandaNavigasi());
+        window.addEventListener('load', () => geserPenandaNavigasi());
 
-        geserPenandaNav({ beranimasi: false });
+        (() => {
+            const tautanAktif = kapsulNavigasi?.querySelector('.tautan-navigasi.aktif');
+            let tabSebelumnya = null;
+
+            try {
+                tabSebelumnya = sessionStorage.getItem(KUNCI_TAB_NAVIGASI);
+                tautanAktif
+                    ? sessionStorage.setItem(KUNCI_TAB_NAVIGASI, tautanAktif.dataset.sasaranNavigasi)
+                    : sessionStorage.removeItem(KUNCI_TAB_NAVIGASI);
+            } catch {
+                // sessionStorage bisa diblokir; pil langsung di tab aktif.
+            }
+
+            const tautanSebelumnya = kapsulNavigasi?.querySelector(`.tautan-navigasi[data-sasaran-navigasi="${tabSebelumnya}"]`);
+
+            if (tautanAktif && tautanSebelumnya && tautanSebelumnya !== tautanAktif) {
+                tautanAwalNavigasi = tautanSebelumnya;
+                geserPenandaNavigasi({ beranimasi: false });
+                tautanAwalNavigasi = null;
+
+                // Mulai sekarang semua pengukuran ulang ikut beranimasi menuju tab aktif.
+                pilSedangMeluncur = true;
+                requestAnimationFrame(() => requestAnimationFrame(() => geserPenandaNavigasi({ beranimasi: true })));
+                setTimeout(() => { pilSedangMeluncur = false; }, 800);
+            } else {
+                geserPenandaNavigasi({ beranimasi: false });
+            }
+        })();
+
+        // Kembali lewat tombol Back (bfcache): pil langsung di tab halaman ini.
+        window.addEventListener('pageshow', (peristiwa) => {
+            if (peristiwa.persisted) {
+                geserPenandaNavigasi({ beranimasi: false });
+            }
+        });
 
         /*
          * ------------------------------------------------------------------
@@ -360,7 +403,7 @@
 
             if (ubah) {
                 const daftarBaris = bacaKeranjang();
-                const indeks = Number(ubah.dataset.cartEdit);
+                const indeks = Number(ubah.dataset.keranjangUbah);
                 const baris = daftarBaris[indeks];
 
                 /*
@@ -385,7 +428,7 @@
             }
 
             const daftarBaris = bacaKeranjang();
-            const indeks = Number((menambah || mengurangi).dataset.cartInc ?? (menambah || mengurangi).dataset.cartDec);
+            const indeks = Number((menambah || mengurangi).dataset.keranjangTambah ?? (menambah || mengurangi).dataset.keranjangKurang);
             const baris = daftarBaris[indeks];
 
             if (!baris) {
@@ -514,7 +557,7 @@
                 kartuPromo.forEach((kartu) => {
                     const dipakai = kartu.dataset.kartuPromo === aktif;
 
-                    kartu.querySelector('.kartu-promo')?.classList.toggle('is-dipakai', dipakai);
+                    kartu.querySelector('.kartu-promo')?.classList.toggle('dipakai', dipakai);
                     kartu.querySelector('[data-pita-dipakai]').hidden = !dipakai;
                 });
             }
@@ -874,8 +917,7 @@
 
                 // Server memakai daftar ini untuk menghitung ulang dan menyimpan pesanan.
                 document.getElementById('inputKeranjangPembayaran').value = JSON.stringify(
-                    daftarBaris.map(({ slug, name, stall, price, jumlah, options, note }) =>
-                        ({ slug, name, stall, price, jumlah, options, note }))
+                    daftarBaris.map(({ slug, jumlah, pilihan, catatan }) => ({ slug, jumlah, pilihan, catatan }))
                 );
                 document.getElementById('inputPromoPembayaran').value = kode ?? '';
 
@@ -903,7 +945,7 @@
             function tandaiKartuTerpilih() {
                 formPembayaran.querySelectorAll('.kartu-pilihan').forEach((kartu) => {
                     const kolomIsian = kartu.querySelector('input[type="radio"]');
-                    kartu.classList.toggle('is-terpilih', !!kolomIsian?.checked);
+                    kartu.classList.toggle('terpilih', !!kolomIsian?.checked);
                 });
             }
 
@@ -1050,7 +1092,7 @@
 
             jalurPromo.addEventListener('scroll', () => {
                 const indeks = bingkaiKini();
-                titikBingkai.forEach((dot, i) => dot.classList.toggle('is-kini', i === indeks));
+                titikBingkai.forEach((dot, i) => dot.classList.toggle('kini', i === indeks));
             }, { passive: true });
 
             // Jeda saat pengguna sedang melihat atau menyentuh slide.
@@ -1070,4 +1112,53 @@
 
             mulaiGeserOtomatis();
         }
+
+        /*
+         * ------------------------------------------------------------------
+         * Muncul saat digulir
+         * Judul, kartu, dan isi grid yang belum terlihat di layar pertama naik
+         * perlahan saat digulir ke dalam layar. Yang sudah terlihat saat halaman
+         * dibuka tidak disentuh (sudah dianimasikan transisi halaman). Isian
+         * formulir juga dilewati supaya tidak mengganggu saat mengetik.
+         * ------------------------------------------------------------------
+         */
+        (() => {
+            const mauDikurangi = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            if (mauDikurangi || !('IntersectionObserver' in window)) {
+                return;
+            }
+
+            const kandidat = [...document.querySelectorAll('main h2, main article, main .grid > *, main [data-muncul]')]
+                .filter((el) => !el.closest('form, [data-tanpa-muncul], #jalurPromo'))
+                // Lewati yang bersarang di kandidat lain: cukup induknya yang bergerak.
+                .filter((el, _, semua) => !semua.some((lain) => lain !== el && lain.contains(el)))
+                // Hanya yang masih di bawah layar pertama.
+                .filter((el) => el.getBoundingClientRect().top > window.innerHeight);
+
+            const pengamat = new IntersectionObserver((daftar) => {
+                daftar.forEach(({ isIntersecting, target }) => {
+                    if (!isIntersecting) {
+                        return;
+                    }
+
+                    pengamat.unobserve(target);
+                    target.classList.add('muncul');
+
+                    // Lepas kelasnya setelah selesai, supaya transisi hover bawaan kartu kembali.
+                    target.addEventListener('transitionend', () => {
+                        target.classList.remove('siap-muncul', 'muncul');
+                        target.style.removeProperty('--jeda-muncul');
+                    }, { once: true });
+                });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+
+            kandidat.forEach((el) => {
+                // Saudara dalam satu grid muncul bergantian, maksimal 4 langkah.
+                const urutan = el.parentElement ? [...el.parentElement.children].indexOf(el) % 4 : 0;
+                el.style.setProperty('--jeda-muncul', `${urutan * 80}ms`);
+                el.classList.add('siap-muncul');
+                pengamat.observe(el);
+            });
+        })();
     </script>

@@ -1,14 +1,14 @@
 @extends('tataletak.grabo')
 
 @section('content')
-        {{-- Hero poster --}}
+        {{-- Poster pembuka --}}
         <section id="beranda" class="relative isolate scroll-mt-28 overflow-hidden bg-krem pb-16 pt-10 lg:pb-24 lg:pt-14">
             {{-- Ilustrasi yang melayang (dekoratif) --}}
-            <img src="{{ asset('images/food/es-teh.svg') }}" alt="" aria-hidden="true"
+            <img src="{{ asset('gambar/ilustrasi/es-teh.svg') }}" alt="" aria-hidden="true"
                 class="pointer-events-none absolute -left-16 top-24 z-0 w-52 rotate-[-14deg] opacity-80 blur-[3px] lg:w-72" width="288" height="288">
-            <img src="{{ asset('images/food/mie-ayam.svg') }}" alt="" aria-hidden="true"
+            <img src="{{ asset('gambar/ilustrasi/mie-ayam.svg') }}" alt="" aria-hidden="true"
                 class="pointer-events-none absolute -right-20 top-8 z-0 hidden w-72 rotate-[10deg] opacity-80 blur-[4px] lg:block" width="288" height="288">
-            <img src="{{ asset('images/food/roti-bakar.svg') }}" alt="" aria-hidden="true"
+            <img src="{{ asset('gambar/ilustrasi/roti-bakar.svg') }}" alt="" aria-hidden="true"
                 class="pointer-events-none absolute -left-14 bottom-2 z-0 hidden w-40 rotate-[8deg] opacity-90 blur-[1px] xl:block" width="160" height="160">
 
             <div class="relative mx-auto max-w-7xl px-6">
@@ -22,7 +22,7 @@
                 </h1>
 
                 {{-- Produk utama, ditumpuk di antara kedua kata --}}
-                <img src="{{ asset('images/food/nasi-goreng.svg') }}" alt="Ilustrasi sepiring nasi goreng spesial dengan telur mata sapi"
+                <img src="{{ asset('gambar/ilustrasi/nasi-goreng.svg') }}" alt="Ilustrasi sepiring nasi goreng spesial dengan telur mata sapi"
                     class="animasi-mengapung relative z-20 mx-auto -mt-6 w-64 drop-shadow-2xl sm:w-80 lg:absolute lg:left-1/2 lg:top-8 lg:mt-0 lg:w-[38vw] lg:max-w-[480px] lg:-translate-x-1/2"
                     width="480" height="480">
 
@@ -48,7 +48,7 @@
                     <div class="lg:justify-self-end">
                         <a href="#menu" class="group block w-60">
                             <span class="block overflow-hidden rounded-2xl shadow-lg shadow-neon-900/10 transition group-hover:-translate-y-1">
-                                <img src="{{ asset('images/food/photos/batagor-saus-kacang.jpg') }}" alt="Batagor dengan saus kacang" class="h-40 w-full object-cover" width="240" height="160">
+                                <img src="{{ asset('gambar/sajian/batagor-saus-kacang.jpg') }}" alt="Batagor dengan saus kacang" class="h-40 w-full object-cover" width="240" height="160">
                             </span>
                             <span class="mt-4 block border-b-2 border-neon-500 pb-1 text-center text-lg text-stone-800">
                                 Jelajahi Menu Camilan
@@ -188,9 +188,9 @@
 
         {{-- CTA --}}
         <section class="relative overflow-hidden bg-neon-500">
-            <img src="{{ asset('images/food/ayam-geprek.svg') }}" alt="" aria-hidden="true"
+            <img src="{{ asset('gambar/ilustrasi/ayam-geprek.svg') }}" alt="" aria-hidden="true"
                 class="pointer-events-none absolute -left-10 -top-10 w-56 rotate-[-12deg] opacity-25 blur-[2px]" width="224" height="224">
-            <img src="{{ asset('images/food/es-teh.svg') }}" alt="" aria-hidden="true"
+            <img src="{{ asset('gambar/ilustrasi/es-teh.svg') }}" alt="" aria-hidden="true"
                 class="pointer-events-none absolute -bottom-14 right-4 w-56 rotate-[12deg] opacity-25 blur-[2px]" width="224" height="224">
 
             <div class="relative mx-auto flex max-w-7xl flex-col items-center gap-10 px-6 py-16 text-center lg:flex-row lg:justify-between lg:py-20 lg:text-left">
